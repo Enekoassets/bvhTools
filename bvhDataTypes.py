@@ -86,7 +86,8 @@ class BVHData:
         self.skeleton = skeleton
         self.motion = motion
         self.skeleton_dims = self.calculateSkeletonDims()
-
+        self.motion_dims = self.calculateMotionDims()
+        
     def getJointLocalTransformAtFrame(self, joint_name, frame, rotationMode = "Euler"):
         joint = self.skeleton.getJoint(joint_name)
         jointIndex = self.skeleton.getJointIndex(joint_name)
@@ -153,7 +154,30 @@ class BVHData:
 
     def getSkeletonDims(self):
         return self.skeleton_dims
+    
+    def calculateMotionDims(self):
+        min_x, min_y, min_z = float('inf'), float('inf'), float('inf')
+        max_x, max_y, max_z = float('-inf'), float('-inf'), float('-inf')
 
+        for frameIndex in range(self.motion.num_frames):
+            fk_data_root = self.getFKAtFrame(frameIndex)[self.skeleton.root.name][1]
+            # Extract the position of each joint
+            x, y, z = fk_data_root
+            
+            # Update the min and max values for each axis (X, Y, Z)
+            min_x = min(min_x, x)
+            min_y = min(min_y, y)
+            min_z = min(min_z, z)
+
+            max_x = max(max_x, x)
+            max_y = max(max_y, y)
+            max_z = max(max_z, z)
+
+        return [min_x, max_x, min_y, max_y, min_z, max_z]
+
+    def getMotionDims(self):
+        return self.motion_dims
+    
     def getChildFKAtFrame(self, joint, frame, parent_transform, fk_frame):
         local_rot, local_pos = self.getJointLocalTransformAtFrame(joint.name, frame, "Matrix")
         joint_global_rot = np.matmul(parent_transform[0], local_rot)

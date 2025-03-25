@@ -40,20 +40,20 @@ def readJoint(header, current_index, parent=None):
             current_index += 1
         
         if("OFFSET" in header[current_index]):
-            jointObject.set_offset([float(x) for x in header[current_index].rstrip().split(" ")[1:]])
+            jointObject.setOffset([float(x) for x in header[current_index].rstrip().split(" ")[1:]])
             current_index += 1
         
         if("CHANNELS" in header[current_index]):
-            jointObject.set_channels([str(x) for x in header[current_index].rstrip().split(" ")[2:]])
+            jointObject.setChannels([str(x) for x in header[current_index].rstrip().split(" ")[2:]])
             current_index += 1
         
         if("JOINT" in header[current_index]):
             childJoint, current_index = readJoint(header, current_index, jointObject)
-            jointObject.add_child(childJoint)
+            jointObject.addChild(childJoint)
 
         if("End Site" in header[current_index]):
             endSite, current_index = readEndSite(header, current_index, jointObject)
-            jointObject.add_child(endSite)
+            jointObject.addChild(endSite)
         
         if("}" in header[current_index]):
             current_index += 1
