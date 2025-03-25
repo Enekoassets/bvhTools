@@ -177,28 +177,3 @@ class BVHData:
         for joint_name, (rot, pos) in fk_frame.items():
             fk_frame[joint_name] = (rot, pos / normalizer)
         return fk_frame
-    
-    def center_skeleton_root(self, fk_frame=0):
-        frame = self.motion.get_frame(fk_frame)
-        rootIndex = self.skeleton.get_joint_index(self.skeleton.root.name)
-        offsets = [-float(frame[rootIndex]), -float(frame[rootIndex + 1]), -float(frame[rootIndex + 2])]
-        for frame in self.motion.frames:
-            frame[rootIndex] += offsets[0]
-            frame[rootIndex+1] += offsets[1]
-            frame[rootIndex+2] += offsets[2]
-
-    def center_skeleton_feet(self, fk_frame=0, leftFootName = "LeftFoot", rightFootName = "RightFoot"):
-        if(leftFootName not in self.skeleton.joints):
-            raise Exception("Left foot not found in skeleton")
-        if(rightFootName not in self.skeleton.joints):
-            raise Exception("Right foot not found in skeleton")
-
-        avgFootHeight = (self.get_FK_at_frame(fk_frame)[leftFootName][1][1] + self.get_FK_at_frame(fk_frame)[rightFootName][1][1]) / 2
-        avgRootHeight = self.get_FK_at_frame(fk_frame)[self.skeleton.root.name][1][1]
-        frame = self.motion.get_frame(fk_frame)
-        rootIndex = self.skeleton.get_joint_index(self.skeleton.root.name)
-        offsets = [-float(frame[rootIndex]), -float(frame[rootIndex + 1]) + (avgRootHeight - avgFootHeight), -float(frame[rootIndex + 2])]
-        for frame in self.motion.frames:
-            frame[rootIndex] += offsets[0]
-            frame[rootIndex+1] += offsets[1]
-            frame[rootIndex+2] += offsets[2]

@@ -1,1 +1,81 @@
 # bvhTools
+This repository contains a Python library to work with BVH (Biovision Hierarchy) files. It is in development and it currently contains I/O methods to read and write BVH files and methods to edit animations.
+
+**Index**
+- [bvhTools](#bvhtools)
+  - [Loading BVH files](#loading-bvh-files)
+  - [Writing BVH files](#writing-bvh-files)
+  - [The BVHData object](#the-bvhdata-object)
+    - [The Motion Data object](#the-motion-data-object)
+    - [The Skeleton Object](#the-skeleton-object)
+  - [Forward Kinematics](#forward-kinematics)
+  - [BVH manipulation](#bvh-manipulation)
+    - [Centering the skeleton root on a specific frame](#centering-the-skeleton-root-on-a-specific-frame)
+    - [Centering the skeleton feet on a specific frame](#centering-the-skeleton-feet-on-a-specific-frame)
+
+<a id="loadBVH"></a>
+## Loading BVH files
+To load a BVH file to later use it inside Python, just provide the file path, and the method will return a **BVHData** object.
+```python
+from bvhIO import readBvhFile
+
+bvhData = readBvhFile("test.bvh")
+```
+
+<a id="writeBVH"></a>
+## Writing BVH files
+To write the content of a **BVHData** object, use the provide the **BVHData** object, the output path and optionally, the number of decimals for the motion (default = 6).
+```python
+from bvhIO import writeBvhFile
+
+writeBvhFile(bvhData, "test_new.bvh")
+```
+
+<a id="methodsBVH"></a>
+## The BVHData object
+The **BVHData** object contains the information of the entire BVH file in an accessible way. It has the following structure, and you can get all the necessary attributes:
+
+```
+BVHData
+└─── header
+└─── skeleton
+└─── motion
+└─── skeleton_dims (used for normalization purposes)
+```
+### The Motion Data object
+```
+MotionData
+└─── num_frames
+└─── frame_time
+└─── frames
+```
+### The Skeleton Object
+```
+Skeleton
+└─── root
+└─── joints
+└─── joint_indexes
+```
+
+<a id="forwardKinematics"></a>
+## Forward Kinematics
+The forward kinematics module returns a **Dict** object containing the global positions and rotations of the skeleton in a specific frame.
+```python
+fk = bvhData.get_FK_at_frame(42)
+```
+It can also return the normalized FK positions (the rotations remain the same). The normalization dimension is the height of the skeleton by default, but the options are ["height", "width", "depth"].
+ ```python
+fk = bvhData.get_FK_at_frame_normalized(42)
+```
+<a id="BVH Manipulation"></a>
+## BVH manipulation
+### Centering the skeleton root on a specific frame
+To center the skeleton root and set its position to (0,0,0) on a specific frame, provide the number of the frame you want the root to be centered in. This means that in the frame that you provide, the root will be in (0,0,0) and all the animation will be shifted accordingly. Useful to center any animation in frame 0 (Default frame = 0).
+```python
+centeredBvhRoot = centerSekeletonRoot(bvhData)
+```
+### Centering the skeleton feet on a specific frame
+This centers the whole skeleton in the X and Z axes for a specific frame, and it also centers it on the Y axis, to put the feet on Y = 0. In other words, the skeleton will be standing on (0,0,0) on the provided frame. It uses the two feet to calculate the average Y height, so the names of both feet joints are needed. (Default leftFootName = "LeftFoot", rightFootName = "RightFoot"). Useful to center the feet of any animation in frame 0 (Default frame = 0).
+```python
+centeredBvhRoot = centerSekeletonFeet(bvhData)
+```
