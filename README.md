@@ -14,6 +14,7 @@ This repository contains a Python library to work with BVH (Biovision Hierarchy)
     - [Centering the skeleton feet](#centering-the-skeleton-feet)
     - [Centering the skeleton around a specific joint](#centering-the-skeleton-around-a-specific-joint)
   - [BVH slicing](#bvh-slicing)
+  - [BVH viewer](#bvh-viewer)
 
 <a id="loadBVH"></a>
 ## Loading BVH files
@@ -100,4 +101,13 @@ You can also get many time slices of the bvh animation, each one in a new BVHDat
 fromFrames = [0, 200, 400]
 toFrames = [100, 300, 500]
 cutBvhs = getBvhSlices(bvhData, fromFrames, toFrames) # gets 3 BVHData objects: motion from 0 to 100, 200 to 300, 400 to 500
+```
+
+<a id="BVH viewer"></a>
+## BVH viewer
+A simple BVH viewer is implemented using matplotlib for fast viewing. It contains a basic play/pause button and forward/back buttons to pass frames one by one.
+```python
+from bvhVisualizerSimple import showBvhAnimation
+
+showBvhAnimation(bvhData)
 ```
