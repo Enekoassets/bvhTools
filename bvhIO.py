@@ -94,7 +94,6 @@ def writeBvhFile(bvhData, bvhPath, decimals = 6):
         for line in bvhData.header:
             f.write(line)
             f.write("\n")
-        f.write("\n")
         f.write("MOTION\n")
         f.write("Frames: " + str(bvhData.motion.num_frames) + "\n")
         f.write("Frame Time: " + str(bvhData.motion.frame_time) + "\n")
