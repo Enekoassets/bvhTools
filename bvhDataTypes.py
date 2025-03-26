@@ -52,7 +52,9 @@ class Skeleton:
 
 class MotionData:
     def __init__(self, num_frames, frame_time, frames):
-        self.num_frames = num_frames
+        if(num_frames != len(frames)):
+            print("WARNING: Number of frames does not match number of frames in data. Taking the length of the motion data.")
+        self.num_frames = len(frames)
         self.frame_time = frame_time
         self.frames = frames
 
