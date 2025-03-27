@@ -102,3 +102,23 @@ def writeBvhFile(bvhData, bvhPath, decimals = 6):
             for string in strings:
                 f.write(string + " ")
             f.write("\n")
+
+def writeBvhToCsv(bvhData, csvPath, decimals = 6):
+    with open(csvPath, "w") as f:
+        for joint in bvhData.skeleton.joints:
+            jointObject = bvhData.skeleton.getJoint(joint)
+            jointClasses = [jointObject.name +  "_" + str(channel) for channel in jointObject.channels]
+            if(len(jointClasses) > 0):
+                f.write(",".join(jointClasses) + ",")
+        f.write("\n")
+        for frame in bvhData.motion.frames:
+            f.write(",".join([f"{x:.{decimals}f}" for x in frame]) + "\n")
+
+def writePositionsToCsv(bvhData, csvPath, decimals = 6):
+    with open(csvPath, "w") as f:
+        fk_frame = bvhData.getFKAtFrame(0)
+        f.write(",".join([str(x)+ "_x," + str(x)+"_y,"+ str(x)+"_z" for x in fk_frame.keys()]) + "\n")
+        for frameIndex in range(bvhData.motion.num_frames):
+            fk_frame = bvhData.getFKAtFrame(frameIndex)
+            points = [x[1] for x in fk_frame.values()]
+            f.write(",".join([f"{x[0]:.{decimals}f}, {x[1]:.{decimals}f}, {x[2]:.{decimals}f}" for x in points]) + "\n")

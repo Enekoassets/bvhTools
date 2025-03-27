@@ -39,6 +39,7 @@ def showBvhAnimation(bvhData):
 
     def frameBack(event):
         isPaused[0] = True
+        btnPlayPause.label.set_text("Play" if isPaused[0] else "Pause")
         currentFrame[0] -= 1
         if(currentFrame[0] < 0):
             currentFrame[0] = numFrames - 1
@@ -47,6 +48,7 @@ def showBvhAnimation(bvhData):
 
     def frameForward(event):
         isPaused[0] = True
+        btnPlayPause.label.set_text("Play" if isPaused[0] else "Pause")
         currentFrame[0] += 1
         if(currentFrame[0] >= numFrames):
             currentFrame[0] = 0

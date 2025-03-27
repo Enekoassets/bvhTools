@@ -15,6 +15,9 @@ This repository contains a Python library to work with BVH (Biovision Hierarchy)
     - [Centering the skeleton around a specific joint](#centering-the-skeleton-around-a-specific-joint)
   - [BVH slicing](#bvh-slicing)
   - [BVH viewer](#bvh-viewer)
+  - [Writing data to CSV files](#writing-data-to-csv-files)
+    - [Writing positions and rotations to the CSV](#writing-positions-and-rotations-to-the-csv)
+    - [Writing position data to the CSV (FK)](#writing-position-data-to-the-csv-fk)
 
 <a id="loadBVH"></a>
 ## Loading BVH files
@@ -32,6 +35,18 @@ To write the content of a **BVHData** object, use the provide the **BVHData** ob
 from bvhIO import writeBvhFile
 
 writeBvhFile(bvhData, "test_new.bvh")
+```
+This has many uses. For example, you can load a BVH file, make modifications to the **BVHData** object and then write it to a new BVH file, without the need of doing anything else. For example, the following code snippet does this: it loads a BVH, it centers it on its feet starting on frame 100, it takes a motion slice from frame 100 to 200 and then writes the new centered and cut BVH to a new file.
+
+```python
+from bvhIO import readBvhFile, writeBvhFile
+from bvhManipulation import centerSkeletonFeet
+from bvhSlicing import getBvhSlice
+
+bvhData = readBvhFile("test.bvh") # read the data
+centeredBvh = centerSkeletonFeet(bvhData, 100) # put it standing on the center on frame 100
+centeredBvhSlice = getBvhSlice(centeredBvh, 100, 200) # get the motion slice from frame 100 to 200
+writeBvhFile(centeredBvhSlice, "test_centered_cut.bvh") # write the new file
 ```
 
 <a id="methodsBVH"></a>
@@ -105,9 +120,31 @@ cutBvhs = getBvhSlices(bvhData, fromFrames, toFrames) # gets 3 BVHData objects: 
 
 <a id="BVH viewer"></a>
 ## BVH viewer
-A simple BVH viewer is implemented using matplotlib for fast viewing. It contains a basic play/pause button and forward/back buttons to pass frames one by one.
+A simple BVH viewer is implemented using matplotlib for fast viewing. It contains a basic play/pause button and forward/back buttons to pass frames one by one. It also permits to jump to specific frames and to change the speed of time for faster/slower playback.
 ```python
 from bvhVisualizerSimple import showBvhAnimation
 
 showBvhAnimation(bvhData)
+```
+
+<a id="CSV writing"></a>
+## Writing data to CSV files
+The library permits directly writing CSV files from a loaded BVH. There are 2 different types of CSV that can be written.
+
+### Writing positions and rotations to the CSV
+This function essentially dumps all the data in the BVH to CSV format, without any modification. The header will contain all the channels of the BVH file as header (of course, without the offset values). i.e. it will contain all position and rotation channels with their respective joint names. Then, in each line, the content of the MOTION part of the BVH will be written.
+
+```python
+from bvhIO import writeBvhToCsv
+
+writeBvhToCsv(bvhData, "testBvhFiles/test.csv")
+```
+
+### Writing position data to the CSV (FK)
+This function calculates the positions of all the joints and end effectors using Forward Kinematics, and writes all the data to a CSV file. As a header, it will write all the joint names, followed by the subscript "_x", "_y" or "_z". Then, for the motion part, it will calculate and then write the absolute position values of the joints in the respective columns.
+
+```python
+from bvhIO import writePositionsToCsv
+
+writePositionsToCsv(bvhData, "testBvhFiles/testPosition.csv")
 ```
