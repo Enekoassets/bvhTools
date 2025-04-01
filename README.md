@@ -117,7 +117,20 @@ fromFrames = [0, 200, 400]
 toFrames = [100, 300, 500]
 cutBvhs = getBvhSlices(bvhData, fromFrames, toFrames) # gets 3 BVHData objects: motion from 0 to 100, 200 to 300, 400 to 500
 ```
-
+You can group multiple BVH files with different motions together, to get one BVH with all the motion data. Take into account that all the headers should be the same as this method just appends the motion parts together.
+```python
+fromFrames = [0, 200, 400]
+toFrames = [100, 300, 500]
+cutBvhs = getBvhSlices(bvhData, fromFrames, toFrames) # first get the slices
+finalBvh = groupBvhSlices(cutBvhs) # all the BVHs will be grouped into one BVHData object
+```
+You can append multiple BVH files with different motions to a base BVH file.
+```python
+fromFrames = [0, 200, 400]
+toFrames = [100, 300, 500]
+cutBvhs = getBvhSlices(bvhData, fromFrames, toFrames) # slices
+finalBvh = appendBvhSlices(baseBvh, cutBvhs) # append the slices to a base BVH
+```
 <a id="BVH viewer"></a>
 ## BVH viewer
 A simple BVH viewer is implemented using matplotlib for fast viewing. It contains a basic play/pause button and forward/back buttons to pass frames one by one. It also permits to jump to specific frames and to change the speed of time for faster/slower playback.

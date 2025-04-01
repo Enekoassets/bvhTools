@@ -14,3 +14,23 @@ def getBvhSlices(bvhData, fromFrames, toFrames):
     for fromFrame, toFrame in zip(fromFrames, toFrames):
         bvhsToReturn.append(getBvhSlice(bvhData, fromFrame, toFrame))
     return bvhsToReturn
+
+def appendBvhSlices(baseBvh, bvhsToAppend):
+    if(len(bvhsToAppend) == 0):
+        raise Exception("You must provide at least one BVH to append")
+    bvhData = copy.deepcopy(baseBvh)
+    for bvh in bvhsToAppend:
+        for frame in bvh.motion.frames:
+            bvhData.motion.frames.append(frame)
+        bvhData.motion.num_frames += bvh.motion.num_frames
+    return bvhData
+        
+def groupBvhSlices(bvhsToGroup):
+    if(len(bvhsToGroup) <= 1):
+        raise Exception("You must provide at least two BVHs to append")
+    bvhData = copy.deepcopy(bvhsToGroup[0])
+    for bvh in bvhsToGroup[1:]:
+        for frame in bvh.motion.frames:
+            bvhData.motion.frames.append(frame)
+        bvhData.motion.num_frames += bvh.motion.num_frames
+    return bvhData
