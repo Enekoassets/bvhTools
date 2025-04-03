@@ -180,26 +180,26 @@ class BVHData:
     def getMotionDims(self):
         return self.motion_dims
     
-    def getChildFKAtFrame(self, joint, frame, parent_transform, fk_frame):
+    def getChildFKAtFrame(self, joint, frame, parent_transform, fkFrame):
         local_rot, local_pos = self.getJointLocalTransformAtFrame(joint.name, frame, "Matrix")
         joint_global_rot = np.matmul(parent_transform[0], local_rot)
         rotated_offset = np.matmul(parent_transform[0], joint.offset)
         joint_global_pos = np.add(np.add(rotated_offset, local_pos), parent_transform[1])
-        fk_frame.update({joint.name: (joint_global_rot, joint_global_pos)})
+        fkFrame.update({joint.name: (joint_global_rot, joint_global_pos)})
         for child in joint.children:
-            self.getChildFKAtFrame(child, frame, (joint_global_rot, joint_global_pos), fk_frame)
+            self.getChildFKAtFrame(child, frame, (joint_global_rot, joint_global_pos), fkFrame)
 
     def getFKAtFrame(self, frame):
         root_joint = self.skeleton.root
         root_local_rot, root_local_pos = self.getJointLocalTransformAtFrame(root_joint.name, frame, "Matrix")
-        fk_frame = {root_joint.name: (root_local_rot, root_local_pos)}
+        fkFrame = {root_joint.name: (root_local_rot, root_local_pos)}
         for child in root_joint.children:
-            self.getChildFKAtFrame(child, frame, (root_local_rot, root_local_pos), fk_frame)
-        return fk_frame
+            self.getChildFKAtFrame(child, frame, (root_local_rot, root_local_pos), fkFrame)
+        return fkFrame
     
     def getFKAtFrameNormalized(self, frame, skeletonDim = "height"):
-        fk_frame = self.getFKAtFrame(frame)
+        fkFrame = self.getFKAtFrame(frame)
         normalizer = self.getSkeletonDim(skeletonDim)
-        for joint_name, (rot, pos) in fk_frame.items():
-            fk_frame[joint_name] = (rot, pos / normalizer)
-        return fk_frame
+        for joint_name, (rot, pos) in fkFrame.items():
+            fkFrame[joint_name] = (rot, pos / normalizer)
+        return fkFrame

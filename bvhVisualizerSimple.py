@@ -19,8 +19,8 @@ def showBvhAnimation(bvhData):
         for coll in ax.collections:
             coll.remove()
         
-        fk_frame = bvhData.getFKAtFrame(currentFrame[0])
-        points = [x[1] for x in fk_frame.values()]
+        fkFrame = bvhData.getFKAtFrame(currentFrame[0])
+        points = [x[1] for x in fkFrame.values()]
 
         x_vals = [p[0] for p in points]
         y_vals = [p[1] for p in points]

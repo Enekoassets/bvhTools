@@ -116,9 +116,9 @@ def writeBvhToCsv(bvhData, csvPath, decimals = 6):
 
 def writePositionsToCsv(bvhData, csvPath, decimals = 6):
     with open(csvPath, "w") as f:
-        fk_frame = bvhData.getFKAtFrame(0)
-        f.write(",".join([str(x)+ "_x," + str(x)+"_y,"+ str(x)+"_z" for x in fk_frame.keys()]) + "\n")
+        fkFrame = bvhData.getFKAtFrame(0)
+        f.write(",".join([str(x)+ "_x," + str(x)+"_y,"+ str(x)+"_z" for x in fkFrame.keys()]) + "\n")
         for frameIndex in range(bvhData.motion.num_frames):
-            fk_frame = bvhData.getFKAtFrame(frameIndex)
-            points = [x[1] for x in fk_frame.values()]
+            fkFrame = bvhData.getFKAtFrame(frameIndex)
+            points = [x[1] for x in fkFrame.values()]
             f.write(",".join([f"{x[0]:.{decimals}f}, {x[1]:.{decimals}f}, {x[2]:.{decimals}f}" for x in points]) + "\n")

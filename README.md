@@ -12,7 +12,10 @@ This repository contains a Python library to work with BVH (Biovision Hierarchy)
   - [BVH manipulation](#bvh-manipulation)
     - [Centering the skeleton root](#centering-the-skeleton-root)
     - [Centering the skeleton feet](#centering-the-skeleton-feet)
+    - [Centering the skeleton on the X and Z axes](#centering-the-skeleton-on-the-x-and-z-axes)
     - [Centering the skeleton around a specific joint](#centering-the-skeleton-around-a-specific-joint)
+    - [Rotating the BVH in world coords](#rotating-the-bvh-in-world-coords)
+    - [Rotating the BVH in local coords](#rotating-the-bvh-in-local-coords)
   - [BVH slicing](#bvh-slicing)
   - [BVH viewer](#bvh-viewer)
   - [Writing data to CSV files](#writing-data-to-csv-files)
@@ -99,12 +102,27 @@ This centers the whole skeleton in the X and Z axes for a specific frame, and it
 centeredBvhRoot = centerSkeletonFeet(bvhData)
 centeredBvhRoot = centerSkeletonFeet(bvhData, leftFootName = "lFoot", rightFootName = "rFoot", frame = 42) # center at frame 42 using custom left and right foot names
 ```
+### Centering the skeleton on the X and Z axes
+This centers the whole skeleton without changing the height of the animation. By default, it centers on the (0,0) on frame 0, but the frame can be specified.
+```python
+centeredBvh = centerSkeletonXZ(bvhData)
+```
 ### Centering the skeleton around a specific joint
 This centers the skeleton around a specific joint at a specific frame. In short, the selected joint will be on (0,0,0) at the specified frame.
 ```python
 centeredBvh = centerSkeletonAroundJoint(bvhData, "RightArm", 0) # The RightArm joint will be at (0,0,0) at frame 0
 ```
+### Rotating the BVH in world coords
+You can rotate the BVH around the world center. The method uses the [X, Y, Z] convention where Y is the vertical axis.
+```python
+rotatedBvh = rotateSkeletonWorld(bvhData, [0, 90, 0]) # The new motion will be rotated around the vertical Y axis. 
+```
 
+### Rotating the BVH in local coords
+You can rotate the BVH around the center of the root at whatever frame you choose (default = 0). The method uses the [X, Y, Z] convention, where Y is the vertical axis.
+```python
+rotatedBvh = rotateSkeletonLocal(bvhData, [0, 90, 0]) # The new motion will be rotated around the vertical Y axis around the root joint position at frame 0.
+```
 <a id="BVH Slicing"></a>
 ## BVH slicing
 You can get a specific time slice of the bvh animation with the bvhSlicer class.
