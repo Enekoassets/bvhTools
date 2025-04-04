@@ -13,10 +13,10 @@
 
 <!-- omit from toc -->
 # Index
-- [Loading BVH files](#loading-bvh-files)
-- [Writing BVH files](#writing-bvh-files)
-- [Forward Kinematics](#forward-kinematics)
-- [BVH manipulation](#bvh-manipulation)
+- [📖 Reading BVH files](#reading-bvh-files)
+- [✏️ Writing BVH files](#️-writing-bvh-files)
+- [🏃 Forward Kinematics](#forward-kinematics)
+- [🤚 BVH manipulation](#bvh-manipulation)
   - [Centering the skeleton root](#centering-the-skeleton-root)
   - [Centering the skeleton feet](#centering-the-skeleton-feet)
   - [Centering the skeleton on the X and Z axes](#centering-the-skeleton-on-the-x-and-z-axes)
@@ -24,15 +24,15 @@
   - [Moving the skeleton around (adding an offset to the animation)](#moving-the-skeleton-around-adding-an-offset-to-the-animation)
   - [Rotating the BVH in world coords](#rotating-the-bvh-in-world-coords)
   - [Rotating the BVH in local coords](#rotating-the-bvh-in-local-coords)
-- [BVH slicing](#bvh-slicing)
-- [BVH viewer](#bvh-viewer)
-- [Writing data to CSV files](#writing-data-to-csv-files)
+- [🔪 BVH slicing](#bvh-slicing)
+- [👀 BVH viewer](#bvh-viewer)
+- [📋 Writing data to CSV files](#writing-data-to-csv-files)
   - [Writing positions and rotations to the CSV](#writing-positions-and-rotations-to-the-csv)
   - [Writing position data to the CSV (FK)](#writing-position-data-to-the-csv-fk)
 
 <a id="loadBVH"></a>
 
-## Loading BVH files
+## 📖 Reading BVH files
 
 To load a BVH file to later use it inside Python, just provide the file path, and the method will return a **BVHData** object.
 ```python
@@ -43,7 +43,7 @@ bvhData = readBvhFile("test.bvh")
 
 <a id="writeBVH"></a>
 
-## Writing BVH files
+## ✏️ Writing BVH files
 
 To write the content of a **BVHData** object, use the provide the **BVHData** object, the output path and optionally, the number of decimals for the motion (default = 6).
 ```python
@@ -66,7 +66,7 @@ writeBvhFile(centeredBvhSlice, "test_centered_cut.bvh") # write the new file
 
 <a id="forwardKinematics"></a>
 
-## Forward Kinematics
+## 🏃 Forward Kinematics
 The forward kinematics module returns a **Dict** object containing the global positions and rotations of the skeleton in a specific frame.
 
 ```python
@@ -80,7 +80,7 @@ fk = bvhData.getFKAtFrameNormalized(42)
 ```
 <a id="BVH Manipulation"></a>
 
-## BVH manipulation
+## 🤚 BVH manipulation
 
 ### Centering the skeleton root
 To center the skeleton root and set its position to (0,0,0) on a specific frame, provide the number of the frame you want the root to be centered in. This means that in the frame that you provide, the root will be in (0,0,0) and all the animation will be shifted accordingly. Useful to center any animation in frame 0 (Default frame = 0).
@@ -135,7 +135,7 @@ rotatedBvh = rotateSkeletonLocal(bvhData, [0, 90, 0]) # The new motion will be r
 
 <a id="BVH Slicing"></a>
 
-## BVH slicing
+## 🔪 BVH slicing
 You can get a specific time slice of the bvh animation with the bvhSlicer class.
 
 ```python
@@ -170,7 +170,7 @@ finalBvh = appendBvhSlices(baseBvh, cutBvhs) # append the slices to a base BVH
 
 <a id="BVH viewer"></a>
 
-## BVH viewer
+## 👀 BVH viewer
 A simple BVH viewer is implemented using matplotlib for fast viewing. It contains a basic play/pause button and forward/back buttons to pass frames one by one. It also permits to jump to specific frames and to change the speed of time for faster/slower playback.
 
 ```python
@@ -181,7 +181,7 @@ showBvhAnimation(bvhData)
 
 <a id="CSV writing"></a>
 
-## Writing data to CSV files
+## 📋 Writing data to CSV files
 The library permits directly writing CSV files from a loaded BVH. There are 2 different types of CSV that can be written.
 
 ### Writing positions and rotations to the CSV
