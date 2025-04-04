@@ -13,10 +13,10 @@
 
 <!-- omit from toc -->
 # Index
-- [📖 Reading BVH files](#reading-bvh-files)
+- [📖 Reading BVH files](#-reading-bvh-files)
 - [✏️ Writing BVH files](#️-writing-bvh-files)
-- [🏃 Forward Kinematics](#forward-kinematics)
-- [🤚 BVH manipulation](#bvh-manipulation)
+- [🏃 Forward Kinematics](#-forward-kinematics)
+- [🤚 BVH manipulation](#-bvh-manipulation)
   - [Centering the skeleton root](#centering-the-skeleton-root)
   - [Centering the skeleton feet](#centering-the-skeleton-feet)
   - [Centering the skeleton on the X and Z axes](#centering-the-skeleton-on-the-x-and-z-axes)
@@ -24,9 +24,9 @@
   - [Moving the skeleton around (adding an offset to the animation)](#moving-the-skeleton-around-adding-an-offset-to-the-animation)
   - [Rotating the BVH in world coords](#rotating-the-bvh-in-world-coords)
   - [Rotating the BVH in local coords](#rotating-the-bvh-in-local-coords)
-- [🔪 BVH slicing](#bvh-slicing)
-- [👀 BVH viewer](#bvh-viewer)
-- [📋 Writing data to CSV files](#writing-data-to-csv-files)
+- [🔪 BVH slicing](#-bvh-slicing)
+- [👀 BVH viewer](#-bvh-viewer)
+- [📋 Writing data to CSV files](#-writing-data-to-csv-files)
   - [Writing positions and rotations to the CSV](#writing-positions-and-rotations-to-the-csv)
   - [Writing position data to the CSV (FK)](#writing-position-data-to-the-csv-fk)
 
