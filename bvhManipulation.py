@@ -92,3 +92,15 @@ def rotateSkeletonWorld(bvhData, angle):
         frame[rootIndex:rootIndex+3] = newPos
         frame[rootIndex+3:rootIndex+6] = newRotation.as_euler('ZYX', degrees=True)
     return bvhDataCopy
+
+def moveSkeleton(bvhData, offsets):
+    if(len(offsets) != 3):
+        raise Exception("offsets must be a list of length 3")
+    bvhDataCopy = copy.deepcopy(bvhData)
+    rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
+    for frame in bvhDataCopy.motion.frames:
+        frame[rootIndex] += offsets[0]
+        frame[rootIndex+1] += offsets[1]
+        frame[rootIndex+2] += offsets[2]
+
+    return bvhDataCopy
