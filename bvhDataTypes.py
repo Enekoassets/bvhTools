@@ -23,6 +23,42 @@ class Joint:
 
     def getChannelCount(self):
         return len(self.channels)
+    
+    def getPositionChannelsOrder(self):
+        positionChannels = self.channels[0:3] if("position" in self.channels[0] or "position" in self.channels[1] or "position" in self.channels[2]) else self.channels[4:6]
+        if(positionChannels[0] == "Xposition"):
+            if(positionChannels[1] == "Yposition"):
+                return "XYZ"
+            if(positionChannels[1] == "Zposition"):
+                return "XZY"
+        if(positionChannels[0] == "Yposition"):
+            if(positionChannels[1] == "Xposition"):
+                return "YXZ"
+            if(positionChannels[1] == "Zposition"):
+                return "YZX"
+        if(positionChannels[0] == "Zposition"):
+            if(positionChannels[1] == "Xposition"):
+                return "ZXY"
+            if(positionChannels[1] == "Yposition"):
+                return "ZYX"
+
+    def getRotationChannelsOrder(self):
+        rotationChannels = self.channels[0:3] if("rotation" in self.channels[0] or "rotation" in self.channels[1] or "rotation" in self.channels[2]) else self.channels[4:6]
+        if(rotationChannels[0] == "Xrotation"):
+            if(rotationChannels[1] == "Yrotation"):
+                return "XYZ"
+            if(rotationChannels[1] == "Zrotation"):
+                return "XZY"
+        if(rotationChannels[0] == "Yrotation"):
+            if(rotationChannels[1] == "Xrotation"):
+                return "YXZ"
+            if(rotationChannels[1] == "Zrotation"):
+                return "YZX"
+        if(rotationChannels[0] == "Zrotation"):
+            if(rotationChannels[1] == "Xrotation"):
+                return "ZXY"
+            if(rotationChannels[1] == "Yrotation"):
+                return "ZYX"
 
 class Skeleton:
     def __init__(self, root_joint):
