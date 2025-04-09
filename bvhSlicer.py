@@ -1,11 +1,11 @@
 import copy
+from bvhDataTypes import BVHData, MotionData
+
 def getBvhSlice(bvhData, fromFrame, toFrame):
     if(fromFrame > toFrame):
         raise Exception("fromFrame must be less than toFrame")
-    bvhDataCopy = copy.deepcopy(bvhData)
-    bvhDataCopy.motion.frames = bvhData.motion.frames[fromFrame:toFrame]
-    bvhDataCopy.motion.num_frames = toFrame - fromFrame
-    return bvhDataCopy
+    slicedBvh = BVHData(bvhData.skeleton, MotionData(toFrame - fromFrame, bvhData.motion.frame_time, bvhData.motion.frames[fromFrame:toFrame]), bvhData.header)
+    return slicedBvh
 
 def getBvhSlices(bvhData, fromFrames, toFrames):
     if(len(fromFrames) != len(toFrames)):
