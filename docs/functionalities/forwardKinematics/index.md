@@ -1,4 +1,4 @@
-## 🏃 Forward Kinematics
+## 🏃 Forward Kinematics <!-- {docsify-ignore} -->
 The forward kinematics module returns a **Dict** object containing the global positions and rotations of the skeleton in a specific frame.
 
 ```python

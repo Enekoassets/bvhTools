@@ -1,4 +1,4 @@
-## 🤚 BVH manipulation
+## 🤚 BVH manipulation <!-- {docsify-ignore} -->
 
 ### Centering the skeleton root
 To center the skeleton root and set its position to (0,0,0) on a specific frame, provide the number of the frame you want the root to be centered in. This means that in the frame that you provide, the root will be in (0,0,0) and all the animation will be shifted accordingly. Useful to center any animation in frame 0 (Default frame = 0).

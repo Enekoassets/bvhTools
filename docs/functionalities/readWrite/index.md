@@ -1,4 +1,4 @@
-## 📖 Reading BVH files
+## 📖 Reading BVH files <!-- {docsify-ignore} -->
 
 To load a BVH file to later use it inside Python, just provide the file path, and the method will return a **BVHData** object.
 ```python

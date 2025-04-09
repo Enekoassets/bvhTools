@@ -1,4 +1,4 @@
-## 🔪 BVH slicing
+## 🔪 BVH slicing <!-- {docsify-ignore} -->
 You can get a specific time slice of the bvh animation with the bvhSlicer class.
 
 ```python
