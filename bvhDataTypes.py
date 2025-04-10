@@ -112,20 +112,15 @@ class MotionData:
     def getFrameSlice(self, startFrame, endFrame):
         return self.frames[startFrame:endFrame]
 
-    def getRotations(self, rotationIndex):
-        return [x[rotationIndex] for x in self.frames]
+    def getValues(self, valueIndex):
+        return [x[valueIndex] for x in self.frames]
 
-    def getRotationsSlice(self, startIndex, endIndex):
-        return [x[startIndex:endIndex] for x in self.frames]
-
-    def getRotationAtFrame(self, rotationIndex, frame):
-        return self.frames[frame][rotationIndex]
+    def getValueAtFrame(self, valueIndex, frame):
+        return self.frames[frame][valueIndex]
     
-    def getRotationSliceAtFrame(self, startIndex, endIndex, frame):
-        return self.frames[frame][startIndex:endIndex]
-
-    def getRotationAndFrameSlice(self, startIndex, endIndex, startFrame, endFrame):
-        return self.frames[startFrame, endFrame][startIndex:endIndex]
+    def getValuesByJointName(self, jointName):
+        jointIndex = self.skeleton.getJointIndex(jointName)
+        return [x[jointIndex:jointIndex.getChannelCount()] for x in self.frames]
 
 class BVHData:
     def __init__(self, skeleton, motion, header):
@@ -142,14 +137,14 @@ class BVHData:
         Xrot, Yrot, Zrot = None, None, None
         Xpos, Ypos, Zpos = 0.0, 0.0, 0.0
         if("Xrotation" in joint.channels and "Yrotation" in joint.channels and "Zrotation" in joint.channels):
-            Xrot = self.motion.getRotationAtFrame(jointIndex + joint.channels.index("Xrotation"), frame)
-            Yrot = self.motion.getRotationAtFrame(jointIndex + joint.channels.index("Yrotation"), frame)
-            Zrot = self.motion.getRotationAtFrame(jointIndex + joint.channels.index("Zrotation"), frame)
+            Xrot = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Xrotation"), frame)
+            Yrot = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Yrotation"), frame)
+            Zrot = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Zrotation"), frame)
             r = R.from_euler('xyz', [Xrot, Yrot, Zrot], degrees=True)
         if("Xposition" in joint.channels and "Yposition" in joint.channels and "Zposition" in joint.channels):
-            Xpos = self.motion.getRotationAtFrame(jointIndex + joint.channels.index("Xposition"), frame)
-            Ypos = self.motion.getRotationAtFrame(jointIndex + joint.channels.index("Yposition"), frame)
-            Zpos = self.motion.getRotationAtFrame(jointIndex + joint.channels.index("Zposition"), frame)
+            Xpos = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Xposition"), frame)
+            Ypos = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Yposition"), frame)
+            Zpos = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Zposition"), frame)
 
         if(r is None):
             if(rotationMode == "Euler"):
@@ -170,8 +165,8 @@ class BVHData:
         minX, minY, minZ = float('inf'), float('inf'), float('inf')
         maxX, maxY, maxZ = float('-inf'), float('-inf'), float('-inf')
 
-        fk_data_0 = self.getFKAtFrame(0)
-        for jointName, (rot, pos) in fk_data_0.items():
+        fkData0 = self.getFKAtFrame(0)
+        for jointName, (rot, pos) in fkData0.items():
             # Extract the position of each joint
             x, y, z = pos
             

@@ -4,7 +4,7 @@ from bvhDataTypes import BVHData, MotionData
 def getBvhSlice(bvhData, fromFrame, toFrame):
     if(fromFrame > toFrame):
         raise Exception("fromFrame must be less than toFrame")
-    slicedBvh = BVHData(bvhData.skeleton, MotionData(toFrame - fromFrame, bvhData.motion.frameTime, bvhData.motion.frames[fromFrame:toFrame]), bvhData.header)
+    slicedBvh = BVHData(bvhData.skeleton, MotionData(toFrame - fromFrame, bvhData.motion.frameTime, bvhData.motion.getFrameSlice(fromFrame, toFrame)), bvhData.header)
     return slicedBvh
 
 def getBvhSlices(bvhData, fromFrames, toFrames):
