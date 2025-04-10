@@ -25,6 +25,9 @@ class Joint:
         return len(self.channels)
     
     def getPositionChannelsOrder(self):
+        if("position" not in self.channels[0] and len(self.channels) <= 3):
+            print(f"joint {self.name} has no position channels")
+            return
         positionChannels = self.channels[0:3] if("position" in self.channels[0] or "position" in self.channels[1] or "position" in self.channels[2]) else self.channels[3:6]
         if(positionChannels[0] == "Xposition"):
             if(positionChannels[1] == "Yposition"):
@@ -43,9 +46,10 @@ class Joint:
                 return "ZYX"
 
     def getRotationChannelsOrder(self):
+        if("rotation" not in self.channels[0] and len(self.channels) <= 3):
+            print(f"joint {self.name} has no rotation channels")
+            return
         rotationChannels = self.channels[0:3] if("rotation" in self.channels[0] or "rotation" in self.channels[1] or "rotation" in self.channels[2]) else self.channels[3:6]
-        print(rotationChannels)
-        print(self.channels)
         if(rotationChannels[0] == "Xrotation"):
             if(rotationChannels[1] == "Yrotation"):
                 return "XYZ"
@@ -61,76 +65,79 @@ class Joint:
                 return "ZXY"
             if(rotationChannels[1] == "Yrotation"):
                 return "ZYX"
+            
+    def getChannelIndex(self, channelName):
+        return self.channels.index(channelName)
 
 class Skeleton:
-    def __init__(self, root_joint):
-        self.root = root_joint
-        self.joints = self.buildJointDict(root_joint)
-        self.joint_indexes = self.buildJointIndexDict(root_joint, [0])
+    def __init__(self, rootJoint):
+        self.root = rootJoint
+        self.joints = self.buildJointDict(rootJoint)
+        self.jointIndexes = self.buildJointIndexDict(rootJoint, [0])
 
     def buildJointDict(self, joint):
-        joint_dict = {joint.name: joint}
+        jointDict = {joint.name: joint}
         for child in joint.children:
-            joint_dict.update(self.buildJointDict(child))
-        return joint_dict
+            jointDict.update(self.buildJointDict(child))
+        return jointDict
 
-    def buildJointIndexDict(self, joint, current_channel_index=[0]):
-        joint_index_dict = {joint.name: current_channel_index[0]}
-        current_channel_index[0] += joint.getChannelCount()
+    def buildJointIndexDict(self, joint, currentChannelIndex=[0]):
+        jointIndexDict = {joint.name: currentChannelIndex[0]}
+        currentChannelIndex[0] += joint.getChannelCount()
 
         for child in joint.children:
-            joint_index_dict.update(self.buildJointIndexDict(child, current_channel_index))
-        return joint_index_dict
+            jointIndexDict.update(self.buildJointIndexDict(child, currentChannelIndex))
+        return jointIndexDict
 
-    def getJoint(self, joint_name):
-        return self.joints[joint_name]
+    def getJoint(self, jointName):
+        return self.joints[jointName]
 
-    def getJointIndex(self, joint_name):
-        return self.joint_indexes[joint_name]
+    def getJointIndex(self, jointName):
+        return self.jointIndexes[jointName]
 
 class MotionData:
-    def __init__(self, num_frames, frame_time, frames):
-        if(num_frames != len(frames)):
+    def __init__(self, numFrames, frameTime, frames):
+        if(numFrames != len(frames)):
             print("WARNING: Number of frames does not match number of frames in data. Taking the length of the motion data.")
-        self.num_frames = len(frames)
-        self.frame_time = frame_time
+        self.numFrames = len(frames)
+        self.frameTime = frameTime
         self.frames = frames
 
-    def addFrame(self, frame_data):
-        self.frames.append(frame_data)
+    def addFrame(self, frameData):
+        self.frames.append(frameData)
 
-    def getFrame(self, frame_index):
-        return self.frames[frame_index]
+    def getFrame(self, frameIndex):
+        return self.frames[frameIndex]
     
-    def getFrameSlice(self, start_frame, end_frame):
-        return self.frames[start_frame:end_frame]
+    def getFrameSlice(self, startFrame, endFrame):
+        return self.frames[startFrame:endFrame]
 
-    def getRotations(self, rotation_index):
-        return [x[rotation_index] for x in self.frames]
+    def getRotations(self, rotationIndex):
+        return [x[rotationIndex] for x in self.frames]
 
-    def getRotationsSlice(self, start_index, end_index):
-        return [x[start_index:end_index] for x in self.frames]
+    def getRotationsSlice(self, startIndex, endIndex):
+        return [x[startIndex:endIndex] for x in self.frames]
 
-    def getRotationAtFrame(self, rotation_index, frame):
-        return self.frames[frame][rotation_index]
+    def getRotationAtFrame(self, rotationIndex, frame):
+        return self.frames[frame][rotationIndex]
     
-    def getRotationSliceAtFrame(self, start_index, end_index, frame):
-        return self.frames[frame][start_index:end_index]
+    def getRotationSliceAtFrame(self, startIndex, endIndex, frame):
+        return self.frames[frame][startIndex:endIndex]
 
-    def getRotationAndFrameSlice(self, start_index, end_index, start_frame, end_frame):
-        return self.frames[start_frame, end_frame][start_index:end_index]
+    def getRotationAndFrameSlice(self, startIndex, endIndex, startFrame, endFrame):
+        return self.frames[startFrame, endFrame][startIndex:endIndex]
 
 class BVHData:
     def __init__(self, skeleton, motion, header):
         self.header = header
         self.skeleton = skeleton
         self.motion = motion
-        self.skeleton_dims = self.calculateSkeletonDims()
-        self.motion_dims = self.calculateMotionDims()
+        self.skeletonDims = self.calculateSkeletonDims()
+        self.motionDims = self.calculateMotionDims()
         
-    def getJointLocalTransformAtFrame(self, joint_name, frame, rotationMode = "Euler"):
-        joint = self.skeleton.getJoint(joint_name)
-        jointIndex = self.skeleton.getJointIndex(joint_name)
+    def getJointLocalTransformAtFrame(self, jointName, frame, rotationMode = "Euler"):
+        joint = self.skeleton.getJoint(jointName)
+        jointIndex = self.skeleton.getJointIndex(jointName)
         r = None
         Xrot, Yrot, Zrot = None, None, None
         Xpos, Ypos, Zpos = 0.0, 0.0, 0.0
@@ -160,84 +167,84 @@ class BVHData:
                 return r.as_matrix(), [Xpos, Ypos, Zpos]
 
     def calculateSkeletonDims(self):
-        min_x, min_y, min_z = float('inf'), float('inf'), float('inf')
-        max_x, max_y, max_z = float('-inf'), float('-inf'), float('-inf')
+        minX, minY, minZ = float('inf'), float('inf'), float('inf')
+        maxX, maxY, maxZ = float('-inf'), float('-inf'), float('-inf')
 
         fk_data_0 = self.getFKAtFrame(0)
-        for joint_name, (rot, pos) in fk_data_0.items():
+        for jointName, (rot, pos) in fk_data_0.items():
             # Extract the position of each joint
             x, y, z = pos
             
             # Update the min and max values for each axis (X, Y, Z)
-            min_x = min(min_x, x)
-            min_y = min(min_y, y)
-            min_z = min(min_z, z)
+            minX = min(minX, x)
+            minY = min(minY, y)
+            minZ = min(minZ, z)
 
-            max_x = max(max_x, x)
-            max_y = max(max_y, y)
-            max_z = max(max_z, z)
+            maxX = max(maxX, x)
+            maxY = max(maxY, y)
+            maxZ = max(maxZ, z)
 
         # Calculate height, width, and depth
-        height = max_y - min_y  # Difference in the Y-axis (vertical)
-        width = max_x - min_x   # Difference in the X-axis (horizontal)
-        depth = max_z - min_z   # Difference in the Z-axis (depth)
+        height = maxY - minY  # Difference in the Y-axis (vertical)
+        width = maxX - minX   # Difference in the X-axis (horizontal)
+        depth = maxZ - minZ   # Difference in the Z-axis (depth)
 
         return [height, width, depth]
 
     def getSkeletonDim(self, dimName):
         if(dimName == "width"):
-            return self.skeleton_dims[0]
+            return self.skeletonDims[0]
         if(dimName == "height"):
-            return self.skeleton_dims[1]
+            return self.skeletonDims[1]
         if(dimName == "depth"):
-            return self.skeleton_dims[2]
+            return self.skeletonDims[2]
 
     def getSkeletonDims(self):
-        return self.skeleton_dims
+        return self.skeletonDims
     
     def calculateMotionDims(self):
-        min_x, min_y, min_z = float('inf'), float('inf'), float('inf')
-        max_x, max_y, max_z = float('-inf'), float('-inf'), float('-inf')
+        minX, minY, minZ = float('inf'), float('inf'), float('inf')
+        maxX, maxY, maxZ = float('-inf'), float('-inf'), float('-inf')
 
-        for frameIndex in range(self.motion.num_frames):
-            fk_data_root = self.getFKAtFrame(frameIndex)[self.skeleton.root.name][1]
+        for frameIndex in range(self.motion.numFrames):
+            fkDataRoot = self.getFKAtFrame(frameIndex)[self.skeleton.root.name][1]
             # Extract the position of each joint
-            x, y, z = fk_data_root
+            x, y, z = fkDataRoot
             
             # Update the min and max values for each axis (X, Y, Z)
-            min_x = min(min_x, x)
-            min_y = min(min_y, y)
-            min_z = min(min_z, z)
+            minX = min(minX, x)
+            minY = min(minY, y)
+            minZ = min(minZ, z)
 
-            max_x = max(max_x, x)
-            max_y = max(max_y, y)
-            max_z = max(max_z, z)
+            maxX = max(maxX, x)
+            maxY = max(maxY, y)
+            maxZ = max(maxZ, z)
 
-        return [min_x, max_x, min_y, max_y, min_z, max_z]
+        return [minX, maxX, minY, maxY, minZ, maxZ]
 
     def getMotionDims(self):
-        return self.motion_dims
+        return self.motionDims
     
-    def getChildFKAtFrame(self, joint, frame, parent_transform, fkFrame):
-        local_rot, local_pos = self.getJointLocalTransformAtFrame(joint.name, frame, "Matrix")
-        joint_global_rot = np.matmul(parent_transform[0], local_rot)
-        rotated_offset = np.matmul(parent_transform[0], joint.offset)
-        joint_global_pos = np.add(np.add(rotated_offset, local_pos), parent_transform[1])
-        fkFrame.update({joint.name: (joint_global_rot, joint_global_pos)})
+    def getChildFKAtFrame(self, joint, frame, parentTransform, fkFrame):
+        localRot, localPos = self.getJointLocalTransformAtFrame(joint.name, frame, "Matrix")
+        jointGlobalRot = np.matmul(parentTransform[0], localRot)
+        rotatedOffset = np.matmul(parentTransform[0], joint.offset)
+        jointGlobalPos = np.add(np.add(rotatedOffset, localPos), parentTransform[1])
+        fkFrame.update({joint.name: (jointGlobalRot, jointGlobalPos)})
         for child in joint.children:
-            self.getChildFKAtFrame(child, frame, (joint_global_rot, joint_global_pos), fkFrame)
+            self.getChildFKAtFrame(child, frame, (jointGlobalRot, jointGlobalPos), fkFrame)
 
     def getFKAtFrame(self, frame):
-        root_joint = self.skeleton.root
-        root_local_rot, root_local_pos = self.getJointLocalTransformAtFrame(root_joint.name, frame, "Matrix")
-        fkFrame = {root_joint.name: (root_local_rot, root_local_pos)}
-        for child in root_joint.children:
-            self.getChildFKAtFrame(child, frame, (root_local_rot, root_local_pos), fkFrame)
+        rootJoint = self.skeleton.root
+        rootLocalRot, rootLocalPos = self.getJointLocalTransformAtFrame(rootJoint.name, frame, "Matrix")
+        fkFrame = {rootJoint.name: (rootLocalRot, rootLocalPos)}
+        for child in rootJoint.children:
+            self.getChildFKAtFrame(child, frame, (rootLocalRot, rootLocalPos), fkFrame)
         return fkFrame
     
     def getFKAtFrameNormalized(self, frame, skeletonDim = "height"):
         fkFrame = self.getFKAtFrame(frame)
         normalizer = self.getSkeletonDim(skeletonDim)
-        for joint_name, (rot, pos) in fkFrame.items():
-            fkFrame[joint_name] = (rot, pos / normalizer)
+        for jointName, (rot, pos) in fkFrame.items():
+            fkFrame[jointName] = (rot, pos / normalizer)
         return fkFrame

@@ -4,7 +4,7 @@ from bvhDataTypes import BVHData, MotionData
 def getBvhSlice(bvhData, fromFrame, toFrame):
     if(fromFrame > toFrame):
         raise Exception("fromFrame must be less than toFrame")
-    slicedBvh = BVHData(bvhData.skeleton, MotionData(toFrame - fromFrame, bvhData.motion.frame_time, bvhData.motion.frames[fromFrame:toFrame]), bvhData.header)
+    slicedBvh = BVHData(bvhData.skeleton, MotionData(toFrame - fromFrame, bvhData.motion.frameTime, bvhData.motion.frames[fromFrame:toFrame]), bvhData.header)
     return slicedBvh
 
 def getBvhSlices(bvhData, fromFrames, toFrames):
@@ -22,7 +22,7 @@ def appendBvhSlices(baseBvh, bvhsToAppend):
     for bvh in bvhsToAppend:
         for frame in bvh.motion.frames:
             bvhData.motion.frames.append(frame)
-        bvhData.motion.num_frames += bvh.motion.num_frames
+        bvhData.motion.numFrames += bvh.motion.numFrames
     return bvhData
         
 def groupBvhSlices(bvhsToGroup):
@@ -32,5 +32,5 @@ def groupBvhSlices(bvhsToGroup):
     for bvh in bvhsToGroup[1:]:
         for frame in bvh.motion.frames:
             bvhData.motion.frames.append(frame)
-        bvhData.motion.num_frames += bvh.motion.num_frames
+        bvhData.motion.numFrames += bvh.motion.numFrames
     return bvhData

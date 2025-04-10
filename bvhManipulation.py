@@ -19,7 +19,6 @@ def centerSkeletonFeet(bvhData, leftFootName = "LeftFoot", rightFootName = "Righ
         raise Exception(f"Left foot name ({leftFootName}) not found in skeleton")
     if(rightFootName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Right foot name ({rightFootName}) not found in skeleton")
-
     avgFootHeight = (bvhDataCopy.getFKAtFrame(fkFrame)[leftFootName][1][1] + bvhDataCopy.getFKAtFrame(fkFrame)[rightFootName][1][1]) / 2
     avgRootHeight = bvhDataCopy.getFKAtFrame(fkFrame)[bvhDataCopy.skeleton.root.name][1][1]
     frame = bvhDataCopy.motion.getFrame(fkFrame)
@@ -48,9 +47,9 @@ def centerSkeletonAroundJoint(bvhData, jointName, fkFrame=0):
     if(jointName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Selected joint ({jointName}) not found in skeleton")
     
-    forward_frame = bvhDataCopy.getFKAtFrame(fkFrame)
+    forwardFrame = bvhDataCopy.getFKAtFrame(fkFrame)
     frame = bvhDataCopy.motion.getFrame(fkFrame)
-    jointOffsets = forward_frame[jointName][1] - forward_frame[bvhDataCopy.skeleton.root.name][1]
+    jointOffsets = forwardFrame[jointName][1] - forwardFrame[bvhDataCopy.skeleton.root.name][1]
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
     offsets = [-float(frame[rootIndex]) - jointOffsets[0], -float(frame[rootIndex + 1]) - jointOffsets[1], -float(frame[rootIndex + 2]) - jointOffsets[2]]
     for frame in bvhDataCopy.motion.frames:

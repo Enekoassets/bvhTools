@@ -8,8 +8,8 @@ def showBvhAnimation(bvhData):
     fig.canvas.manager.window.showMaximized()
 
     motionDims = bvhData.getMotionDims()
-    numFrames = bvhData.motion.num_frames
-    frameTime = bvhData.motion.frame_time
+    numFrames = bvhData.motion.numFrames
+    frameTime = bvhData.motion.frameTime
     isPaused = [False]
     currentFrame = [0]
     ax.set_xlim3d(motionDims[0], motionDims[1])
@@ -22,11 +22,11 @@ def showBvhAnimation(bvhData):
         fkFrame = bvhData.getFKAtFrame(currentFrame[0])
         points = [x[1] for x in fkFrame.values()]
 
-        x_vals = [p[0] for p in points]
-        y_vals = [p[1] for p in points]
-        z_vals = [p[2] for p in points]
+        xVals = [p[0] for p in points]
+        yVals = [p[1] for p in points]
+        zVals = [p[2] for p in points]
 
-        ax.scatter(x_vals, z_vals, y_vals, c="b", marker="o")
+        ax.scatter(xVals, zVals, yVals, c="b", marker="o")
         if(not isPaused[0]):
             currentFrame[0] = (currentFrame[0] + 1) % numFrames
             label.set_text(f"Frame: {currentFrame[0]}")
@@ -57,16 +57,16 @@ def showBvhAnimation(bvhData):
 
     def faster(event):
         global anim
-        new_interval = anim.event_source.interval * 0.5
+        newInterval = anim.event_source.interval * 0.5
         anim.event_source.stop()
-        anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=new_interval, repeat=True)
+        anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=newInterval, repeat=True)
         plt.draw()
 
     def slower(event):
         global anim
-        new_interval = anim.event_source.interval * 2
+        newInterval = anim.event_source.interval * 2
         anim.event_source.stop()
-        anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=new_interval, repeat=True)
+        anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=newInterval, repeat=True)
         plt.draw()
 
     def goToFrame(text):
