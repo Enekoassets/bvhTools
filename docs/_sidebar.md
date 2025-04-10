@@ -5,3 +5,4 @@
 - [🔪 BVH slicing](./functionalities/slicing/index.md)
 - [👀 BVH viewer](./functionalities/viewer/index.md)
 - [📋 Writing data to CSV files](./functionalities/csv/index.md)
+- [🧑‍🔬 Examples](./functionalities/examples/index.md)

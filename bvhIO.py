@@ -61,7 +61,7 @@ def readJoint(header, currentIndex, parent=None):
 
     return jointObject, currentIndex
 
-def readBvhFile(bvhPath):
+def readBvh(bvhPath):
     header = []
     motion = []
     numFrames = 0
@@ -89,7 +89,7 @@ def readBvhFile(bvhPath):
     bvhData = buildBvhStructure(header, motion, numFrames, frameTime)
     return bvhData
 
-def writeBvhFile(bvhData, bvhPath, decimals = 6):
+def writeBvh(bvhData, bvhPath, decimals = 6):
     with open(bvhPath, "w") as f:
         for line in bvhData.header:
             f.write(line)
