@@ -25,7 +25,7 @@ class Joint:
         return len(self.channels)
     
     def getPositionChannelsOrder(self):
-        positionChannels = self.channels[0:3] if("position" in self.channels[0] or "position" in self.channels[1] or "position" in self.channels[2]) else self.channels[4:6]
+        positionChannels = self.channels[0:3] if("position" in self.channels[0] or "position" in self.channels[1] or "position" in self.channels[2]) else self.channels[3:6]
         if(positionChannels[0] == "Xposition"):
             if(positionChannels[1] == "Yposition"):
                 return "XYZ"
@@ -43,7 +43,9 @@ class Joint:
                 return "ZYX"
 
     def getRotationChannelsOrder(self):
-        rotationChannels = self.channels[0:3] if("rotation" in self.channels[0] or "rotation" in self.channels[1] or "rotation" in self.channels[2]) else self.channels[4:6]
+        rotationChannels = self.channels[0:3] if("rotation" in self.channels[0] or "rotation" in self.channels[1] or "rotation" in self.channels[2]) else self.channels[3:6]
+        print(rotationChannels)
+        print(self.channels)
         if(rotationChannels[0] == "Xrotation"):
             if(rotationChannels[1] == "Yrotation"):
                 return "XYZ"

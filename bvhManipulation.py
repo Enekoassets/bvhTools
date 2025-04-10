@@ -67,15 +67,16 @@ def rotateSkeletonLocal(bvhData, angle, fkFrame=0):
     rotation = R.from_euler('XYZ', [angle[0], angle[1], angle[2]], degrees=True)
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
     originPoint = bvhDataCopy.getFKAtFrame(fkFrame)[bvhDataCopy.skeleton.root.name][1]
+    rootChannelOrder = bvhData.skeleton.root.getRotationChannelsOrder()
     for frameIndex, frame in enumerate(bvhDataCopy.motion.frames):
         fkFrameRootPos = bvhDataCopy.getFKAtFrame(frameIndex)[bvhDataCopy.skeleton.root.name][1]
         newPos = [x - y for x,y in zip(fkFrameRootPos, originPoint)]
         newPos = rotation.apply(newPos)
         newPos = [x + y for x,y in zip(newPos, originPoint)]
-        baseRotation = R.from_euler('ZYX', frame[rootIndex+3:rootIndex+6], degrees=True)
+        baseRotation = R.from_euler(rootChannelOrder, frame[rootIndex+3:rootIndex+6], degrees=True)
         newRotation = rotation * baseRotation
         frame[rootIndex:rootIndex+3] = newPos
-        frame[rootIndex+3:rootIndex+6] = newRotation.as_euler('ZYX', degrees=True)
+        frame[rootIndex+3:rootIndex+6] = newRotation.as_euler(rootChannelOrder, degrees=True)
     return bvhDataCopy
 
 def rotateSkeletonWorld(bvhData, angle):
@@ -84,13 +85,14 @@ def rotateSkeletonWorld(bvhData, angle):
     bvhDataCopy = copy.deepcopy(bvhData)
     rotation = R.from_euler('XYZ', [angle[0], angle[1], angle[2]], degrees=True)
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
+    rootChannelOrder = bvhData.skeleton.root.getRotationChannelsOrder()
     for frameIndex, frame in enumerate(bvhDataCopy.motion.frames):
         fkFrameRootPos = bvhDataCopy.getFKAtFrame(frameIndex)[bvhDataCopy.skeleton.root.name][1]
         newPos = rotation.apply(fkFrameRootPos)
-        baseRotation = R.from_euler('ZYX', frame[rootIndex+3:rootIndex+6], degrees=True)
+        baseRotation = R.from_euler(rootChannelOrder, frame[rootIndex+3:rootIndex+6], degrees=True)
         newRotation = rotation * baseRotation
         frame[rootIndex:rootIndex+3] = newPos
-        frame[rootIndex+3:rootIndex+6] = newRotation.as_euler('ZYX', degrees=True)
+        frame[rootIndex+3:rootIndex+6] = newRotation.as_euler(rootChannelOrder, degrees=True)
     return bvhDataCopy
 
 def moveSkeleton(bvhData, offsets):
