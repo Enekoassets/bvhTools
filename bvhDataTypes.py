@@ -1,5 +1,7 @@
 from scipy.spatial.transform import Rotation as R
 import numpy as np
+import copy
+import re
 
 class Joint:
     def __init__(self, name, offset, channels, parent=None):
@@ -68,6 +70,18 @@ class Joint:
             
     def getChannelIndex(self, channelName):
         return self.channels.index(channelName)
+    
+    def getRotationFromOffset(self, canonicalRotation):
+        offset = np.array(self.offset)
+        offsetNormalized = offset / np.linalg.norm(offset)
+        axis = np.cross(canonicalRotation, offsetNormalized)
+        angle = np.arccos(np.clip(np.dot(canonicalRotation, offsetNormalized), -1.0, 1.0))
+
+        if(np.linalg.norm(axis) < 1e-6):
+            return R.identity()
+        else:
+            axis = axis / np.linalg.norm(axis)
+            return R.from_rotvec(angle * axis)
 
 class Skeleton:
     def __init__(self, rootJoint):
@@ -243,3 +257,75 @@ class BVHData:
         for jointName, (rot, pos) in fkFrame.items():
             fkFrame[jointName] = (rot, pos / normalizer)
         return fkFrame
+    
+    def rewriteHeaderOffsets(self):
+        jointName = ""
+        for lineIndex, line in enumerate(self.header):
+            if("ROOT" in line or "JOINT" in line): 
+                jointName = line.split(" ")[-1]
+            if("End Site" in line):
+                jointName = jointName + "_EndSite"
+            
+            if("OFFSET" in line):
+                newValuesFormatted = ['{:+0.6f}'.format(v) if v < 0 else '{:0.6f}'.format(v) for v in self.skeleton.getJoint(jointName).offset]
+                line = re.sub(r'([-+]?\d*\.\d{6})\s+([-+]?\d*\.\d{6})\s+([-+]?\d*\.\d{6})$', ' '.join(newValuesFormatted), line)
+                self.header[lineIndex] = line
+
+    def getRestPoseJoint(self, joint, canonicalRotation, poseDict):
+        poseDict.update({joint.name: joint.getRotationFromOffset(canonicalRotation)})
+        for child in joint.children:
+            if("EndSite" not in child.name):
+                self.getRestPoseJoint(child, canonicalRotation, poseDict)
+
+    def getRestPose(self, canonicalAxis = "Y"):
+        if(canonicalAxis == "X"):
+            canonicalRotation = np.array([1, 0, 0])
+        elif(canonicalAxis == "Y"):
+            canonicalRotation = np.array([0, 1, 0])
+        elif(canonicalAxis == "Z"):
+            canonicalRotation = np.array([0, 0, 1])
+        else:
+            print("ERROR: Invalid canonical axis. The canonical axis has to be either X, Y or Z. Default: Y.")
+        root = self.skeleton.root
+        poseDict = dict()
+        self.getRestPoseJoint(root, canonicalRotation, poseDict)
+        return poseDict
+    
+    def applyOffsetToChildren(self, joint, rNew):
+        for child in joint.children:
+            length = np.linalg.norm(child.offset)
+            canonical = np.array([0, 1, 0])
+            child.offset = rNew.apply(canonical * length)
+            self.applyOffsetToChildren(child, rNew)
+
+    def applyRotationToItselfAndChildren(self, joint, oldPose, newPose, rNew):
+        for frame in self.motion.frames:
+            rotationChannels = [0, 1, 2] if("rotation" in joint.channels[0] or "rotation" in joint.channels[1] or "rotation" in joint.channels[2]) else [3, 4, 5]
+            oldRotation = R.from_euler(joint.getRotationChannelsOrder(), [frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[0]],
+                                                                    frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[1]],
+                                                                    frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[2]]], degrees=True)
+            rOld = oldPose[joint.name]
+            newRotation = (rNew * rOld.inv() * oldRotation).as_euler(joint.getRotationChannelsOrder(), degrees = True)
+            frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[0]] = newRotation[0]
+            frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[1]] = newRotation[1]
+            frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[2]] = newRotation[2]
+        for child in joint.children:
+            if(not "_EndSite" in child.name):
+                rNew = newPose[child.name]
+                self.applyRotationToItselfAndChildren(child, oldPose, newPose, rNew)
+
+    def setRestPose(self, poseDict):
+        oldPose = self.getRestPose()
+        newPose = copy.deepcopy(poseDict)
+        for poseName, pose in poseDict.items():
+            if(poseName in newPose.keys()):
+                newPose[poseName] = R.from_euler('XYZ', poseDict[poseName], degrees=True)
+
+        for joint in self.skeleton.joints.values():
+            if(joint.name in poseDict.keys()):
+                rNew = newPose[joint.name]
+                self.applyOffsetToChildren(joint, rNew)
+                newPose = self.getRestPose()
+                self.applyRotationToItselfAndChildren(joint, oldPose, newPose, rNew)
+
+        self.rewriteHeaderOffsets()
