@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
+
 def showBvhAnimation(bvhData):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')

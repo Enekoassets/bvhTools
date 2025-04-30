@@ -1,4 +1,4 @@
-from bvhDataTypes import Joint, Skeleton, MotionData, BVHData
+from bvhTools.bvhDataTypes import Joint, Skeleton, MotionData, BVHData
 
 def buildBvhStructure(header, motion, numFrames, frameTime):
     currentIndex = 0

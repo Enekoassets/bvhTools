@@ -1,5 +1,5 @@
 import copy
-from bvhDataTypes import BVHData, MotionData
+from bvhTools.bvhDataTypes import BVHData, MotionData
 
 def getBvhSlice(bvhData, fromFrame, toFrame):
     if(fromFrame > toFrame):
