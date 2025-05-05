@@ -1,10 +1,10 @@
 from bvhTools.bvhDataTypes import Joint, Skeleton, MotionData, BVHData
 
-def checkJointForPosition(joint, rootJoint, nonRootJointsWithPos=[]):
+def checkJointForPosition(joint, rootJoint, nonRootJointsWithPos):
     if joint != rootJoint and any(ch in joint.channels for ch in ["Xposition", "Yposition", "Zposition"]):
         nonRootJointsWithPos.append(joint.name)
     for child in joint.children:
-        checkJointForPosition(child)
+        checkJointForPosition(child, rootJoint, nonRootJointsWithPos)
 
 def buildBvhStructure(header, motion, numFrames, frameTime):
     currentIndex = 0
