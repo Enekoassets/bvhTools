@@ -1,7 +1,7 @@
 import copy
 from scipy.spatial.transform import Rotation as R
 
-def centerSekeletonRoot(bvhData, fkFrame=0):
+def centerSkeletonRoot(bvhData, fkFrame=0):
     bvhDataCopy = copy.deepcopy(bvhData)
     frame = bvhDataCopy.motion.getFrame(fkFrame)
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
