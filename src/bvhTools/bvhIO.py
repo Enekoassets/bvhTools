@@ -20,9 +20,8 @@ def buildBvhStructure(header, motion, numFrames, frameTime):
     nonRootJointsWithPos = []
     checkJointForPosition(skeleton.root, rootJoint, nonRootJointsWithPos)
     if len(nonRootJointsWithPos) > 0:
-        print(f"WARNING: The following joints have position channels, their positions will be ignored when calculating FK.")
-        for jointName in nonRootJointsWithPos:
-            print(f"\t{jointName}")
+        print(f"WARNING: The following joints have position channels: {', '.join(nonRootJointsWithPos)}. \nTheir positions will be ignored when calculating FK.\n")
+
     motionData = MotionData(numFrames=numFrames, frameTime=frameTime, frames = motion)
     bvh = BVHData(skeleton=skeleton, motion=motionData, header = header)
     return bvh

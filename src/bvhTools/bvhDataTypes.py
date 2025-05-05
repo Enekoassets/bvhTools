@@ -153,10 +153,11 @@ class BVHData:
             rotOrder = joint.getRotationChannelsOrder()
             angles = []
             for axis in rotOrder:
-                if(axis in joint.channels):
-                    idx = jointIndex + joint.channels.index(axis)
+                axisName = axis + "rotation"
+                if(axisName in joint.channels):
+                    idx = jointIndex + joint.channels.index(axisName)
                     angles.append(self.motion.getValueAtFrame(idx, frame))
-                r = R.from_euler('XYZ', angles, degrees=True)
+            r = R.from_euler(rotOrder, angles, degrees=True)
         if("Xposition" in joint.channels and "Yposition" in joint.channels and "Zposition" in joint.channels):
             Xpos = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Xposition"), frame)
             Ypos = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Yposition"), frame)

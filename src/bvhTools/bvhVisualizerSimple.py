@@ -11,6 +11,7 @@ def showBvhAnimation(bvhData):
 
     motionDims = bvhData.getMotionDims()
     maxDim = np.max(np.abs(motionDims))
+    quiverSize = 0.05 * maxDim
     numFrames = bvhData.motion.numFrames
     frameTime = bvhData.motion.frameTime
     isPaused = [False]
@@ -25,9 +26,9 @@ def showBvhAnimation(bvhData):
         
         fkFrame = bvhData.getFKAtFrame(currentFrame[0])
         points = [x[1] for x in fkFrame.values()]
-        ax.quiver(0, 0, 0, 50, 0, 0, color='r', label='X')  # Red = X
-        ax.quiver(0, 0, 0, 0, 50, 0, color='g', label='Y')  # Green = Y
-        ax.quiver(0, 0, 0, 0, 0, 50, color='b', label='Z')  # Blue = Z
+        ax.quiver(0, 0, 0, quiverSize, 0, 0, color='r', label='X')  # Red = X
+        ax.quiver(0, 0, 0, 0, quiverSize, 0, color='g', label='Y')  # Green = Y
+        ax.quiver(0, 0, 0, 0, 0, quiverSize, color='b', label='Z')  # Blue = Z
         ax.scatter([-p[0] for p in points], [p[2] for p in points], [p[1] for p in points], c="b", marker="o")
         if(not isPaused[0]):
             currentFrame[0] = (currentFrame[0] + 1) % numFrames
