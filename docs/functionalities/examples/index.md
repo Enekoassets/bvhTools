@@ -1,11 +1,11 @@
-## 🧑‍🔬 Examples <!-- {docsify-ignore} -->
+## 🧑‍🔬 Simple Examples <!-- {docsify-ignore} -->
 
 ### Example 1 (read -> rotate skeleton -> write)
 Load a BVH file, rotate it 90 degrees on the vertical axis, center it in the world and write the new animation
 
 ```python
-import bvhIO
-import bvhManipulation
+from bvhTools import bvhIO
+from bvhTools import bvhManipulation
 
 # Read the file
 bvh = bvhIO.readBvh("test1.bvh")
@@ -24,9 +24,9 @@ bvhIO.writeBvh(mergedBvh, "merged.bvh")
 Read two BVH files, put both standing in the center, merge them into a single animation and write the new animation
 
 ```python
-import bvhIO
-import bvhManipulation
-import bvhSlicer
+from bvhTools import bvhIO
+from bvhTools import bvhManipulation
+from bvhTools import bvhSlicer
 
 # Read the files
 bvh1 = bvhIO.readBvh("test1.bvh")
@@ -47,7 +47,7 @@ bvhIO.writeBvh(mergedBvh, "merged.bvh")
 Read a BVH file and print its header and the first 20 frames of motion
 
 ```python
-import bvhIO
+from bvhTools import bvhIO
 
 # Read the file
 bvh = bvhIO.readBvh("test1.bvh")

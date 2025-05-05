@@ -13,3 +13,10 @@
 
 # 📋 Documentation
 The documentation to use this library can be found [here](https://enekoassets.github.io/bvhTools/).
+
+# 🧰 Installation (WIP)
+To install and use **bvhTools**, just install it with pip.
+```python
+pip install bvhTools
+```
+The python package is still work in progress, so it may have some problems. In that case, you can open an issue on GitHub.

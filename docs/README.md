@@ -12,4 +12,8 @@ Curently, this library is a work in progress, but it already has many functional
 - Writing data to CSV files (world positions or  local positions + rotations)
 
 # 🧰 Installation (WIP)
-Currently, this library has to be cloned from github, and use the classes as they are. However, in the future it will be installed as a pip package.
+To install and use **bvhTools**, just install it with pip.
+```python
+pip install bvhTools
+```
+The python package is still work in progress, so it may have some problems. In that case, you can open an issue on GitHub.
