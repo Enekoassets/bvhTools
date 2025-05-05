@@ -142,19 +142,21 @@ class BVHData:
         self.skeleton = skeleton
         self.motion = motion
         self.skeletonDims = self.calculateSkeletonDims()
-        self.motionDims = self.calculateMotionDims()
+        self.motionDims = None
         
     def getJointLocalTransformAtFrame(self, jointName, frame, rotationMode = "Euler"):
         joint = self.skeleton.getJoint(jointName)
         jointIndex = self.skeleton.getJointIndex(jointName)
         r = None
-        Xrot, Yrot, Zrot = None, None, None
         Xpos, Ypos, Zpos = 0.0, 0.0, 0.0
         if("Xrotation" in joint.channels and "Yrotation" in joint.channels and "Zrotation" in joint.channels):
-            Xrot = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Xrotation"), frame)
-            Yrot = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Yrotation"), frame)
-            Zrot = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Zrotation"), frame)
-            r = R.from_euler('xyz', [Xrot, Yrot, Zrot], degrees=True)
+            rotOrder = joint.getRotationChannelsOrder()
+            angles = []
+            for axis in rotOrder:
+                if(axis in joint.channels):
+                    idx = jointIndex + joint.channels.index(axis)
+                    angles.append(self.motion.getValueAtFrame(idx, frame))
+                r = R.from_euler('XYZ', angles, degrees=True)
         if("Xposition" in joint.channels and "Yposition" in joint.channels and "Zposition" in joint.channels):
             Xpos = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Xposition"), frame)
             Ypos = self.motion.getValueAtFrame(jointIndex + joint.channels.index("Yposition"), frame)
@@ -162,14 +164,14 @@ class BVHData:
 
         if(r is None):
             if(rotationMode == "Euler"):
-                return R.identity().as_euler('xyz', degrees=True), [Xpos, Ypos, Zpos]
+                return R.identity().as_euler('XYZ', degrees=True), [Xpos, Ypos, Zpos]
             if(rotationMode == "Quaternion"):
                 return R.identity().as_quat(), [Xpos, Ypos, Zpos]
             if(rotationMode == "Matrix"):
                 return R.identity().as_matrix(), [Xpos, Ypos, Zpos]
         else:
             if(rotationMode == "Euler"):
-                return r.as_euler('xyz', degrees=True), [Xpos, Ypos, Zpos]
+                return r.as_euler('XYZ', degrees=True), [Xpos, Ypos, Zpos]
             if(rotationMode == "Quaternion"):
                 return r.as_quat(), [Xpos, Ypos, Zpos]
             if(rotationMode == "Matrix"):
@@ -232,13 +234,18 @@ class BVHData:
         return [minX, maxX, minY, maxY, minZ, maxZ]
 
     def getMotionDims(self):
+        if(self.motionDims is None):
+            self.motionDims = self.calculateMotionDims()
         return self.motionDims
     
     def getChildFKAtFrame(self, joint, frame, parentTransform, fkFrame):
         localRot, localPos = self.getJointLocalTransformAtFrame(joint.name, frame, "Matrix")
         jointGlobalRot = np.matmul(parentTransform[0], localRot)
         rotatedOffset = np.matmul(parentTransform[0], joint.offset)
-        jointGlobalPos = np.add(np.add(rotatedOffset, localPos), parentTransform[1])
+        if(any(ch in joint.channels for ch in ["Xposition", "Yposition", "Zposition"]) and joint == self.skeleton.root):
+            jointGlobalPos = np.add(np.add(rotatedOffset, localPos), parentTransform[1])
+        else:
+            jointGlobalPos = np.add(rotatedOffset, parentTransform[1])
         fkFrame.update({joint.name: (jointGlobalRot, jointGlobalPos)})
         for child in joint.children:
             self.getChildFKAtFrame(child, frame, (jointGlobalRot, jointGlobalPos), fkFrame)

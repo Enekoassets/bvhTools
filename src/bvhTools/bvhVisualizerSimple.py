@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
+import numpy as np
 
 def showBvhAnimation(bvhData):
     fig = plt.figure()
@@ -9,25 +10,25 @@ def showBvhAnimation(bvhData):
     fig.canvas.manager.window.showMaximized()
 
     motionDims = bvhData.getMotionDims()
+    maxDim = np.max(np.abs(motionDims))
     numFrames = bvhData.motion.numFrames
     frameTime = bvhData.motion.frameTime
     isPaused = [False]
     currentFrame = [0]
-    ax.set_xlim3d(motionDims[0], motionDims[1])
-    ax.set_ylim3d(motionDims[4], motionDims[5])
-    ax.set_zlim3d(-200, 200)
+    ax.set_xlim3d(-maxDim, maxDim)
+    ax.set_ylim3d(-maxDim, maxDim)
+    ax.set_zlim3d(-maxDim, maxDim)
+
     def update(_):            
         for coll in ax.collections:
             coll.remove()
         
         fkFrame = bvhData.getFKAtFrame(currentFrame[0])
         points = [x[1] for x in fkFrame.values()]
-
-        xVals = [p[0] for p in points]
-        yVals = [p[1] for p in points]
-        zVals = [p[2] for p in points]
-
-        ax.scatter(xVals, zVals, yVals, c="b", marker="o")
+        ax.quiver(0, 0, 0, 50, 0, 0, color='r', label='X')  # Red = X
+        ax.quiver(0, 0, 0, 0, 50, 0, color='g', label='Y')  # Green = Y
+        ax.quiver(0, 0, 0, 0, 0, 50, color='b', label='Z')  # Blue = Z
+        ax.scatter([-p[0] for p in points], [p[2] for p in points], [p[1] for p in points], c="b", marker="o")
         if(not isPaused[0]):
             currentFrame[0] = (currentFrame[0] + 1) % numFrames
             label.set_text(f"Frame: {currentFrame[0]}")

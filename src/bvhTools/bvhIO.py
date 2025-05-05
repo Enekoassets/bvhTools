@@ -1,5 +1,11 @@
 from bvhTools.bvhDataTypes import Joint, Skeleton, MotionData, BVHData
 
+def checkJointForPosition(joint, rootJoint, nonRootJointsWithPos=[]):
+    if joint != rootJoint and any(ch in joint.channels for ch in ["Xposition", "Yposition", "Zposition"]):
+        nonRootJointsWithPos.append(joint.name)
+    for child in joint.children:
+        checkJointForPosition(child)
+
 def buildBvhStructure(header, motion, numFrames, frameTime):
     currentIndex = 0
     rootJoint = None
@@ -10,6 +16,13 @@ def buildBvhStructure(header, motion, numFrames, frameTime):
             break
         currentIndex += 1
     skeleton = Skeleton(rootJoint)
+    # Check if any the BVH joints have position channels, and throw a warning if so
+    nonRootJointsWithPos = []
+    checkJointForPosition(skeleton.root, rootJoint, nonRootJointsWithPos)
+    if len(nonRootJointsWithPos) > 0:
+        print(f"WARNING: The following joints have position channels, their positions will be ignored when calculating FK.")
+        for jointName in nonRootJointsWithPos:
+            print(f"\t{jointName}")
     motionData = MotionData(numFrames=numFrames, frameTime=frameTime, frames = motion)
     bvh = BVHData(skeleton=skeleton, motion=motionData, header = header)
     return bvh
