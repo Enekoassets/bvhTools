@@ -17,5 +17,5 @@ for filename in os.listdir(folder_path):
         bvhFile = bvhIO.readBvh(filename)
         bvhFile = bvhManipulation.centerSkeletonFeet(bvhFile)
         bvhFile = bvhManipulation.rotateSkeletonLocal([0, 90, 0])
-        bvhIO.writeBvh(filename)
+        bvhIO.writeBvh(bvhFile, filename)
 ```
