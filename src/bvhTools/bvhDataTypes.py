@@ -170,6 +170,18 @@ class MotionData:
         jointIndex = self.skeleton.getJointIndex(jointName)
         return [x[jointIndex:jointIndex.getChannelCount()] for x in self.frames]
 
+    def printHead(self, headSize = 10, verbose = False):
+        print(f"\033[1;32mMOTION DATA\033[0m")
+        print(f"\033[1;32mNumber of frames:\033[0m {self.numFrames}")
+        print(f"\033[1;32mNumber of channels:\033[0m {len(self.frames[0])}")
+        print(f"\033[1;32mFrame time:\033[0m {self.frameTime}")
+        print(f"\033[1;32mMotion dataframe size:\033[0m {self.numFrames} x {len(self.frames[0])}")
+        print(f"\033[1;32mHEAD\033[0m")
+        for i in range(headSize):
+            if not verbose:
+                print(f"{self.frames[i][0:6]} ... {self.frames[i][-6:]}")
+            else:
+                print(f"{self.frames[i]}")
 class BVHData:
     def __init__(self, skeleton, motion, header):
         self.header = header
