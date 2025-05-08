@@ -4,8 +4,9 @@ import copy
 import re
 
 class Joint:
-    def __init__(self, name, offset, channels, parent=None):
+    def __init__(self, name, index, offset, channels, parent=None):
         self.name = name
+        self.index = index
         self.offset = offset 
         self.channels = channels
         self.children = []
@@ -88,6 +89,7 @@ class Skeleton:
         self.root = rootJoint
         self.joints = self.buildJointDict(rootJoint)
         self.jointIndexes = self.buildJointIndexDict(rootJoint, [0])
+        self.hierarchyIndexes = self.buildHierarchyIndexDict(rootJoint, [0])
 
     def buildJointDict(self, joint):
         jointDict = {joint.name: joint}
@@ -103,16 +105,48 @@ class Skeleton:
             jointIndexDict.update(self.buildJointIndexDict(child, currentChannelIndex))
         return jointIndexDict
 
+    def buildHierarchyIndexDict(self, joint, currentChannelIndex=[0]):
+        if(joint.parent != None):
+            jointHierarchyIndexDict = {joint.name: joint.parent.index}
+        else:
+            jointHierarchyIndexDict = {joint.name: -1}
+        for child in joint.children:
+            jointHierarchyIndexDict.update(self.buildHierarchyIndexDict(child, currentChannelIndex))
+        return jointHierarchyIndexDict
+
     def getJoint(self, jointName):
         return self.joints[jointName]
 
     def getJointIndex(self, jointName):
         return self.jointIndexes[jointName]
 
+    def getHierarchyIndexesList(self):
+        return list(self.hierarchyIndexes.values())
+
+    def printJoint(self, node, prefix='', verbose = False):
+        if node.parent == None:
+            if not verbose:
+                print(f"\033[1;32m{node.name} {node.index}\033[0m")
+            else:
+                print(f"\033[1;32m{node.name} {node.index}\033[0m: \033[1;34mChannels\033[0m: \033[36m{node.channels}\033[0m, \033[1;33mOffset\033[0m: \033[33m{node.offset}\033[0m")
+        children = node.children
+        for i, child in enumerate(children):
+            is_last = (i == len(children) - 1)
+            connector = '└── ' if is_last else '├── '
+            child_prefix = prefix + ('    ' if is_last else '│   ')
+            if not verbose:
+                print(f"\033[1;32m{prefix + connector + child.name} {child.index}\033[0m")
+            else:
+                print(f"\033[1;32m{prefix + connector + child.name} {child.index}\033[0m: \033[1;34mChannels\033[0m: \033[36m{child.channels}\033[0m, \033[1;33mOffset\033[0m: \033[33m{child.offset}\033[0m")
+            self.printJoint(child, child_prefix, verbose=verbose)
+
+    def printSkeleton(self, verbose = False):
+        self.printJoint(self.root, verbose=verbose)
+
 class MotionData:
     def __init__(self, numFrames, frameTime, frames):
         if(numFrames != len(frames)):
-            print("WARNING: Number of frames does not match number of frames in data. Taking the length of the motion data.")
+            print("\033[1;33mWARNING\033[0m: Number of frames does not match number of frames in data. Taking the length of the motion data.")
         self.numFrames = len(frames)
         self.frameTime = frameTime
         self.frames = frames

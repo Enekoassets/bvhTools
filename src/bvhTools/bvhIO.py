@@ -8,10 +8,11 @@ def checkJointForPosition(joint, rootJoint, nonRootJointsWithPos):
 
 def buildBvhStructure(header, motion, numFrames, frameTime):
     currentIndex = 0
+    jointIndex = 0
     rootJoint = None
     while(currentIndex < len(header)):
         if("ROOT" in header[currentIndex]):
-            rootJoint, newIndex = readJoint(header, currentIndex)
+            rootJoint, newIndex, jointIndex = readJoint(header, currentIndex, jointIndex)
             currentIndex = newIndex
             break
         currentIndex += 1
@@ -20,13 +21,13 @@ def buildBvhStructure(header, motion, numFrames, frameTime):
     nonRootJointsWithPos = []
     checkJointForPosition(skeleton.root, rootJoint, nonRootJointsWithPos)
     if len(nonRootJointsWithPos) > 0:
-        print(f"WARNING: The following joints have position channels: {', '.join(nonRootJointsWithPos)}. \nTheir positions will be ignored when calculating FK.\n")
+        print(f"\033[1;33mWARNING\033[0m: The following joints have position channels: {', '.join(nonRootJointsWithPos)}. \nTheir positions will be ignored when calculating FK.\n")
 
     motionData = MotionData(numFrames=numFrames, frameTime=frameTime, frames = motion)
     bvh = BVHData(skeleton=skeleton, motion=motionData, header = header)
     return bvh
 
-def readEndSite(header, currentIndex, parent):
+def readEndSite(header, currentIndex, jointIndex, parent):
     currentIndex += 1
     while(currentIndex < len(header)):
         if("{" in header[currentIndex]):
@@ -38,15 +39,15 @@ def readEndSite(header, currentIndex, parent):
             currentIndex += 1
             break
     
-    endSite = Joint(name = f"{parent.name}_EndSite", offset=offset, channels = [], parent=parent)
-
-    return endSite, currentIndex
+    endSite = Joint(name = f"{parent.name}_EndSite", index=jointIndex, offset=offset, channels = [], parent=parent)
+    jointIndex += 1
+    return endSite, currentIndex, jointIndex
         
-def readJoint(header, currentIndex, parent=None):
+def readJoint(header, currentIndex, jointIndex, parent=None):
     jointName = header[currentIndex].split(" ")[1]
     currentIndex += 1
-    jointObject = Joint(name = jointName, offset=None, channels=[], parent = parent)
-
+    jointObject = Joint(name = jointName, index=jointIndex, offset=None, channels=[], parent = parent)
+    jointIndex += 1
     while(currentIndex < len(header)):
         if("{" in header[currentIndex]):
             currentIndex += 1
@@ -60,18 +61,18 @@ def readJoint(header, currentIndex, parent=None):
             currentIndex += 1
         
         if("JOINT" in header[currentIndex]):
-            childJoint, currentIndex = readJoint(header, currentIndex, jointObject)
+            childJoint, currentIndex, jointIndex = readJoint(header, currentIndex, jointIndex, jointObject)
             jointObject.addChild(childJoint)
 
         if("End Site" in header[currentIndex]):
-            endSite, currentIndex = readEndSite(header, currentIndex, jointObject)
+            endSite, currentIndex, jointIndex = readEndSite(header, currentIndex, jointIndex, jointObject)
             jointObject.addChild(endSite)
         
         if("}" in header[currentIndex]):
             currentIndex += 1
             break
 
-    return jointObject, currentIndex
+    return jointObject, currentIndex, jointIndex
 
 def readBvh(bvhPath):
     header = []
