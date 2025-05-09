@@ -29,8 +29,8 @@ class Joint:
     
     def getPositionChannelsOrder(self):
         if("position" not in self.channels[0] and len(self.channels) <= 3):
-            print(f"joint {self.name} has no position channels")
-            return
+            print(f"\033[1;33mWARNING\033[0m: joint {self.name} has no position channels")
+            return ""
         positionChannels = self.channels[0:3] if("position" in self.channels[0] or "position" in self.channels[1] or "position" in self.channels[2]) else self.channels[3:6]
         if(positionChannels[0] == "Xposition"):
             if(positionChannels[1] == "Yposition"):
@@ -50,8 +50,8 @@ class Joint:
 
     def getRotationChannelsOrder(self):
         if("rotation" not in self.channels[0] and len(self.channels) <= 3):
-            print(f"joint {self.name} has no rotation channels")
-            return
+            print(f"\033[1;33mWARNING\033[0m: joint {self.name} has no rotation channels")
+            return ""
         rotationChannels = self.channels[0:3] if("rotation" in self.channels[0] or "rotation" in self.channels[1] or "rotation" in self.channels[2]) else self.channels[3:6]
         if(rotationChannels[0] == "Xrotation"):
             if(rotationChannels[1] == "Yrotation"):
@@ -70,6 +70,9 @@ class Joint:
                 return "ZYX"
             
     def getChannelIndex(self, channelName):
+        if(channelName not in self.channels):
+            print(f"\033[1;33mWARNING\033[0m: joint {self.name} does not have channel {channelName}")
+            return -1
         return self.channels.index(channelName)
     
     def getRotationFromOffset(self, canonicalRotation):
