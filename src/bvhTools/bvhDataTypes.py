@@ -162,6 +162,9 @@ class MotionData:
 
     def getValues(self, valueIndex):
         return [x[valueIndex] for x in self.frames]
+    
+    def getValuesSlice(self, valueIndex, startFrame, endFrame):
+        return [x[valueIndex] for x in self.frames[startFrame:endFrame]]
 
     def getValueAtFrame(self, valueIndex, frame):
         return self.frames[frame][valueIndex]
