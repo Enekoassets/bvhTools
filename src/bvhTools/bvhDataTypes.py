@@ -123,6 +123,9 @@ class Skeleton:
     def getJointIndex(self, jointName):
         return self.jointIndexes[jointName]
 
+    def getJointIndexesList(self):
+        return list(self.jointIndexes.values())
+    
     def getHierarchyIndexesList(self):
         return list(self.hierarchyIndexes.values())
 
