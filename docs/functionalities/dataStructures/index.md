@@ -35,7 +35,7 @@ The options for *dimName* are "height", "width" and "depth".
 ##### getFKAtFrame(frame)
 This method is also better defined in the [Forward Kinematics](../forwardKinematics/index.md) section. It returns a dictionary containing the world positions of all joints.
 ##### getFKAtFrameNormalized(frame)
-This method is, again, better defined in the [Forward Kinematics](../forwardKinematics/index.md) section. It returns a dictionary containing the world positions of all joints.
+This method is, again, better defined in the [Forward Kinematics](../forwardKinematics/index.md) section. It returns a dictionary containing the normalized world positions of all joints.
 
 ### The Skeleton object
 The skeleton object contains both the root joint for easy access and all the joint hierarchy, but also the very useful jointIndexes and hierarchyIndexes lists.
@@ -45,15 +45,15 @@ This dictionary contains, for each joint in the skeleton, where the joint values
 ```
 {'Hips': 0, 'LeftUpLeg': 6, 'LeftLeg': 9}
 ```
-This dictionary has been very useful in many situations in which I had to perform specific changes in the motion data. The end_site joints do not contain any channels, so this list will contain the sme index as their parent joint (the real joint that makes use of the rotation values).
+This dictionary has been very useful in many situations in which I had to perform specific changes in the motion data. The end_site joints do not contain any channels, so this list will contain the same index as their parent joint (the real joint that makes use of the rotation values).
 
-This dictionary can also be returned in an abbreviated list form, using the *getJointyIndexesList()* method.
+This dictionary can also be returned in an abbreviated list form, using the [*getJointIndexesList()*](#getjointindexeslist) method.
 #### The hierarchyIndexes dictionary
 The hierarchyIndexes dictionary contains, for each joint in the skeleton, the index of its parent bone. The root, as it will not have a parent, will have index -1. For the above example, supposing that both legs are connected to the hips, the hierarchyIndexes would look like this:
 ```
 {'Hips': -1, 'LeftUpLeg': 0, 'LeftLeg': 0}
 ```
-This dictionary can also be returned in an abbreviated list form, using the *getHierarchyIndexesList()* method.
+This dictionary can also be returned in an abbreviated list form, using the [*getHierarchyIndexesList()*](#gethierarchyindexeslist) method.
 
 Finally, there are many helper functions to easily retrieve information from the skeletons, such as getting a Joint object given its name, or the index of a specific joint.
 
@@ -64,13 +64,13 @@ Returns a [Joint](#the-joint-object) object given its name.
 Given a joints name, it returns the value in the joint indexes list corresponding to that joint.
 
 #### *getJointIndexesList()*
-Returns the jointIndexes dictionary in an abbreviated list format. Example:
+Returns the [jointIndexes dictionary](#the-jointindexes-dictionary) in an abbreviated list format. Example:
 ```
 [0, 6, 9, 12, 15, 18, 18, 21, 24, 27, 30, 30, 33, 36, 39, 42, 45, 45, 48, 51, 54, 57, 57, 60, 63, 66, 69]
 ```
 
 #### *getHierarchyIndexesList()*
-Returns the hierarchyIndexes dictionary in an abbreviated list format. Example:
+Returns the [hierarchyIndexes dictionary](#the-hierarchyindexes-dictionary) in an abbreviated list format. Example:
 
 ```
 [-1, 0, 1, 2, 3, 4, 0, 6, 7, 8, 9, 0, 11, 12, 13, 14, 15, 13, 17, 18, 19, 20, 13, 22, 23, 24, 25]
@@ -103,7 +103,7 @@ Returns the float value in column *valueIndex* and row *frame*.
 #### *getValueByJointName(jointName)*
 Returns all the rotation and position values of a joint for all frames. For example, if a bvh has 1000 frames and the root has 6 channels (Xpos, Ypos, Zpos, Xrot, Yrot, Zrot), *getValueByJointName("root")* will return a 6x1000 array of float values.
 
-#### printHead(headSize = 10, verbose = False)
+#### *printHead(headSize = 10, verbose = False)*
 Useful function that prints a summary of the motion frames information. Explained in more detail [here](#print-head-of-the-motion-data).
 
 ### The Joint object
@@ -122,17 +122,23 @@ There are also some helpful functions to perform many operations.
 #### *getChannelCount()*
 Returns the channel count of a specific joint (usually 6 for the root and 3 for any other joint).
 #### *getPositionChannelsOrder()*
-Returns a string containing the order of the joints position channels. Possible return outcomes: [XYZ, XZY, YXZ, YZX, ZXY, ZYX]. If the joint has no position channels, it will print a warning and return an empty string.
+Returns a string containing the order of the joints position channels. Possible return outcomes: [XYZ, XZY, YXZ, YZX, ZXY, ZYX]. 
+
+If the joint has no position channels, it will print a warning and return an empty string.
 
 #### *getRotationChannelsOrder()*
-Returns a string containing the order of the joints rotation channels. Possible return outcomes: [XYZ, XZY, YXZ, YZX, ZXY, ZYX]. If the joint has no position channels, it will print a warning and return an empty string.
+Returns a string containing the order of the joints rotation channels. Possible return outcomes: [XYZ, XZY, YXZ, YZX, ZXY, ZYX]. 
+
+If the joint has no position channels, it will print a warning and return an empty string.
 
 #### *getChannelIndex(channelName)*
-Given a channel name, (e.g. "positionY"), it returns the position of the channel in the channel list. If the channel does not exists, it prints a warning and returns -1.
+Given a channel name (e.g. "positionY"), it returns the position of the channel in the channel list. 
+
+If the channel does not exist, it prints a warning and returns -1.
 #### *getRotationFromOffset(canonicalRotation)*
 Given a canonical rotation (typically (0, 1, 0)), returns the relative rotation that needs to be performed to arrive to the normalized offset of the joint. In other words, it returns the offset in "rotation form".
 
-## Examples of printing bvhData information
+## 🧩 Examples of printing bvhData information
 Given a bvh file that is loaded in a **bvhData** object called 'bvh', these are some examples on how to access some attributes:
 ```python
 # Printing the name of the root joint
@@ -158,7 +164,7 @@ print(bvh.skeleton.getValuesByJointName("Foot.R"))
 ```
 
 ## Useful functions
-Apart from directly accessing, modifying and retrieving the data from a *bvhData* object, there are some really useful functions to very rapidly get or print information about a bvh file.
+Apart from directly accessing, modifying and retrieving the data from a **bvhData** object, there are some really useful functions to very rapidly get or print information about a bvh file.
 ### Print head of the motion data
 This prints the top 10 frames of the motion data in a summarized manner, as well as the dimensions of the motion data and frame time.
 ```python
@@ -213,7 +219,7 @@ Hips 0:
                             └── RightHand_EndSite 26
 ```
 ### Get skeleton hierarchy as dict
-This has been already discussed in the [skeleton](#the-skeleton-object) section. However, as it has been proven useful, it is repeated here.
+This has already been discussed in the [skeleton](#the-skeleton-object) section. However, as it has been proven useful, it is repeated here.
 
 You can retrieve a dictionary object that contains all the joint names as keys and their parents indexes as values. This is one example of the data that it returns:
 ```
@@ -223,4 +229,19 @@ You can retrieve a dictionary object that contains all the joint names as keys a
 This has also been discussed in the [skeleton](#the-skeleton-object) section. You can retrieve a simplified version of the skeleton hierarchy as a list. It has proven to be very useful for many situations. This is the same example as above:
 ```
 [-1, 0, 1, 2, 3, 4, 0, 6, 7, 8, 9, 0, 11, 12, 13, 14, 15, 13, 17, 18, 19, 20, 13, 22, 23, 24, 25]
+```
+
+### Get joint indexes as dict
+This has already been discussed in the [skeleton](#the-skeleton-object) section. However, as it has been proven useful, it is repeated here.
+
+You can retrieve a dictionary object that contains all the joint names as keys and their motion indexes as values. This is one example of the data that it returns:
+
+```
+{'Hips': -0, 'LeftUpLeg': 6, 'LeftLeg': 9, 'LeftFoot': 12, 'LeftToe': 15, 'LeftToe_EndSite': 18, 'RightUpLeg': 18, 'RightLeg': 21, 'RightFoot': 24, 'RightToe': 27, 'RightToe_EndSite': 30, 'Spine': 30, 'Spine1': 33, 'Spine2': 36, 'Neck': 39, 'Head': 42, 'Head_EndSite': 45, 'LeftShoulder': 45, 'LeftArm': 48, 'LeftForeArm': 51, 'LeftHand': 54, 'LeftHand_EndSite': 57, 'RightShoulder': 57, 'RightArm': 60, 'RightForeArm': 63, 'RightHand': 66, 'RightHand_EndSite': 69}
+```
+
+### Get simplified joint indexes as list
+This has also been discussed in the [skeleton](#the-skeleton-object) section. You can retrieve a simplified version of the motion indexes as a list. It has proven to be very useful for many situations. This is the same example as above:
+```
+[0, 6, 9, 12, 15, 18, 18, 21, 24, 27, 30, 30, 33, 36, 39, 42, 45, 45, 48, 51, 54, 57, 57, 60, 63, 66, 69]
 ```
