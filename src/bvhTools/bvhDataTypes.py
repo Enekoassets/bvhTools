@@ -366,26 +366,32 @@ class BVHData:
                                                                     frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[2]]], degrees=True)
             rOld = oldPose[joint.name]
             newRotation = (rNew * rOld.inv() * oldRotation).as_euler(joint.getRotationChannelsOrder(), degrees = True)
+            
+            print(f"Joint: {joint.name}")
+            print(f"Old Pose: {rOld.as_matrix()}")
+            print(f"New Pose: {rNew.as_matrix()}")
+            print(f"Old Rotation: {oldRotation.as_euler(joint.getRotationChannelsOrder(), degrees=True)}")
+            print(f"New Rotation: {newRotation}")
+        
             frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[0]] = newRotation[0]
             frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[1]] = newRotation[1]
             frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[2]] = newRotation[2]
-        for child in joint.children:
-            if(not "_EndSite" in child.name):
-                rNew = newPose[child.name]
-                self.applyRotationToItselfAndChildren(child, oldPose, newPose, rNew)
+        # for child in joint.children:
+        #     if(not "_EndSite" in child.name):
+        #         rNew = newPose[child.name]
+        #         self.applyRotationToItselfAndChildren(child, oldPose, newPose, rNew)
 
     def setRestPose(self, poseDict):
-        oldPose = self.getRestPose()
-        newPose = copy.deepcopy(poseDict)
+        oldPose = copy.deepcopy(self.getRestPose())
+        newPose = {}
         for poseName, pose in poseDict.items():
-            if(poseName in newPose.keys()):
-                newPose[poseName] = R.from_euler('XYZ', poseDict[poseName], degrees=True)
+            newPose[poseName] = R.from_euler('XYZ', poseDict[poseName], degrees=True)
 
         for joint in self.skeleton.joints.values():
             if(joint.name in poseDict.keys()):
                 rNew = newPose[joint.name]
                 self.applyOffsetToChildren(joint, rNew)
-                newPose = self.getRestPose()
+                # newPose = self.getRestPose()
                 self.applyRotationToItselfAndChildren(joint, oldPose, newPose, rNew)
 
         self.rewriteHeaderOffsets()
