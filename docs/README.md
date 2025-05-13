@@ -11,9 +11,10 @@ Curently, this library is a work in progress, but it already has many functional
 - BVH viewing using matplotlib
 - Writing data to CSV files (world positions or  local positions + rotations)
 
-# 🧰 Installation (WIP)
+# 🧰 Installation
 To install and use **bvhTools**, just install it with pip.
 ```python
 pip install bvhTools
 ```
-The python package is still work in progress, so it may have some problems. In that case, you can open an issue on GitHub.
+
+**Note**: This python package is still work in progress, so it may have some problems. In that case, you can open an issue on GitHub.
