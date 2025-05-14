@@ -3,7 +3,8 @@ import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
 import numpy as np
 
-def showBvhAnimation(bvhData):
+def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
+                     showLabels = False, pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
@@ -20,16 +21,38 @@ def showBvhAnimation(bvhData):
     ax.set_ylim3d(-maxDim, maxDim)
     ax.set_zlim3d(-maxDim, maxDim)
 
+    parentList = bvhData.skeleton.getHierarchyIndexesList()
+    labelList = list(bvhData.skeleton.joints.keys())
+
     def update(_):            
-        for coll in ax.collections:
+        for coll in ax.collections[:]:
             coll.remove()
+        for line in ax.lines[:]:
+            line.remove()
+        for text in ax.texts[:]:
+            text.remove()
         
         fkFrame = bvhData.getFKAtFrame(currentFrame[0])
         points = [x[1] for x in fkFrame.values()]
-        ax.quiver(0, 0, 0, quiverSize, 0, 0, color='r', label='X')  # Red = X
-        ax.quiver(0, 0, 0, 0, quiverSize, 0, color='g', label='Y')  # Green = Y
-        ax.quiver(0, 0, 0, 0, 0, quiverSize, color='b', label='Z')  # Blue = Z
-        ax.scatter([-p[0] for p in points], [p[2] for p in points], [p[1] for p in points], c="b", marker="o")
+        if(showQuivers):
+            ax.quiver(0, 0, 0, quiverSize, 0, 0, color='r', label='X')  # Red = X
+            ax.quiver(0, 0, 0, 0, quiverSize, 0, color='g', label='Y')  # Green = Y
+            ax.quiver(0, 0, 0, 0, 0, quiverSize, color='b', label='Z')  # Blue = Z
+
+        if(showPoints):
+            ax.scatter([-p[0] for p in points], [p[2] for p in points], [p[1] for p in points], c=pointColor, marker=pointMarker)
+        
+        if(showLabels):
+            for index, point in enumerate(points):
+                ax.text(-point[0], point[2], point[1], labelList[index])
+
+        if(showLines):
+            for index, parent in enumerate(parentList):
+                if(parent!=-1):
+                    ax.plot([-points[index][0], -points[parent][0]],
+                            [points[index][2], points[parent][2]],
+                            [points[index][1], points[parent][1]], color=lineColor, linewidth=lineWidth)
+
         if(not isPaused[0]):
             currentFrame[0] = (currentFrame[0] + 1) % numFrames
             label.set_text(f"Frame: {currentFrame[0]}")
