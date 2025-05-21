@@ -7,12 +7,12 @@ You can use *bvhToolsCli --help* to directly print usage information. Otherwise,
 
 ## 🪛 Available commands
 These are the commands that are available to use from the CLI:
-- 🎯 [Center](#-center)
-- 🔃 [Rotate](#-rotate)
-- 👀 [View](#-view)
-- 🔪 [Slice](#-slice)
-- 📋 [Csv](#-csv)
-  
+- 🎯 Center
+- 🔃 Rotate
+- 👀 View
+- 🔪 Slice
+- 📋 Csv
+
 ### 🎯 Center
 ```
 bvhToolsCli center --bvhFile {path} --outputFile {path} --centeringOption {feet, root, xz}
