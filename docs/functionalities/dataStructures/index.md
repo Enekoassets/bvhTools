@@ -1,4 +1,4 @@
-# 💻 Data structures and useful functions <!-- {docsify-ignore} -->
+# 📦 Data structures and useful functions <!-- {docsify-ignore} -->
 In this section you will find how to access the data from a **bvhData** object (i.e. the structure of a bvhData object). This way it provides a map on how to access different parts of the **bvhData** object. For example, how can I get the frame-time or the number of frames of a **bvhData** object?
 
 Moreover, there are many useful functions that help to easily get and print useful information about a **bvhData** object, such as the hierarchy or the top part or head of the motion array of the file and the dimensions of the array.

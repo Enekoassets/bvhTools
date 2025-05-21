@@ -1,6 +1,6 @@
 - [🏠 HOME](./)
 - [📖 Reading and ✏️ writing BVH files](./functionalities/readWrite/index.md)
-- [💻 Data structures and useful functions](./functionalities/dataStructures/index.md)
+- [📦 Data structures and useful functions](./functionalities/dataStructures/index.md)
 - [🤚 BVH manipulation](./functionalities/manipulation/index.md)
 - [🏃 Forward Kinematics](./functionalities/forwardKinematics/index.md)
 - [🔪 BVH slicing](./functionalities/slicing/index.md)

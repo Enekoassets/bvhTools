@@ -1,7 +1,7 @@
 ## 👀 BVH viewer<!-- {docsify-ignore} -->
 **Note: Currently, the viewer may give some importing errors.**
 
-**Note: Currently, the only available viewer uses matplotlib. Other rendering techniques may be available in the future**
+**Note: Currently, the only available viewer uses matplotlib. Other rendering techniques should be available in the future.**
 ### Matplotlib viewer
 A simple BVH viewer is implemented using matplotlib for quick viewing, using the *showBvhAnimation()* function from the *bvhVisualizerMpl* class. It contains a basic play/pause button and forward/back buttons to pass frames one by one. It also permits to jump to specific frames and to change the speed of time for faster/slower playback.
 

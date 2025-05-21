@@ -5,7 +5,7 @@ You can get a specific time slice of the bvh animation with the *getBvhSlice(bvh
 ```python
 from bvhTools.bvhSlicer import getBvhSlice
 
-cutBvh = getBvhSlice(bvhData, 100, 234) # get a new BVHData object, contianing just the frames from 100 to 234
+cutBvh = getBvhSlice(bvhData, 100, 234) # get a new BVHData object, containing just the frames from 100 to 234
 ```
 
 ## Getting many slices
