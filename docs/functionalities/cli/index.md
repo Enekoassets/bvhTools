@@ -5,13 +5,13 @@ To directly use **bvhTools** from your **CLI**, use the command *bvhToolsCli*.
 
 You can use *bvhToolsCli --help* to directly print usage information. Otherwise, the information on how to use **bvhToolsCli** is on this page of the docs.
 
-## Available commands
+## 🪛 Available commands
 These are the commands that are available to use from the CLI:
-- Center
-- Rotate
-- View
-- Slice
-- Csv
+- 🎯 [Center](#-center)
+- 🔃 [Rotate](#-rotate)
+- 👀 [View](#-view)
+- 🔪 [Slice](#-slice)
+- 📋 [Csv](#-csv)
   
 ### 🎯 Center
 ```
