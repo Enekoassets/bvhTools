@@ -29,7 +29,7 @@ bvhToolsCli rotate --bvhFile {path}, --outputFile {path} --rotationOption {local
 The rotate command **reads** an input BVH file, **rotates** it (in local or world space, given the X, Y and Z rotations) and **writes** the resulting BVH to a new output file. The local/world option can be specified with the *--rotationOption* argument.
 #### Example:
 ```
-python3 bvhToolsCli.py rotate --bvhFile input.bvh --outputFile output.bvh --rotationOption local --angles 45 0 -90
+bvhToolsCli rotate --bvhFile input.bvh --outputFile output.bvh --rotationOption local --angles 45 0 -90
 ```
 ### 👀 View
 ```
