@@ -4,14 +4,15 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bvhTools"
-version = "0.1.4"
+version = "1.0."
 authors = [
   { name="Eneko Assets", email="enekoassets@gmail.com" },
 ]
 dependencies = [
-    "scipy==1.14.0",
-    "numpy==1.26.4",
-    "matplotlib==3.9.0"
+    "scipy>=1.13.1",
+    "numpy>=1.26.4",
+    "matplotlib>=3.9.0",
+    "pillow>=10.1.0"
 ]
 description = "Easy to use package to work with BVH (BioVision Hierarchy) files."
 readme = "README.md"
