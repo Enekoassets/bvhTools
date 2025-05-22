@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
+from matplotlib import get_backend
 import numpy as np
 
 def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
@@ -8,7 +9,22 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    fig.canvas.manager.window.showMaximized()
+    manager = plt.get_current_fig_manager()
+    backend = get_backend()
+
+    # Try to maximize the window, but fail silently if it doesn't work
+    try:
+        if backend == 'TkAgg':
+            try:
+                manager.window.state('zoomed')  # Windows
+            except Exception:
+                manager.window.attributes('-zoomed', True)  # Linux (X11)
+        elif backend == 'QtAgg':
+            manager.window.showMaximized()
+        elif backend == 'WXAgg':
+            manager.frame.Maximize(True)
+    except Exception as e:
+        print(f"[Info] Could not maximize window: {e}")
 
     motionDims = bvhData.getMotionDims()
     maxDim = np.max(np.abs(motionDims))
