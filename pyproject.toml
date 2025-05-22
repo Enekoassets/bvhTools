@@ -24,6 +24,9 @@ classifiers = [
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
+[project.scripts]
+bvhToolsCli = "bvhTools.bvhToolsCli:main"
+
 [project.urls]
 Homepage = "https://github.com/Enekoassets/bvhTools"
 Issues = "https://github.com/Enekoassets/bvhTools/issues"

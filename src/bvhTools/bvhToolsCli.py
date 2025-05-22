@@ -1,6 +1,6 @@
 import argparse as ap
 import sys
-import bvhIO, bvhManipulation, bvhSlicer, bvhVisualizerMpl
+from bvhTools import bvhIO, bvhManipulation, bvhSlicer, bvhVisualizerMpl
 
 def main():
     parser = ap.ArgumentParser(description="bvhTools CLI interface")
