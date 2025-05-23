@@ -1,5 +1,7 @@
 # 🏃 Forward Kinematics <!-- {docsify-ignore} -->
-The forward kinematics module returns a **Dict** object containing the global positions and rotations of the skeleton in a specific frame. We can directly compute the forward kinematics calling the *getFKAtFrame(frameNumber)* function over any bvhData object.
+The forward kinematics module returns a **Dict** object containing the global positions and rotations of the skeleton in a specific frame.
+
+We can directly compute the forward kinematics calling the *getFKAtFrame(frameNumber)* function over any bvhData object.
 
 ```python
 # Supposing we loaded the bvh file into bvhData
@@ -35,7 +37,7 @@ print([value[1] for value in fk.values()]) # returns a list of all positions
 ```
 ## Getting normalized positions
 
-If you need normalized positions (the rotations remain the same) you should use *getFkAtFrameNormalized(frameNumber, dimension = "height"). The normalization dimension options are ["height", "width", "depth"].
+If you need normalized positions (the rotations remain the same) you should use *getFkAtFrameNormalized(frameNumber, dimension = "height")*. The normalization dimension options are ["height", "width", "depth"].
 
 ```python
 fk = bvhData.getFKAtFrameNormalized(42)

@@ -1,6 +1,8 @@
 # 🔪 BVH slicing <!-- {docsify-ignore} -->
+The **bvhSlicer** class contains functions to easily take parts of BVH animations or put together different animation data into one single **bvhData** object. All methods take a **bvhData** object as input and return another **bvhData** object or list, so no original objects are destroyed or changed.
+
 ## Getting an individual slice
-You can get a specific time slice of the bvh animation with the *getBvhSlice(bvhData, fromFrame, toFrame)* method. This method returns a copy of the original bvhData object, but with modified motion.
+With the *getBvhSlice(bvhData, fromFrame, toFrame)* method, you can get a specific time slice of the bvh animation. This method returns a copy of the original bvhData object, but with modified motion.
 
 ```python
 from bvhTools.bvhSlicer import getBvhSlice
@@ -9,7 +11,7 @@ cutBvh = getBvhSlice(bvhData, 100, 234) # get a new BVHData object, containing j
 ```
 
 ## Getting many slices
-You can also get many time slices of the bvh animation, using the *getBvhSlices(bvhData, fromFrames, toFrames)* method. This returns a list of bvhData objects, each one is a copy of the original bvhData, but modified motion.
+With the *getBvhSlices(bvhData, fromFrames, toFrames)* method, you can get many time slices of the bvh animation. The method returns a list of bvhData objects, each one is a copy of the original bvhData, but with modified motion.
 
 ```python
 from bvhTools.bvhSlicer import getBvhSlices
@@ -20,7 +22,7 @@ cutBvhs = getBvhSlices(bvhData, fromFrames, toFrames) # gets 3 BVHData objects: 
 ```
 
 ## Grouping multiple slices
-You can group multiple BVH files with different motions together, using the *groupBvhSlices(bvhDataList)* to get one BVH with all the motion data. Take into account that all the headers should be the same as this method just appends the motion parts together.
+With the *groupBvhSlices(bvhDataList)* method, you can group multiple BVH files with different motions together, to get one BVH with all the motion data. Take into account that all the headers should be the same as this method just appends the motion parts together.
 
 ```python
 from bvhTools.bvhSlicer import getBvhSlices, groupBvhSlices
@@ -32,7 +34,7 @@ finalBvh = groupBvhSlices(cutBvhs) # all the BVHs will be grouped into one BVHDa
 ```
 
 ## Appending motion slices to one bvhData object
-You can append multiple BVH files with different motions to a base BVH file, using the *appendBvhSlices(baseBvh, bvhsToAppend)* method.
+With the *appendBvhSlices(baseBvh, bvhsToAppend)* method, you can append multiple BVH files with different motions to a base BVH file.
 
 ```python
 from bvhTools.bvhSlicer import getBvhSlices, appendBvhSlices
