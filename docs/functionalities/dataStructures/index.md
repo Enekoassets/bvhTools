@@ -122,7 +122,7 @@ Joint
     └── parent (Joint)
 ```
 
-**Note:** motionIndex refers to the position where the joint values start in the motion part of the BVH file. For more information refer to the [jointIndexes dictionary](#get-joint-indexes-as-dict) list in the Skeleton object.
+**Note:** motionIndex refers to the position where the joint values start in the motion part of the BVH file. For more information refer to the [jointIndexes dictionary](#the-jointindexes-dictionary) list in the Skeleton object.
 
 #### Functions
 ##### *getChannelCount()*
