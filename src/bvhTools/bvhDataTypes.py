@@ -7,6 +7,7 @@ class Joint:
     def __init__(self, name, index, offset, channels, parent=None):
         self.name = name
         self.index = index
+        self.motionIndex = -1
         self.offset = offset 
         self.channels = channels
         self.children = []
@@ -102,6 +103,7 @@ class Skeleton:
 
     def buildJointIndexDict(self, joint, currentChannelIndex=[0]):
         jointIndexDict = {joint.name: currentChannelIndex[0]}
+        joint.motionIndex = currentChannelIndex[0]
         currentChannelIndex[0] += joint.getChannelCount()
 
         for child in joint.children:
@@ -126,6 +128,9 @@ class Skeleton:
     def getJointIndexesList(self):
         return list(self.jointIndexes.values())
     
+    def getJointHierarchyIndex(self, jointName):
+        return self.hierarchyIndexes[jointName]
+
     def getHierarchyIndexesList(self):
         return list(self.hierarchyIndexes.values())
 
@@ -175,9 +180,9 @@ class MotionData:
     def getValueAtFrame(self, valueIndex, frame):
         return self.frames[frame][valueIndex]
     
-    def getValuesByJointName(self, jointName):
-        jointIndex = self.skeleton.getJointIndex(jointName)
-        return [x[jointIndex:jointIndex.getChannelCount()] for x in self.frames]
+    def getValuesByJoint(self, joint):
+        jointIndex = joint.motionIndex
+        return [x[jointIndex:jointIndex + joint.getChannelCount()] for x in self.frames]
 
     def printHead(self, headSize = 10, verbose = False):
         print(f"\033[1;32mMOTION DATA\033[0m")
