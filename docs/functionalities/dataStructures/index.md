@@ -103,8 +103,8 @@ Returns a list of values specified from *startValue* to *endValue* (i.e. a verti
 ##### *getValueAtFrame(valueIndex, frame)*
 Returns the float value in column *valueIndex* and row *frame*.
 
-##### *getValueByJointName(jointName)*
-Returns all the rotation and position values of a joint for all frames. For example, if a bvh has 1000 frames and the root has 6 channels (Xpos, Ypos, Zpos, Xrot, Yrot, Zrot), *getValueByJointName("root")* will return a 6x1000 array of float values.
+##### *getValueByJoint(joint)*
+Returns all the rotation and position values of a joint for all frames. For example, if a bvh has 1000 frames and the root has 6 channels (Xpos, Ypos, Zpos, Xrot, Yrot, Zrot), *getValueByJoint(bvh.skeleton.getJoint("root"))* will return a 6x1000 array of float values.
 
 ##### *printHead(headSize = 10, verbose = False)*
 Useful function that prints a summary of the motion frames information. Explained in more detail [here](#print-head-of-the-motion-data).
@@ -115,11 +115,14 @@ The Joint object contains the following attributes with their respective data ty
 Joint 
     ├── name (string)
     ├── index (int)
+    ├── motionIndex (int)
     ├── offset (float[])
     ├── channels (string[])
     ├── children (Joint[])
     └── parent (Joint)
 ```
+
+**Note:** motionIndex refers to the position where the joint values start in the motion part of the BVH file. For more information refer to the [jointIndexes dictionary](#get-joint-indexes-as-dict) list in the Skeleton object.
 
 #### Functions
 ##### *getChannelCount()*
