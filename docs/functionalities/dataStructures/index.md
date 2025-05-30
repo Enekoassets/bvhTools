@@ -32,12 +32,12 @@ Returns one specific dimension of the skeleton in frame 1 (as usually in motion 
 
 The options for *dimName* are "height", "width" and "depth".
 
-**Note**: If it would be necessary to calculate the skeleton dimensions based on a different frame, the [Forward Kinematics](../forwardKinematics/index.md) module permits to calculate the world positions of all joints in any given frame.
+**Note**: If it would be necessary to calculate the skeleton dimensions based on a different frame, the [Forward Kinematics](../forwardKinematics/index) module permits to calculate the world positions of all joints in any given frame.
 
 ##### getFKAtFrame(frame)
-This method is better defined in the [Forward Kinematics](../forwardKinematics/index.md) section. It returns a dictionary containing the world positions of all joints.
+This method is better defined in the [Forward Kinematics](../forwardKinematics/index) section. It returns a dictionary containing the world positions of all joints.
 ##### getFKAtFrameNormalized(frame)
-This method is better defined in the [Forward Kinematics](../forwardKinematics/index.md) section. It returns a dictionary containing the normalized world positions of all joints.
+This method is better defined in the [Forward Kinematics](../forwardKinematics/index) section. It returns a dictionary containing the normalized world positions of all joints.
 
 ### The Skeleton object
 The skeleton object contains both the root joint for easy access and all the joint hierarchy, but also the very useful *jointIndexes* and *hierarchyIndexes* dictionaries.
