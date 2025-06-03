@@ -101,13 +101,19 @@ class Skeleton:
             jointDict.update(self.buildJointDict(child))
         return jointDict
 
-    def buildJointIndexDict(self, joint, currentChannelIndex=[0]):
+    def buildJointIndexDict(self, joint, currentChannelIndex=None, jointIndex = None):
+        if currentChannelIndex is None:
+            currentChannelIndex = [0]
+        if jointIndex is None:
+            jointIndex = [0]
+
         jointIndexDict = {joint.name: currentChannelIndex[0]}
         joint.motionIndex = currentChannelIndex[0]
+        joint.index = jointIndex[0]
         currentChannelIndex[0] += joint.getChannelCount()
-
+        jointIndex[0] += 1
         for child in joint.children:
-            jointIndexDict.update(self.buildJointIndexDict(child, currentChannelIndex))
+            jointIndexDict.update(self.buildJointIndexDict(child, currentChannelIndex, jointIndex))
         return jointIndexDict
 
     def buildHierarchyIndexDict(self, joint, currentChannelIndex=[0]):
@@ -197,8 +203,7 @@ class MotionData:
             else:
                 print(f"{self.frames[i]}")
 class BVHData:
-    def __init__(self, skeleton, motion, header):
-        self.header = header
+    def __init__(self, skeleton, motion):
         self.skeleton = skeleton
         self.motion = motion
         self.skeletonDims = self.calculateSkeletonDims()
@@ -325,6 +330,41 @@ class BVHData:
         for jointName, (rot, pos) in fkFrame.items():
             fkFrame[jointName] = (rot, pos / normalizer)
         return fkFrame
+    
+    def writeJoint(self, joint, indent = 0):
+        lines = []
+        tab = '\t' * indent
+
+        # An end site has to be written if and only if, the parent of the deleted joint has no children anymore
+        # If we delete a joint, it's parent may still have children, so we don't need to write an end site
+        if(joint.parent):
+            if(len(joint.parent.children) == 0):
+                lines.append(f"{tab}End Site")
+                lines.append(f"{tab}{{")
+                lines.append(f"\t{tab}OFFSET {' '.join(f'{x:.6f}' for x in joint.offset)}")
+                lines.append(f"{tab}}}")
+                return lines
+
+        prefix = "ROOT" if indent == 0 else "JOINT"
+        lines.append(f"{tab}{prefix} {joint.name}")
+        lines.append(f"{tab}{{")
+        lines.append(f"\t{tab}OFFSET {' '.join(f'{x:.6f}' for x in joint.offset)}")
+        lines.append(f"\t{tab}CHANNELS {len(joint.channels)} {' '.join(map(str, joint.channels))}")
+
+        if(len(joint.children) > 0):
+            for child in joint.children:
+                lines.extend(self.writeJoint(child, indent + 1))
+
+        lines.append(f"{tab}}}")
+        return lines
+
+    def getHeader(self):
+        header = ["HIERARCHY"]
+        header.extend(self.writeJoint(self.skeleton.root, 0))
+        header.append("MOTION")
+        header.append(f"Frames: {self.motion.numFrames}")
+        header.append(f"Frame Time: {self.motion.frameTime}")
+        return header
     
     def rewriteHeaderOffsets(self):
         jointName = ""

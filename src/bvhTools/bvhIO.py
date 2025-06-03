@@ -24,7 +24,7 @@ def buildBvhStructure(header, motion, numFrames, frameTime):
         print(f"\033[1;33mWARNING\033[0m: The following joints have position channels: {', '.join(nonRootJointsWithPos)}. \nTheir positions will be ignored when calculating FK.\n")
 
     motionData = MotionData(numFrames=numFrames, frameTime=frameTime, frames = motion)
-    bvh = BVHData(skeleton=skeleton, motion=motionData, header = header)
+    bvh = BVHData(skeleton=skeleton, motion=motionData)
     return bvh
 
 def readEndSite(header, currentIndex, jointIndex, parent):
@@ -104,12 +104,9 @@ def readBvh(bvhPath):
 
 def writeBvh(bvhData, bvhPath, decimals = 6):
     with open(bvhPath, "w") as f:
-        for line in bvhData.header:
+        for line in bvhData.getHeader():
             f.write(line)
             f.write("\n")
-        f.write("MOTION\n")
-        f.write("Frames: " + str(bvhData.motion.numFrames) + "\n")
-        f.write("Frame Time: " + str(bvhData.motion.frameTime) + "\n")
         for frame in bvhData.motion.frames:
             strings = [f"{x:.6f}" for x in frame]
             for string in strings:
