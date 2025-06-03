@@ -4,12 +4,11 @@ In this section you will find how to access the data from a **bvhData** object (
 Moreover, there are many useful functions that help to easily get and print useful information about a **bvhData** object, such as the hierarchy or the top part or head of the motion array of the file and the dimensions of the array.
 
 ## 🗂️ Data structures
-When you load a BVH file, you will create a [bvhData](#the-bvhdata-object) object, which contains a header, a [Skeleton](#the-skeleton-object) object, a [MotionData](#the-motiondata-object) object and skeleton and motion dimensions. The skeleton is composed of [Joint](#the-joint-object) objects.
+When you load a BVH file, you will create a [bvhData](#the-bvhdata-object) object, which contains a [Skeleton](#the-skeleton-object) object, a [MotionData](#the-motiondata-object) object and skeleton and motion dimensions. The skeleton is composed of [Joint](#the-joint-object) objects.
 ### The bvhData object
 The **bvhData** object is a hierarchical object with the following components and their respective data types:
 ``` 
 bvhData 
-    ├── header (string)
     ├── skeleton (Skeleton)
     |   |
     |   ├── root (Joint)
@@ -27,6 +26,13 @@ bvhData
 All these attributes can be directly accessed, and there are also some helper functions for ease of access to typical attributes.
 
 #### Functions
+##### getHeader()
+Returns the header of the BVH file. It uses the internal **bvhData** structure (skeleton, joints and their attributes like offsets) to write a header based on those.
+
+In other words, the **bvhData** object does **NOT** save the original header, it uses the internal structure to create a new one on demand.
+
+The generated header includes the MOTION, Frames and Frame Time lines, and their values are directly taken from the **bvhData** object itself.
+
 ##### getSkeletonDim(dimName)
 Returns one specific dimension of the skeleton in frame 1 (as usually in motion capture scenarios, the actor stands on a t pose, frame 0 can be the most useful frame to calculate the skeleton dimensions).
 
