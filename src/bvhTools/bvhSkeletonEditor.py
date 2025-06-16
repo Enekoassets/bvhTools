@@ -1,4 +1,5 @@
 import copy
+import numpy as np
 
 def addChildrenToList(joint, jointsToDelete):
     jointsToDelete.append(joint.name)
@@ -44,3 +45,18 @@ def removeLimb(bvhData, jointName):
     newSkeleton.hierarchyIndexes = newSkeleton.buildHierarchyIndexDict(newSkeleton.root, [0])
     return bvhDataCopy
     
+def scaleSkeleton(bvhData, scaleFactor):
+    bvhDataCopy = copy.deepcopy(bvhData)
+    if(scaleFactor<=0.0):
+        print(f"\033[1;33mWARNING\033[0m: The scale factor has to be greater than 0. Returning bvh unchanged.")
+        return bvhDataCopy
+    for bone in bvhDataCopy.skeleton.joints.values():
+        bone.offset = np.multiply(bone.offset, scaleFactor)
+    rootJoint = bvhDataCopy.skeleton.root
+    if any(rootJoint.getChannelIndex(axis) == 0 for axis in ["Xposition", "Yposition", "Zposition"]):
+        positionSlice = slice(0,3)
+    else:
+        positionSlice = slice(3,6)
+    for frame in bvhDataCopy.motion.frames:
+        frame[positionSlice] = np.multiply(frame[positionSlice], scaleFactor)
+    return bvhDataCopy
