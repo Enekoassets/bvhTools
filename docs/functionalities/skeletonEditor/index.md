@@ -14,3 +14,15 @@ Imagine that for the example above, the old **bvhData** object had a hierarchy i
 Then, for this example, the bvhData skeleton would contain 3 less bones after removing the **leftLeg** and the bvhData motion would contain 9 less rotation columns (3 rotations * 3 bones).
 
 **Note:** After using this method, the internal hierarchy of the bones is going to be automatically updated. The **index** and **motionIndex** values of all **Joint** objects will be updated. The **jointIndexes** and **hierarchyIndexes** dictionaries of the **Skeleton** object will also be automatically updated.
+
+## 📏 Scaling the skeleton
+
+With the *scaleSkeleton(bvhData, scaleFactor)* function you can scale the entire skeleton by a factor (the factor has to be greater than 0). Internally, this method will scale the offset values of each bone, as well as the position coordinates of the root bone in all the motion frames.
+
+The method will return a new **bvhData** object, with the changed offset and motion values, therefore containing a scaled version of the BVH.
+
+```python
+from bvhTools.bvhSkeletonEditor import scaleSkeleton
+
+bvhDataScaled = scaleSkeleton(bvhData, 0.8)
+```
