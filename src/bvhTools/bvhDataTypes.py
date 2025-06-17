@@ -349,7 +349,8 @@ class BVHData:
         lines.append(f"{tab}{prefix} {joint.name}")
         lines.append(f"{tab}{{")
         lines.append(f"\t{tab}OFFSET {' '.join(f'{x:.6f}' for x in joint.offset)}")
-        lines.append(f"\t{tab}CHANNELS {len(joint.channels)} {' '.join(map(str, joint.channels))}")
+        if(len(joint.channels) > 0):
+            lines.append(f"\t{tab}CHANNELS {len(joint.channels)} {' '.join(map(str, joint.channels))}")
 
         if(len(joint.children) > 0):
             for child in joint.children:
