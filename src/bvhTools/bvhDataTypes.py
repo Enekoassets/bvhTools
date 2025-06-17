@@ -337,8 +337,8 @@ class BVHData:
 
         # An end site has to be written if and only if, the parent of the deleted joint has no children anymore
         # If we delete a joint, it's parent may still have children, so we don't need to write an end site
-        if(joint.parent):
-            if(len(joint.parent.children) == 0):
+        if(joint.parent or "_EndSite" in joint.name):
+            if(len(joint.parent.children) == 0 or "_EndSite" in joint.name):
                 lines.append(f"{tab}End Site")
                 lines.append(f"{tab}{{")
                 lines.append(f"\t{tab}OFFSET {' '.join(f'{x:.6f}' for x in joint.offset)}")
