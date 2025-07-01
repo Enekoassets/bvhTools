@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('TkAgg')
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
@@ -8,7 +11,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
                      showLabels = False, pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-
+    
     manager = plt.get_current_fig_manager()
     backend = get_backend()
 
