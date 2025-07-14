@@ -8,7 +8,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
                      showLabels = False, pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-
+    
     manager = plt.get_current_fig_manager()
     backend = get_backend()
 
@@ -118,33 +118,53 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
             currentFrame[0] = numFrames - 1
         label.set_text(f"Frame: {currentFrame[0]}")
 
+    def decorateUIElem(ax):
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+            spine.set_visible(False)
+            spine.set_visible(False)
+            spine.set_visible(False)
+
     global anim
     anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=frameTime * 1000, repeat = True)
 
     axBtnPlayPause = plt.axes([0.45, 0.05, 0.1, 0.05])
     btnPlayPause = Button(axBtnPlayPause, "Pause")
+    btnPlayPause.label.set_fontsize(12)
     btnPlayPause.on_clicked(togglePause)
-
+    decorateUIElem(axBtnPlayPause)
+    
     axBtnBack = plt.axes([0.34, 0.05, 0.1, 0.05])
     btnBack = Button(axBtnBack, "Back")
+    btnBack.label.set_fontsize(12)
     btnBack.on_clicked(frameBack)
+    decorateUIElem(axBtnBack)
 
     axBtnForward = plt.axes([0.56, 0.05, 0.1, 0.05])
     btnForward = Button(axBtnForward, "Forward")
+    btnForward.label.set_fontsize(12)
     btnForward.on_clicked(frameForward)
+    decorateUIElem(axBtnForward)
 
     axBtnFaster = plt.axes([0.395, 0.9, 0.1, 0.05])
     btnFaster = Button(axBtnFaster, "Faster")
+    btnFaster.label.set_fontsize(12)
     btnFaster.on_clicked(faster)
+    decorateUIElem(axBtnFaster)
 
     axBtnSlower = plt.axes([0.505, 0.9, 0.1, 0.05])
     btnSlower = Button(axBtnSlower, "Slower")
+    btnSlower.label.set_fontsize(12)
     btnSlower.on_clicked(slower)
+    decorateUIElem(axBtnSlower)
     
     ax_textbox = plt.axes([0.8, 0.9, 0.1, 0.05])  # [x, y, width, height]
     textbox = TextBox(ax_textbox, "Go to frame: ")
+    textbox.label.set_fontsize(12)
     textbox.on_submit(goToFrame)
+    decorateUIElem(ax_textbox)
 
     label = fig.text(0.475, 0.85, "Frame: 0", fontsize=12)
-
+    totalFramesLabel = fig.text(0.1, 0.9, f"Total frames: {numFrames}", fontsize=12)
+    frameTimeLabel = fig.text(0.1, 0.85, f"Frame time: {frameTime:.3f}", fontsize=12)
     plt.show()
