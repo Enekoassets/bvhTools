@@ -2,10 +2,14 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
 from matplotlib import get_backend
+import bvhMetrics
 import numpy as np
 
 def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
-                     showLabels = False, pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
+                    showLabels = False, showFootContacts = False, footContactMethod = "distance",
+                    footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1,
+                    showSpeeds = False, heightThreshold = 0.1, referenceFrame = 0,
+                    pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     
@@ -40,6 +44,17 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
     parentList = bvhData.skeleton.getHierarchyIndexesList()
     labelList = list(bvhData.skeleton.joints.keys())
 
+    # precalculate foot contacts
+    footContacts = []
+    if showFootContacts:
+        if(footContactMethod == "distance"):
+            footContacts = bvhMetrics.getFootContactsHeightMethod(bvhData, footNames=footNames, threshold=heightThreshold, referenceFrame=referenceFrame)
+        if(footContactMethod == "speed"):
+            footContacts = bvhMetrics.getFootContactsSpeedMethod(bvhData, footNames=footNames, threshold=speedThreshold, timeDiff=timeDiff)
+        if(footContactMethod == "both"):
+            footContacts = np.logical_and(bvhMetrics.getFootContactsHeightMethod(bvhData, footNames=footNames, threshold=heightThreshold, referenceFrame=referenceFrame),
+                bvhMetrics.getFootContactsSpeedMethod(bvhData, footNames=footNames, threshold=speedThreshold, timeDiff=timeDiff))
+            
     def update(_):            
         for coll in ax.collections[:]:
             coll.remove()
@@ -57,7 +72,18 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
 
         if(showPoints):
             ax.scatter([-p[0] for p in points], [p[2] for p in points], [p[1] for p in points], c=pointColor, marker=pointMarker)
-        
+            if(showFootContacts):
+                for footName in footNames:
+                    indexOfFootName = bvhData.skeleton.getJoint(footName).index
+                    print(indexOfFootName)
+                    print(len(footContacts))
+                    print(len(footContacts[0]))
+                    if(footContacts[indexOfFootName][currentFrame[0]]):
+                        contactColor = "#e17272"
+                    else:
+                        contactColor = "#72e19e"
+                    ax.scatter(-points[indexOfFootName][0], points[indexOfFootName][2], points[indexOfFootName][1], c=contactColor, marker=pointMarker)
+
         if(showLabels):
             for index, point in enumerate(points):
                 ax.text(-point[0], point[2], point[1], labelList[index])
