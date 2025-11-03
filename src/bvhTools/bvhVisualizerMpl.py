@@ -54,7 +54,15 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
         if(footContactMethod == "both"):
             footContacts = np.logical_and(bvhMetrics.getFootContactsHeightMethod(bvhData, footNames=footNames, threshold=heightThreshold, referenceFrame=referenceFrame),
                 bvhMetrics.getFootContactsSpeedMethod(bvhData, footNames=footNames, threshold=speedThreshold, timeDiff=timeDiff))
-            
+
+    def draw3dCircle(ax, center, radius=0.03, color='red', n_points=64):
+        theta = np.linspace(0, 2 * np.pi, n_points)
+        cx, cy, cz = center
+        x = cx + radius * np.cos(theta)
+        y = np.full_like(x, cy)
+        z = cz + radius * np.sin(theta)
+        ax.plot(-x, z, y, color=color, linewidth=2)
+
     def update(_):            
         for coll in ax.collections[:]:
             coll.remove()
@@ -73,16 +81,12 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
         if(showPoints):
             ax.scatter([-p[0] for p in points], [p[2] for p in points], [p[1] for p in points], c=pointColor, marker=pointMarker)
             if(showFootContacts):
-                for footName in footNames:
-                    indexOfFootName = bvhData.skeleton.getJoint(footName).index
-                    print(indexOfFootName)
-                    print(len(footContacts))
-                    print(len(footContacts[0]))
-                    if(footContacts[indexOfFootName][currentFrame[0]]):
-                        contactColor = "#e17272"
-                    else:
+                for maskIndex, footName in enumerate(footNames):
+                    if(footContacts[maskIndex][currentFrame[0]]):
                         contactColor = "#72e19e"
-                    ax.scatter(-points[indexOfFootName][0], points[indexOfFootName][2], points[indexOfFootName][1], c=contactColor, marker=pointMarker)
+                    else:
+                        contactColor = "#e17272"
+                    draw3dCircle(ax, fkFrame[footName][1], color=contactColor, radius=5)
 
         if(showLabels):
             for index, point in enumerate(points):

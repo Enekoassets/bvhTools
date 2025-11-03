@@ -10,10 +10,9 @@ def getSpeedVectors(bvh, timeDiff = -1):
         frameTime = bvh.motion.frameTime
     else:
         frameTime = timeDiff
-    
-    lastFk = np.array([value[1] for value in bvh.getFKAtFrame(0)])
+    lastFk = np.array([value[1] for value in bvh.getFKAtFrame(0).values()])
     for frameIndex in range(1, bvh.motion.numFrames):
-        currFk = np.array([value[1] for value in bvh.getFKAtFrame(frameIndex)])
+        currFk = np.array([value[1] for value in bvh.getFKAtFrame(frameIndex).values()])
         speeds = (currFk - lastFk) / frameTime
         allSpeeds.append(speeds)
         lastFk = currFk
@@ -143,7 +142,7 @@ def getAvgAngularJerks(bvh):
 
 def getFootContactsSpeedMethod(bvh, footNames = ["LeftFoot", "RightFoot"], threshold = 0.1, timeDiff = -1):
     speedsPerFrame = getSpeeds(bvh, timeDiff)
-    jointNames = [joint.name for joint in bvh.skeleton.joints]
+    jointNames = [joint for joint in bvh.skeleton.joints]
     footIndexes = [jointNames.index(footName) for footName in footNames]
     return [(speedsPerFrame[:, footIndex] < threshold).tolist() for footIndex in footIndexes]
 
