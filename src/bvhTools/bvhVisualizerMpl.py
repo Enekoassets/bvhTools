@@ -8,7 +8,7 @@ import numpy as np
 def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
                     showLabels = False, showFootContacts = False, footContactMethod = "distance",
                     footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1,
-                    showSpeeds = False, heightThreshold = 0.1, referenceFrame = 0,
+                    heightThreshold = 0.1, referenceFrame = 0, showSpeeds = False,
                     pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
