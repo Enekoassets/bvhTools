@@ -12,7 +12,7 @@ bvhData
     ├── skeleton (Skeleton)
     |   |
     |   ├── root (Joint)
-    |   ├── joints (Joint[])
+    |   ├── joints (Dict(Joint))
     |   ├── jointIndexes (int[])
     |   └── hierarchyIndexes (int[])
     ├── motion (MotionData)
