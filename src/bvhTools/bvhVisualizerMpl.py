@@ -47,7 +47,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
     # precalculate foot contacts
     footContacts = []
     if showFootContacts:
-        if(footContactMethod == "distance"):
+        if(footContactMethod == "height"):
             footContacts = bvhMetrics.getFootContactsHeightMethod(bvhData, footNames=footNames, threshold=heightThreshold, referenceFrame=referenceFrame)
         if(footContactMethod == "speed"):
             footContacts = bvhMetrics.getFootContactsSpeedMethod(bvhData, footNames=footNames, threshold=speedThreshold, timeDiff=timeDiff)

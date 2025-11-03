@@ -142,9 +142,11 @@ def getAvgAngularJerks(bvh):
 
 def getFootContactsSpeedMethod(bvh, footNames = ["LeftFoot", "RightFoot"], threshold = 0.1, timeDiff = -1):
     speedsPerFrame = getSpeeds(bvh, timeDiff)
+    # duplicate last speed to match number of frames
+    speedsPerFrame = np.append(speedsPerFrame, [speedsPerFrame[-1]], axis = 0)
     jointNames = [joint for joint in bvh.skeleton.joints]
     footIndexes = [jointNames.index(footName) for footName in footNames]
-    return [(speedsPerFrame[:, footIndex] < threshold).tolist() for footIndex in footIndexes]
+    return np.array([(speedsPerFrame[:, footIndex] < threshold).tolist() for footIndex in footIndexes])
 
 def getFootContactsHeightMethod(bvh, footNames = ["LeftFoot", "RightFoot"], threshold = 0.1, referenceFrame = 0):
     footContacts = []
