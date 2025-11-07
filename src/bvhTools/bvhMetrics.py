@@ -161,3 +161,8 @@ def getFootContactsHeightMethod(bvh, footNames = ["LeftFoot", "RightFoot"], thre
         footContacts.append(contacts)
 
     return np.array(footContacts).T
+
+def getFootSlide(bvh, footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, heightThreshold = 0.1, timeDiff = -1, referenceFrame = 0):
+    speedFC = getFootContactsSpeedMethod(bvh, footNames, speedThreshold, timeDiff)
+    heightFC = getFootContactsHeightMethod(bvh, footNames, heightThreshold, referenceFrame)
+    return np.logical_and(np.logical_not(speedFC), heightFC)

@@ -8,7 +8,7 @@ import numpy as np
 def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
                     showLabels = False, showFootContacts = False, footContactMethod = "distance",
                     footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1,
-                    heightThreshold = 0.1, referenceFrame = 0, showSpeeds = False,
+                    heightThreshold = 0.1, referenceFrame = 0, showFootSlides = False, showSpeeds = False,
                     pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -54,6 +54,10 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
         if(footContactMethod == "both"):
             footContacts = np.logical_and(bvhMetrics.getFootContactsHeightMethod(bvhData, footNames=footNames, threshold=heightThreshold, referenceFrame=referenceFrame),
                 bvhMetrics.getFootContactsSpeedMethod(bvhData, footNames=footNames, threshold=speedThreshold, timeDiff=timeDiff))
+        if(showFootSlides):
+            print(f"\033[1;33mWARNING\033[0m: footContacts and footSlides are mutually exclusive. Disabling footContacts.")
+    if(showFootSlides):
+        footContacts = bvhMetrics.getFootSlide(bvhData, footNames=footNames, speedThreshold=speedThreshold, heightThreshold=heightThreshold, timeDiff=timeDiff, referenceFrame=referenceFrame)
 
     def draw3dCircle(ax, center, radius=0.03, color='red', n_points=64):
         theta = np.linspace(0, 2 * np.pi, n_points)
