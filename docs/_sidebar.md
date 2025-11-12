@@ -7,6 +7,7 @@
 - [🔪 BVH slicing](./functionalities/slicing/index.md)
 - [👀 BVH viewer](./functionalities/viewer/index.md)
 - [📊 BVH metrics](./functionalities/metrics/index.md)
+- [📐 Angle conversion](./functionalities/angleConversion/index.md)
 - [📋 Writing data to CSV files](./functionalities/csv/index.md)
 - [🖥️ CLI interface functions](./functionalities/cli/index.md)
 - [🧑‍🔬 Simple Examples](./functionalities/examples/index.md)
