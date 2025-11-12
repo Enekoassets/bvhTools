@@ -1,9 +1,9 @@
 # 📐 Angle conversion<!-- {docsify-ignore} -->
 **bvhTools** uses [Scipy's rotation module](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.transform.Rotation.html) for the internal representation of angles. We also suggest to use scipy to correctly control the formats (Euler, angle-axis, rotation matrices...) and convert from one to another.
 
-However, in machine learning contexts, angle representations being continuous is very important. For this reason, rotation matrices are a good choice. However, a very extended practise is to use 6D representations for angles, based on a [paper by Zhou et al.](https://zhouyisjtu.github.io/project_rotation/rotation.html).
+However, in machine learning contexts, angle representations being continuous is very important. For this reason, rotation matrices are a good choice. However, a very extended practise is to use 6D representations for angles, based on a [paper by Zhou et al.](https://zhouyisjtu.github.io/project_rotation/rotation.html)
 
-Scipy does not currently have the 6D representation available, so there are 2 methods available: one to convert from scipy rotations to 6D and another to convert back from 6D to scipy rotations, using [Gram-Schmidt orthogonalization](https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process).
+Scipy does not currently have the 6D representation available, so **bvhTools** offers 2 methods to use them: one to convert from scipy rotations to 6D and another to convert back from 6D to scipy rotations, using [Gram-Schmidt orthogonalization](https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process).
 
 ### Scipy rotation to 6D representation
 The *scipyToSixD(scipyRotations)* method takes as input a Scipy rotation (which can contain just one rotation or many of them) and converts each one to the corresponding 6D representation, by striping the first two columns and concatenating them into a 6D vector each.
