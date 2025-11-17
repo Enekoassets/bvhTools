@@ -7,7 +7,7 @@ A BVH viewer is implemented using matplotlib for quick viewing on the **bvhVisua
 
 The visualization can be **customized** using many options, even if not giving any parameters will show an animation with the default options. The complete function looks like this:
 
-##### *showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, showLabels = False, showFootContacts = False, footContactMethod = "distance", footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1, heightThreshold = 0.1, referenceFrame = 0, showSpeeds = False, pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):*
+##### *showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, showLabels = False, showFootContacts = False, footContactMethod = "distance", footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1, heightThreshold = 0.1, referenceFrame = 0, showSpeeds = False, normalizeSpeeds = False, pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):*
 
 This is a very extensive method with many options. However, most of them are deactivated by default. In the following sections, the customization process is explained in different steps, with examples.
 
@@ -45,5 +45,5 @@ To use the foot contact visualization, the **showFootContacts** flag has to be s
 - *heightThreshold*: **Only if footContactMethod uses height**. The height threshold used to calculate the mask. If a foot has a bigger distance from the ground than the threshold, it will be marked as not touching the ground in that frame. 
 - *referenceFrame*: **Only if footContactMethod uses height**. The frame number used to calculate the ground level height. The method uses a specific frame to calculate where the ground is. Ideally, this should be a frame in which the character is standing straight on the ground.
 
- ### Speed visualization
- TO DO
+### Speed visualization
+If the *showSpeeds* argument is set to True, the plot will show the corresponding 3D speed vector in each joint. Usually, the visualization would return very big vectors, since the magnitude of the vectors in typical animations is much greater if we compare to absolute position values. For that, set the *normalizeSpeeds* argument to True, so that the vectors will be normalized by dividing them with the median speed value. *Note: the median is used instead of the mean, since some animation may have outliers that negatively affect the calculation*.
