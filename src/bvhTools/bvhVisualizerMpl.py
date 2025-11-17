@@ -8,7 +8,7 @@ import numpy as np
 def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
                     showLabels = False, showFootContacts = False, footContactMethod = "distance",
                     footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1,
-                    heightThreshold = 0.1, referenceFrame = 0, showFootSlides = False, showSpeeds = False,
+                    heightThreshold = 0.1, referenceFrame = 0, showFootSlides = False, showSpeeds = False, normalizeSpeeds = False, speedVectorSize = 1,
                     pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -43,10 +43,14 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
 
     parentList = bvhData.skeleton.getHierarchyIndexesList()
     labelList = list(bvhData.skeleton.joints.keys())
-    
+
     precalculatedSpeeds = []
     if(showSpeeds):
         precalculatedSpeeds = bvhMetrics.getSpeedVectors(bvhData, timeDiff=timeDiff)
+        if(normalizeSpeeds):
+            maxSpeed = np.median(np.linalg.norm(precalculatedSpeeds, axis = 2))
+            precalculatedSpeeds /= maxSpeed
+        precalculatedSpeeds *= speedVectorSize
 
     # precalculate foot contacts
     footContacts = []
