@@ -43,6 +43,10 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
 
     parentList = bvhData.skeleton.getHierarchyIndexesList()
     labelList = list(bvhData.skeleton.joints.keys())
+    
+    precalculatedSpeeds = []
+    if(showSpeeds):
+        precalculatedSpeeds = bvhMetrics.getSpeedVectors(bvhData, timeDiff=timeDiff)
 
     # precalculate foot contacts
     footContacts = []
@@ -81,6 +85,10 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
             ax.quiver(0, 0, 0, quiverSize, 0, 0, color='r', label='X')  # Red = X
             ax.quiver(0, 0, 0, 0, quiverSize, 0, color='g', label='Y')  # Green = Y
             ax.quiver(0, 0, 0, 0, 0, quiverSize, color='b', label='Z')  # Blue = Z
+
+        if(showSpeeds):
+            for i, p in enumerate(points):
+                ax.quiver(-p[0], p[2], p[1], -precalculatedSpeeds[currentFrame[0]][i][0], precalculatedSpeeds[currentFrame[0]][i][2], precalculatedSpeeds[currentFrame[0]][i][1], color='r', label='X')
 
         if(showPoints):
             ax.scatter([-p[0] for p in points], [p[2] for p in points], [p[1] for p in points], c=pointColor, marker=pointMarker)
