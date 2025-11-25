@@ -39,134 +39,64 @@ footCtc = getFootContactsHeightMethod(bvh, ["foot1", "foot2", "foot3", "foot4"],
 ## 🚀 Speeds
 The module can compute per frame speeds for all the joints. The speeds can be calculated in vector form or in scalar form (magnitudes of vectors).
 
-### Calculate speed vectors per frame
-The *getSpeedVectors(bvh, timeDiff = -1)* method computes the speed vectors of all joints per frame. It returns a numpy array of dimension ([number of joints] x [number of frames - 1] x [3]). 
+### Calculate speeds (vector/magnitude)
+The *getSpeeds(bvh, timeDiff = -1, type = "vector")* method computes the speed of all joints per frame. It calculates forward kinematics for each frame in the animation, and uses the difference between 2 frames to compute the speeds of each joint in each frame. The return type is controlled by the *type* parameter:
+- **type = "vector":** returns a numpy array of speed vectors, of dimension ([num_joints] x [num_frames - 1] x [3]) 
+- **type = "magnitude":** returns a numpy array of magnitudes of the speed vectors, of dimension ([num_joints] x [num_frames - 1]).
 
 The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
 
 ```python
-from bvhTools.bvhMetrics import getSpeedVectors
+from bvhTools.bvhMetrics import getSpeeds
 
-speeds = getSpeedVectors(bvh) # speeds will have a 22x999x3 numpy array (number of frames = 1000)
+speeds = getSpeeds(bvh) # speeds will have a 22x999x3 numpy array (number of frames = 1000)
+
+speedMagnitudes = getSpeeds(bvh, type = "magnitude") # speedMagnitudes will be a 22x999 numpy array
 ```
 
-### Calculate speed magnitudes per frame
-If instead of the speed vectors, their magnitude is needed (for plotting the speeds per frame, for instance), the *getSpeeds(bvh, timeDiff = -1)* method returns a numpy array of dimension ([number of joints] x [number of frames - 1]).
+### Calculate angular speeds (vector/magnitude)
+The *getAngularSpeeds(bvh, timeDiff = -1, type = "vector")* calculates the angular speeds of each joint in each frame. It calculates the rotational difference in each frame for each joint, to then calculate the speed. The return type is controlled by the *type* parameter:
+- **type = "vector":** returns a numpy array of angular speed vectors, of dimension ([num_joints] x [num_frames - 1] x [3]).
+  
+    The returned vectors are **rotation vectors**: the direction of the vector is the axis of rotation, and the magnitude of the vector is its angular speed value. This means that the output is not calculated using the difference between Euler angles, but the rotation's relative motion respect to the previous frame (composition of rotations), divided by the delta-time.
+- **type = "magnitude":** returns a numpy array with the magnitude of the angular speed vectors, of size ([num_joints] x [num_frames - 1]).
 
 The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
 
-```python
-from bvhTools.bvhMetrics import getSpeedVectors
+### Calculate average speeds (vector/magnitude)
+The *getAvgSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint") method returns the average speeds. The *type* parameter controls the [return type](#calculate-speeds-vectormagnitude) (vector/magnitude). The *mode* parameter controls the axis which will be used for doing the average:
+- **perJoint:** the average is calculated per joint, meaning that the result will contain the average speed (vector/magnitude) of each joint during the entire animation. It returns a numpy array of dimension ([num_joints] x [3]) or ([num_joints]).
+- **perFrame:** the average is calculated per frame, meaning that the result will contain the average speed of all joints in each frame. It returns a numpy array of dimension ([num_frames - 1] x[3]) or ([num_frames -1]).
 
-speeds = getSpeedVectors(bvh) # speeds will have a 22x999 numpy array (number of frames = 1000)
-```
-
-### Calculate average speeds
-The *getAvgSpeeds(bvh, timeDiff = -1)* method returns the average speed for each joint, taking into account all the frames. It averages all vectors of all frames, and returns one average vector per joint.
-
-The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
-
-```python
-from bvhTools.bvhMetrics import getAvgSpeeds
-
-speeds = getAvgSpeeds(bvh) # speeds will have a 22x3 numpy array (number of frames = 1000)
-```
-
-### Calculate average speeds per frame
-Instead of averaging all the frames, the *getAvgSpeedsPerFrame(bvh, timeDiff = -1)* averages the speed vectors of all the joints together, and returns a numpy array containing the average vector of each frame. This can be useful to plot these vectors' magnitudes in a plot, for example.
-
-```python
-from bvhTools.bvhMetrics import getAvgSpeedsPerFrame
-
-speeds = getAvgSpeedsPerFrame(bvh) # speeds will have a 3x999 numpy array (number of frames = 1000)
-```
+### Calculate average angular speeds (vector/magnitude)
+The *getAvgAngularSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint") method returns the average angular speeds. The *type* parameter controls the [return type](#calculate-angular-speeds-vectormagnitude) (vector/magnitude). The *mode* parameter controls te axis which will be used for doing the average:
+- **perJoint:** the average is calculated per joint, meaning that the result will contain the average angular speed (vector/magnitude) of each joint during the entire animation. It returns a numpy array of dimension ([num_joints] x [3]) or ([num_joints]).
+- **perFrame:** the average is calculated per frame, meaning that the result will contain the average angular speed of all joints in each frame. It returns a numpy array of dimension ([num_frames - 1] x[3]) or ([num_frames -1]).
 
 ## 🏎️ Accelerations
-The module can compute per frame accelerations for all the joints. The accelerations can be calculated in vector form or in scalar form (magnitudes of vectors).
+The module can compute per frame accelerations for all the joints. The method calls are used in exactly the same way as with the speed calculation, and the output format is also the same, but with accelerations, since the acceleration is the second order derivative and the speed is the first order derivative.
 
-### Calculate acceleration vectors per frame
-The *getAccelerationVectors(bvh, timeDiff = -1)* method computes the acceleration vectors of all joints per frame. It returns a numpy array of dimension ([number of joints] x [number of frames - 2] x [3]). 
+The following functions are available for acceleration calculations. Please refer to the corresponding speed counterpart by clicking on the method:
 
-The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
-
-```python
-from bvhTools.bvhMetrics import getAccelerationVectors
-
-accelerations = getAccelerationVectors(bvh) # accelerations will have a 22x998x3 numpy array (number of frames = 1000)
-```
-
-### Calculate acceleration magnitudes per frame
-If instead of the acceleration vectors, their magnitude is needed (for plotting the accelerations per frame, for instance), the *getAccelerations(bvh, timeDiff = -1)* method returns a numpy array of dimension ([number of joints] x [number of frames - 2]).
-
-The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
-
-```python
-from bvhTools.bvhMetrics import getAccelerationVectors
-
-accelerations = getAccelerationVectors(bvh) # accelerations will have a 22x998 numpy array (number of frames = 1000)
-```
-
-### Calculate average accelerations
-The *getAvgAccelerations(bvh, timeDiff = -1)* method returns the average acceleration for each joint, taking into account all the frames. It averages all vectors of all frames, and returns one average vector per joint.
-
-The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
-
-```python
-from bvhTools.bvhMetrics import getAvgAccelerations
-
-accelerations = getAvgAccelerations(bvh) # accelerations will have a 22x3 numpy array (number of frames = 1000)
-```
-
-### Calculate average accelerations per frame
-Instead of averaging all the frames, the *getAvgAccelerationsPerFrame(bvh, timeDiff = -1)* averages the acceleration vectors of all the joints together, and returns a numpy array containing the average vector of each frame. This can be useful to plot these vectors' magnitudes in a plot, for example.
-
-```python
-from bvhTools.bvhMetrics import getAvgAccelerationsPerFrame
-
-accelerations = getAvgAccelerationsPerFrame(bvh) # accelerations will have a 3x998 numpy array (number of frames = 1000)
-```
+### Calculate accelerations (vector/magnitude)
+*[getAccelerations(bvh, timeDiff = -1, type = "vector")](#calculate-speeds-vectormagnitude)*
+### Calculate angular accelerations (vector/magnitude)
+*[getAngularAccelerations(bvh, timeDiff = -1, type = "vector")](#calculate-angular-speeds-vectormagnitude)*
+### Calculate average accelerations (vector/magnitude)
+*[getAvgAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-speeds-vectormagnitude)*
+### Calculate average angular accelerations (vector/magnitude)
+*[getAvgAngularAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-angular-speeds-vectormagnitude)*
 
 ## 🚗 Jerks
-The module can compute per frame jerks for all the joints. The jerks can be calculated in vector form or in scalar form (magnitudes of vectors).
+The module can compute per frame jerks for all the joints. The method calls are used in exactly the same way as with the speed calculation, and the output format is also the same, but with jerks, since the jerk is the third order derivative and the speed is the first order derivative.
 
-### Calculate jerk vectors per frame
-The *getJerkVectors(bvh, timeDiff = -1)* method computes the jerk vectors of all joints per frame. It returns a numpy array of dimension ([number of joints] x [number of frames - 3] x [3]). 
+The following functions are available for jerk calculations. Please refer to the corresponding speed counterpart by clicking on the method:
 
-The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
-
-```python
-from bvhTools.bvhMetrics import getJerkVectors
-
-jerks = getJerkVectors(bvh) # jerks will have a 22x997x3 numpy array (number of frames = 1000)
-```
-
-### Calculate jerk magnitudes per frame
-If instead of the jerk vectors, their magnitude is needed (for plotting the jerks per frame, for instance), the *getJerks(bvh, timeDiff = -1)* method returns a numpy array of dimension ([number of joints] x [number of frames - 3]).
-
-The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
-
-```python
-from bvhTools.bvhMetrics import getJerkVectors
-
-jerks = getJerkVectors(bvh) # jerks will have a 22x997 numpy array (number of frames = 1000)
-```
-
-### Calculate average jerks
-The *getAvgJerks(bvh, timeDiff = -1)* method returns the average jerk for each joint, taking into account all the frames. It averages all vectors of all frames, and returns one average vector per joint.
-
-The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
-
-```python
-from bvhTools.bvhMetrics import getAvgJerks
-
-jerks = getAvgJerks(bvh) # jerks will have a 22x3 numpy array (number of frames = 1000)
-```
-
-### Calculate average jerks per frame
-Instead of averaging all the frames, the *getAvgJerksPerFrame(bvh, timeDiff = -1)* averages the acceleration vectors of all the joints together, and returns a numpy array containing the average vector of each frame. This can be useful to plot these vectors' magnitudes in a plot, for example.
-
-```python
-from bvhTools.bvhMetrics import getAvgJerksPerFrame
-
-speeds = getAvgJerksPerFrame(bvh) # speeds will have a 3x997 numpy array (number of frames = 1000)
-```
+### Calculate jerks (vector/magnitude)
+*[getJerks(bvh, timeDiff = -1, type = "vector")](#calculate-speeds-vectormagnitude)*
+### Calculate angular jerks (vector/magnitude)
+*[getAngularJerks(bvh, timeDiff = -1, type = "vector")](#calculate-angular-speeds-vectormagnitude)*
+### Calculate average jerks (vector/magnitude)
+*[getAvgJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-speeds-vectormagnitude)*
+### Calculate average angular jerks (vector/magnitude)
+*[getAvgAngularJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-angular-speeds-vectormagnitude)*
