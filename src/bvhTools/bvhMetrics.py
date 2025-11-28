@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
-
+import copy
 def getSpeeds(bvh, timeDiff = -1, type = "vector"):
     if bvh.motion.numFrames < 2:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 2 frames to calculate speeds. Returning empty array.")
@@ -265,3 +265,50 @@ def getFootSlide(bvh, footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.
     speedFC = getFootContactsSpeedMethod(bvh, footNames, speedThreshold, timeDiff)
     heightFC = getFootContactsHeightMethod(bvh, footNames, heightThreshold, referenceFrame)
     return np.logical_and(np.logical_not(speedFC), heightFC)
+
+def getAvgPose(bvh):
+    bvhCopy = copy.deepcopy(bvh)
+    avgPose = []
+    for jointName in bvh.skeleton.joints:
+        if(not "_EndSite" in jointName):
+            joint = bvh.skeleton.getJoint(jointName)
+            motionIndex = joint.motionIndex
+            if(joint.getChannelCount() == 3): # if the joint has no position channels
+                quatFrames = []
+                for frame in bvh.motion.frames:
+                    rot = R.from_euler(joint.getRotationChannelsOrder(), frame[motionIndex:motionIndex + 3], degrees = True)
+                    quat = rot.as_quat()
+                    if(len(quatFrames) > 1 and np.dot(quat, quatFrames[-1]) < 0):
+                        quat = -quat
+                    quatFrames.append(quat)
+                avgQuat = np.mean(quatFrames, axis = 0)
+                avgQuat /= np.linalg.norm(avgQuat)
+                avgPose.append(R.from_quat(avgQuat).as_euler(joint.getRotationChannelsOrder(), degrees = True))
+            else: # the joint has position and rotation channels
+                positionsOffset = 0
+                rotationsOffset = 3
+                quatFrames = []
+                posFrames = []
+                if(joint.channels[0] == "Xrotation" or joint.channels[0] == "Yrotation" or joint.channels[0] == "Zrotation"):
+                    positionsOffset = 3
+                    rotationsOffset = 0
+                for frame in bvh.motion.frames:
+                    pos = frame[motionIndex+positionsOffset:motionIndex+positionsOffset+3]
+                    rot = R.from_euler(joint.getRotationChannelsOrder(), frame[motionIndex+rotationsOffset:motionIndex+rotationsOffset + 3], degrees = True)
+                    quat = rot.as_quat()
+                    if(len(quatFrames) > 1 and np.dot(quat, quatFrames[-1]) < 0):
+                        quat = -quat
+                    posFrames.append(pos)
+                    quatFrames.append(quat)
+                avgQuat = np.mean(quatFrames, axis = 0)
+                avgPos = np.mean(posFrames, axis = 0)
+                avgQuat /= np.linalg.norm(avgQuat)
+                if (positionsOffset == 0): # positions are first
+                    avgPose.append(avgPos)
+                    avgPose.append(R.from_quat(avgQuat).as_euler(joint.getRotationChannelsOrder(), degrees = True))
+                else:
+                    avgPose.append(R.from_quat(avgQuat).as_euler(joint.getRotationChannelsOrder(), degrees = True))
+                    avgPose.append(avgPos)
+    bvhCopy.motion.frames = [np.asarray(avgPose).flatten()]
+    bvhCopy.motion.numFrames = 1
+    return bvhCopy
