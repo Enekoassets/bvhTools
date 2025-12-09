@@ -5,6 +5,8 @@
 ## Matplotlib viewer
 A BVH viewer is implemented using matplotlib for quick viewing on the **bvhVisualizerMpl** class. The *showBvhAnimation(bvhData, [args])* It contains a basic play/pause button and forward/back buttons to pass frames one by one. It also permits to jump to specific frames and to change the speed of time for faster/slower playback.
 
+[bvhViewer](../../media/mplVisualizer.mp4 ':include')
+
 The visualization can be **customized** using many options, even if not giving any parameters will show an animation with the default options. The complete function looks like this:
 
 ##### *showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, showLabels = False, showFootContacts = False, footContactMethod = "distance", footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1, heightThreshold = 0.1, referenceFrame = 0, showSpeeds = False, normalizeSpeeds = False, speedVectorSize = 1, pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):*
