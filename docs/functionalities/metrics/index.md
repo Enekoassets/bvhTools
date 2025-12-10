@@ -100,3 +100,31 @@ The following functions are available for jerk calculations. Please refer to the
 *[getAvgJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-speeds-vectormagnitude)*
 ### Calculate average angular jerks (vector/magnitude)
 *[getAvgAngularJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-angular-speeds-vectormagnitude)*
+
+## 🕺 Average pose
+You can get the average pose of a BVH sequence with the *getAvgPose(bvh)* function. This will average the position channels of the root (and other joints if they have position channels) and also the rotation channels of all joints. To calculate the average rotations, **bvhTools** converts all rotations to quaternions, then checks the sign of each quaternion and flips them if needed (relative to the previous quaternion). Finally, it calculates the average quaternion, and converts it to Euler angles.
+
+```python
+from bvhTools.bvhMetrics import getAvgPose
+
+avgBvh = getAvgPose(bvh)
+```
+
+This method does **not** return a numpy array containing the average pose. Instead, it returns a new [bvhData](../dataStructures/index.md) object, with the average pose already inserted in the motion attribute (it also sets numFrames = 1 for the new object). This enables to use the same data structures all the time. For example, we can calculate and then visualize the mean pose using the same visualization pipeline:
+
+```python
+from bvhTools.bvhMetrics import getAvgPose
+from bvhTools.bvhVisualizerMpl import showBvhAnimation
+
+avgBvh = getAvgPose(bvh)
+showBvhAnimation(avgPose)
+```
+
+If the average pose is needed as a numpy array, just take it from the **motionData** field of the **bvhData** object:
+
+```python
+from bvhTools.bvhMetrics import getAvgPose
+
+avgBvh = getAvgPose(bvh)
+avgPoseList = avgBvh.motion.frames # avgPoseList will contain the numpy array object
+```
