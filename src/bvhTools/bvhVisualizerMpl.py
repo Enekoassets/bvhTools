@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
 from matplotlib import get_backend
-import bvhMetrics
+from bvhTools import bvhMetrics
 import numpy as np
 
 def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
