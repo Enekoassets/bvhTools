@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.widgets import Button, TextBox
 from matplotlib import get_backend
-from bvhTools import bvhMetrics
+import bvhMetrics
 import numpy as np
 
 def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
@@ -46,7 +46,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
 
     precalculatedSpeeds = []
     if(showSpeeds):
-        precalculatedSpeeds = bvhMetrics.getSpeedVectors(bvhData, timeDiff=timeDiff)
+        precalculatedSpeeds = bvhMetrics.getSpeeds(bvhData, timeDiff=timeDiff)
         if(normalizeSpeeds):
             maxSpeed = np.median(np.linalg.norm(precalculatedSpeeds, axis = 2))
             precalculatedSpeeds /= maxSpeed
