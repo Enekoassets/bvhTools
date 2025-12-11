@@ -46,7 +46,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
 
     precalculatedSpeeds = []
     if(showSpeeds):
-        precalculatedSpeeds = bvhMetrics.getSpeedVectors(bvhData, timeDiff=timeDiff)
+        precalculatedSpeeds = bvhMetrics.getSpeeds(bvhData, timeDiff=timeDiff)
         if(normalizeSpeeds):
             maxSpeed = np.median(np.linalg.norm(precalculatedSpeeds, axis = 2))
             precalculatedSpeeds /= maxSpeed
