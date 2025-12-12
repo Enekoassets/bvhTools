@@ -150,7 +150,7 @@ def getAngularSpeeds(bvh, timeDiff = -1, type = "vector"):
                 continue
             joint = bvh.skeleton.getJoint(jointName)
             motionIndex = joint.motionIndex
-            if joint.getChannelCount() == 6 and (joint.channels[0] == "Xrotation" or joint.channels[0] == "Yrotation" or joint.channels[0] == "Zrotation"):
+            if joint.getChannelCount() == 6 and (joint.channels[0] == "Xposition" or joint.channels[0] == "Yposition" or joint.channels[0] == "Zposition"):
                 motionIndex += 3
             rotations.append(R.from_euler(joint.getRotationChannelsOrder(), bvh.motion.frames[frameIndex][motionIndex:motionIndex+3], degrees=True))
         allFrameRotations.append(rotations)
