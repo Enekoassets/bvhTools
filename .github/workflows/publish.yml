@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m build
 
-            - name: Verify version matches commit message
+      - name: Verify version matches commit message
         run: |
           COMMIT_VERSION=$(echo "${{ github.event.head_commit.message }}" | sed 's/version //')
           PKG_VERSION=$(python -c "import importlib.metadata; print(importlib.metadata.version('bvhTools'))")
