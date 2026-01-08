@@ -1,0 +1,46 @@
+name: Build and publish Python package
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-publish:
+    if: startsWith(github.event.head_commit.message, 'version ')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build package
+        run: |
+          python -m build
+
+            - name: Verify version matches commit message
+        run: |
+          COMMIT_VERSION=$(echo "${{ github.event.head_commit.message }}" | sed 's/version //')
+          PKG_VERSION=$(python -c "import importlib.metadata; print(importlib.metadata.version('bvhTools'))")
+
+          if [ "$COMMIT_VERSION" != "$PKG_VERSION" ]; then
+            echo "Version mismatch: commit=$COMMIT_VERSION package=$PKG_VERSION"
+            exit 1
+          fi
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          twine upload dist/*
