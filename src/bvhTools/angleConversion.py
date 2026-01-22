@@ -28,7 +28,7 @@ def sixDToScipy(sixDRotations):
             b1 = a1 / np.linalg.norm(a1)
             b2 = (a2 - (np.dot(b1, a2)) * b1) / (np.linalg.norm(a2 - (np.dot(b1, a2)) * b1) + 1e-8)
             b3 = np.cross(b1, b2)
-            rotations.append(R.from_matrix(np.column_stack((b1, b2, b3))))
+            rotations.append(np.column_stack((b1, b2, b3)))
         return R.from_matrix(np.stack(rotations))
     else:
         print(f"\033[1;33mWARNING\033[0m: You must provide a 6D or Nx6D matrix to convert to scipy rotation. Returning original matrix.")
