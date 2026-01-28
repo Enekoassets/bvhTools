@@ -6,7 +6,7 @@ def scipyToSixD(scipyRotations):
     if(matrix.shape == (3, 3)):
         return matrix[:, :2].flatten(order = 'F')
     elif(matrix.ndim == 3 and matrix.shape[1:] == (3, 3)):
-        return matrix[:, :, :2].transpose(0, 2, 1).reshape(len(matrix), 6)
+        return matrix[:, :, :2].reshape(len(matrix), 6, order = 'F')
     else:
         print(f"\033[1;33mWARNING\033[0m: You must provide a 3x3 or Nx3x3 matrix to convert to 6D. Returning original matrix.")
         return matrix
