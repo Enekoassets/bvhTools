@@ -3,6 +3,7 @@
 - [📦 Data structures and useful functions](./functionalities/dataStructures/index.md)
 - [🤚 BVH manipulation](./functionalities/manipulation/index.md)
 - [🏃 Forward Kinematics](./functionalities/forwardKinematics/index.md)
+- [🤸 Motion Editor](./functionalities/motionEditor/index.md)
 - [💀 Skeleton editor](./functionalities/skeletonEditor/index.md)
 - [🔪 BVH slicing](./functionalities/slicing/index.md)
 - [👀 BVH viewer](./functionalities/viewer/index.md)
