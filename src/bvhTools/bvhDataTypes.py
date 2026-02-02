@@ -202,6 +202,10 @@ class MotionData:
                 print(f"{self.frames[i][0:6]} ... {self.frames[i][-6:]}")
             else:
                 print(f"{self.frames[i]}")
+
+    def getFPS(self):
+        return 1.0 / self.frameTime
+    
 class BVHData:
     def __init__(self, skeleton, motion):
         self.skeleton = skeleton
