@@ -115,6 +115,9 @@ Returns all the rotation and position values of a joint for all frames. For exam
 ##### *printHead(headSize = 10, verbose = False)*
 Useful function that prints a summary of the motion frames information. Explained in more detail [here](#print-head-of-the-motion-data).
 
+##### *getFPS()*
+Returns the FPS of a given bvh file, by returning 1 / frameTime.
+
 ### The Joint object
 The Joint object contains the following attributes with their respective data types, which can be directly accessed.
 ```
@@ -131,9 +134,6 @@ Joint
 **Note:** motionIndex refers to the position where the joint values start in the motion part of the BVH file. For more information refer to the [jointIndexes dictionary](#the-jointindexes-dictionary) list in the Skeleton object.
 
 #### Functions
-##### *getFPS()*
-Returns the FPS of a given bvh file, by returning 1 / frameTime.
-
 ##### *getChannelCount()*
 Returns the channel count of a specific joint (usually 6 for the root and 3 for any other joint).
 
