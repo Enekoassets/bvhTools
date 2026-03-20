@@ -59,6 +59,22 @@ def centerSkeletonAroundJoint(bvhData, jointName, fkFrame=0):
 
     return bvhDataCopy
 
+def standSkeletonOnFloor(bvhData, leftFootName = "LeftFoot", rightFootName = "RightFoot", fkFrame=0):
+    bvhDataCopy = copy.deepcopy(bvhData)
+    if(leftFootName not in bvhDataCopy.skeleton.joints):
+        raise Exception(f"Left foot name ({leftFootName}) not found in skeleton")
+    if(rightFootName not in bvhDataCopy.skeleton.joints):
+        raise Exception(f"Right foot name ({rightFootName}) not found in skeleton")
+    avgFootHeight = (bvhDataCopy.getFKAtFrame(fkFrame)[leftFootName][1][1] + bvhDataCopy.getFKAtFrame(fkFrame)[rightFootName][1][1]) / 2
+    avgRootHeight = bvhDataCopy.getFKAtFrame(fkFrame)[bvhDataCopy.skeleton.root.name][1][1]
+    frame = bvhDataCopy.motion.getFrame(fkFrame)
+    rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
+    offset = -float(frame[rootIndex + 1]) + (avgRootHeight - avgFootHeight)
+    for frame in bvhDataCopy.motion.frames:
+        frame[rootIndex+1] += offset
+
+    return bvhDataCopy
+
 def rotateSkeletonLocal(bvhData, angle, fkFrame=0):
     if(len(angle) != 3):
         raise Exception("angle must be a list of length 3")
