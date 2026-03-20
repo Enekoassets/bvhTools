@@ -17,8 +17,18 @@ The *centerSkeletonFeet(bvhData, leftFootName = "LeftFoot", rightFootName = "Rig
 ```python
 from bvhTools.bvhManipulation import centerSkeletonFeet
 
-centeredBvhRoot = centerSkeletonFeet(bvhData)
-centeredBvhRoot = centerSkeletonFeet(bvhData, leftFootName = "lFoot", rightFootName = "rFoot", frame = 42) # center at frame 42 using custom left and right foot names
+centeredBvhFeet = centerSkeletonFeet(bvhData)
+centeredBvhFeet = centerSkeletonFeet(bvhData, leftFootName = "lFoot", rightFootName = "rFoot", frame = 42) # center at frame 42 using custom left and right foot names
+```
+
+## Standing the skeleton on the floor
+The *standSkeletonOnFloor(bvhData, leftFootName = "LeftFoot", rightFootName = "RightFoot", fkFrame=0)* function puts the feet on Y = 0, but it does not change the X and Z coordinates. In other words, the skeleton will be raised or lowered to (X,0,Z) on the provided frame. It uses the two feet to calculate the average Y height, so the names of both feet joints are needed. (Default leftFootName = "LeftFoot", rightFootName = "RightFoot").
+
+```python
+from bvhTools.bvhManipulation import standSkeletonOnFloor
+
+standingBvh = standSkeletonOnFloor(bvhData)
+standingBvh = standSkeletonOnFloor(bvhData, leftFootName = "lFoot", rightFootName = "rFoot", frame = 42) # center at frame 42 using custom left and right foot names
 ```
 
 ## Centering the skeleton on the X and Z axes
