@@ -1,5 +1,5 @@
 # 👀 BVH visualizer<!-- {docsify-ignore} -->
-## <img src="../../media/raylib.png" width="40" style="vertical-align: middle;" /> Raylib visualizer
+## <img src="/bvhTools/media/raylib.png" width="40" style="vertical-align: middle;" /> Raylib visualizer
 To visualize a bvh or many bvh files, a BVH visualizer is implemented using [raylib](https://www.raylib.com/). This visualizer is implemented in the **bvhVisualizer** class. It contains advanced controls, many camera modes, and specific rendering options, like skeleton color, size or showing labels. Instead of controlling the animation with parameters, the visualizer itself has a GUI to control the visual aspect of every skeleton separately.
 
 [bvhVisualizer](../../media/visualizer.mp4 ':include :type=video controls width=100% height=400px')
@@ -13,7 +13,7 @@ showBvhAnimation(bvhData)
 showBvhAnimation([bvhData0, bvhData1, bvhData2])
 ```
 
-## <img src="../../media/mpl.png" width="40" style="vertical-align: middle;" /> Matplotlib visualizer (Deprecated)
+## <img src="/bvhTools/media/mpl.png" width="40" style="vertical-align: middle;" /> Matplotlib visualizer (Deprecated)
 ⚠️ *Note: This visualizer is deprecated, I suggest to use the [raylib visualizer](#raylib-visualizer) for simpicity, better performance, and overall experience. Above everything, the raylib visualizer is capable to show many animations at the same time, with no FPS drawback.*
 
 A BVH visualizer is implemented using matplotlib for quick viewing on the **bvhVisualizerMpl** class. It contains a basic play/pause button and forward/back buttons to pass frames one by one. It also permits to jump to specific frames and to change the speed of time for faster/slower playback.
