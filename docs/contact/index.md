@@ -1,2 +1,2 @@
 # Contact 
-To contact us, please create a [GitHub issue](https://github.com/Enekoassets/bvhTools/issues)!
+To contact me, please create a [GitHub issue](https://github.com/Enekoassets/bvhTools/issues)!

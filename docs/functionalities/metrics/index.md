@@ -7,7 +7,8 @@ You can automatically foot contact masks for a specific bvh file. **bvhTools** h
 **Note**: If you are not sure which method is the best for you animation or you don't know which threshold parameters are the best in your case, you can use the **bvhVisualizer** class to visualize the foot contacts given a specific method and specific parameters.
 
 ### Foot contacts based on joint speeds
-The *getFootContactsSpeedMethod(bvh, footNames = ["LeftFoot", "RightFoot"], threshold = 0.1, timeDiff = -1)* method computes the foot contacts of an animation, by using the foot speed magnitude in each frame to create a boolean mask for each foot.
+##### `getFootContactsSpeedMethod(bvh: BVHData, footNames: str = ["LeftFoot", "RightFoot"], threshold: float = 0.1, timeDiff: float = -1) -> list[list[bool]]`
+This method computes the foot contacts of an animation, by using the foot speed magnitude in each frame to create a boolean mask for each foot.
 
 The method needs a list of foot names (it can be an arbitrary number of feet, useful for quadruped animation, among others). For these feet, the method will return a numpy array of dimension ([number of feet] x [number of frames]). **Note**: the first frame is duplicated so the mask will have the same dimension as the number of frames.
 
@@ -22,7 +23,8 @@ footCtc = getFootContactsSpeedMethod(bvh, ["footL", "footR"], 2)
 ```
 
 ### Foot contacts based on joint height
-The *getFootContactsHeightMethod(bvh, footNames = ["LeftFoot", "RightFoot"], threshold = 0.1, referenceFrame = 0)* method computes the foot contacts of an animation, by using the foot height in each frame to create a boolean mask for each foot.
+##### `getFootContactsHeightMethod(bvh: BVHData, footNames: str = ["LeftFoot", "RightFoot"], threshold: float = 0.1, referenceFrame: int = 0) -> list[list[bool]]`
+This method computes the foot contacts of an animation, by using the foot height in each frame to create a boolean mask for each foot.
 
 The method needs a list of foot names (it can be an arbitrary number of feet, useful for quadruped animation, among others). For these feet, the method will return a numpy array of dimension ([number of feet] x [number of frames]).
 
@@ -40,7 +42,8 @@ footCtc = getFootContactsHeightMethod(bvh, ["foot1", "foot2", "foot3", "foot4"],
 The module can compute per frame speeds for all the joints. The speeds can be calculated in vector form or in scalar form (magnitudes of vectors).
 
 ### Calculate speeds (vector/magnitude)
-The *getSpeeds(bvh, timeDiff = -1, type = "vector")* method computes the speed of all joints per frame. It calculates forward kinematics for each frame in the animation, and uses the difference between 2 frames to compute the speeds of each joint in each frame. The return type is controlled by the *type* parameter:
+##### `getSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> numpy.array[list[float]]`
+This method computes the speed of all joints per frame. It calculates forward kinematics for each frame in the animation, and uses the difference between 2 frames to compute the speeds of each joint in each frame. The return type is controlled by the *type* parameter:
 - **type = "vector":** returns a numpy array of speed vectors, of dimension ([num_joints] x [num_frames - 1] x [3]) 
 - **type = "magnitude":** returns a numpy array of magnitudes of the speed vectors, of dimension ([num_joints] x [num_frames - 1]).
 
@@ -55,7 +58,9 @@ speedMagnitudes = getSpeeds(bvh, type = "magnitude") # speedMagnitudes will be a
 ```
 
 ### Calculate angular speeds (vector/magnitude)
-The *getAngularSpeeds(bvh, timeDiff = -1, type = "vector")* calculates the angular speeds of each joint in each frame. It calculates the rotational difference in each frame for each joint, to then calculate the speed. The return type is controlled by the *type* parameter:
+##### `getAngularSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> numpy.array[list[float]]`
+
+This function calculates the angular speeds of each joint in each frame. It calculates the rotational difference in each frame for each joint, to then calculate the speed. The return type is controlled by the *type* parameter:
 - **type = "vector":** returns a numpy array of angular speed vectors, of dimension ([num_joints] x [num_frames - 1] x [3]).
   
     The returned vectors are **rotation vectors**: the direction of the vector is the axis of rotation, and the magnitude of the vector is its angular speed value. This means that the output is not calculated using the difference between Euler angles, but the rotation's relative motion respect to the previous frame (composition of rotations), divided by the delta-time.
@@ -64,12 +69,14 @@ The *getAngularSpeeds(bvh, timeDiff = -1, type = "vector")* calculates the angul
 The **timeDiff** variable enables setting a different delta time value if needed. By default (timeDiff = -1), the method uses the *Frame time* value from the bvh file.
 
 ### Calculate average speeds (vector/magnitude)
-The *getAvgSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint") method returns the average speeds. The *type* parameter controls the [return type](#calculate-speeds-vectormagnitude) (vector/magnitude). The *mode* parameter controls the axis which will be used for doing the average:
+##### `getAvgSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> numpy.array[list[float]]`
+This method returns the average speeds. The *type* parameter controls the [return type](#calculate-speeds-vectormagnitude) (vector/magnitude). The *mode* parameter controls the axis which will be used for doing the average:
 - **perJoint:** the average is calculated per joint, meaning that the result will contain the average speed (vector/magnitude) of each joint during the entire animation. It returns a numpy array of dimension ([num_joints] x [3]) or ([num_joints]).
 - **perFrame:** the average is calculated per frame, meaning that the result will contain the average speed of all joints in each frame. It returns a numpy array of dimension ([num_frames - 1] x[3]) or ([num_frames -1]).
 
 ### Calculate average angular speeds (vector/magnitude)
-The *getAvgAngularSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint") method returns the average angular speeds. The *type* parameter controls the [return type](#calculate-angular-speeds-vectormagnitude) (vector/magnitude). The *mode* parameter controls te axis which will be used for doing the average:
+##### `getAvgAngularSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> numpy.array[list[float]]`
+This method returns the average angular speeds. The *type* parameter controls the [return type](#calculate-angular-speeds-vectormagnitude) (vector/magnitude). The *mode* parameter controls te axis which will be used for doing the average:
 - **perJoint:** the average is calculated per joint, meaning that the result will contain the average angular speed (vector/magnitude) of each joint during the entire animation. It returns a numpy array of dimension ([num_joints] x [3]) or ([num_joints]).
 - **perFrame:** the average is calculated per frame, meaning that the result will contain the average angular speed of all joints in each frame. It returns a numpy array of dimension ([num_frames - 1] x[3]) or ([num_frames -1]).
 
@@ -79,13 +86,13 @@ The module can compute per frame accelerations for all the joints. The method ca
 The following functions are available for acceleration calculations. Please refer to the corresponding speed counterpart by clicking on the method:
 
 ### Calculate accelerations (vector/magnitude)
-*[getAccelerations(bvh, timeDiff = -1, type = "vector")](#calculate-speeds-vectormagnitude)*
+##### `getAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> numpy.array[list[float]]`
 ### Calculate angular accelerations (vector/magnitude)
-*[getAngularAccelerations(bvh, timeDiff = -1, type = "vector")](#calculate-angular-speeds-vectormagnitude)*
+##### `getAngularAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> numpy.array[list[float]]`
 ### Calculate average accelerations (vector/magnitude)
-*[getAvgAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-speeds-vectormagnitude)*
+##### `getAvgAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> numpy.array[list[float]]`
 ### Calculate average angular accelerations (vector/magnitude)
-*[getAvgAngularAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-angular-speeds-vectormagnitude)*
+##### `getAvgAngularAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> numpy.array[list[float]]`
 
 ## 🚗 Jerks
 The module can compute per frame jerks for all the joints. The method calls are used in exactly the same way as with the speed calculation, and the output format is also the same, but with jerks, since the jerk is the third order derivative and the speed is the first order derivative.
@@ -93,16 +100,17 @@ The module can compute per frame jerks for all the joints. The method calls are 
 The following functions are available for jerk calculations. Please refer to the corresponding speed counterpart by clicking on the method:
 
 ### Calculate jerks (vector/magnitude)
-*[getJerks(bvh, timeDiff = -1, type = "vector")](#calculate-speeds-vectormagnitude)*
+##### `getJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> numpy.array[list[float]]`
 ### Calculate angular jerks (vector/magnitude)
-*[getAngularJerks(bvh, timeDiff = -1, type = "vector")](#calculate-angular-speeds-vectormagnitude)*
+##### `getAngularJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> numpy.array[list[float]]`
 ### Calculate average jerks (vector/magnitude)
-*[getAvgJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-speeds-vectormagnitude)*
+##### `getAvgJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> numpy.array[list[float]]`
 ### Calculate average angular jerks (vector/magnitude)
-*[getAvgAngularJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint")](#calculate-average-angular-speeds-vectormagnitude)*
+##### `getAvgAngularJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> numpy.array[list[float]]`
 
 ## 🕺 Average pose
-You can get the average pose of a BVH sequence with the *getAvgPose(bvh)* function. This will average the position channels of the root (and other joints if they have position channels) and also the rotation channels of all joints. To calculate the average rotations, **bvhTools** converts all rotations to quaternions, then checks the sign of each quaternion and flips them if needed (relative to the previous quaternion). Finally, it calculates the average quaternion, and converts it to Euler angles.
+##### `getAvgPose(bvh: BVHData) -> BVHData`
+You can get the average pose of a BVH sequence with this function. This will average the position channels of the root (and other joints if they have position channels) and also the rotation channels of all joints. To calculate the average rotations, **bvhTools** converts all rotations to quaternions, then checks the sign of each quaternion and flips them if needed (relative to the previous quaternion). Finally, it calculates the average quaternion, and converts it to Euler angles.
 
 ```python
 from bvhTools.bvhMetrics import getAvgPose

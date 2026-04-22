@@ -1,6 +1,7 @@
 # 📖 Reading and ✏️ writing BVH files <!-- {docsify-ignore} -->
-You can read and write BVH files in just one line of code using the **bvhIO class**. 
+You can read and write BVH files in just one line of code using the **bvhIO** class. 
 ## 📖 Reading BVH files 
+##### `readBvh(path: str) -> BVHData`
 
 To load a BVH file to later use it inside Python, just provide the file path, and the method will return a **BVHData** object.
 ```python
@@ -10,7 +11,7 @@ bvhData = readBvh("test.bvh")
 ```
 
 ## ✏️ Writing BVH files
-
+##### `writeBvh(bvh: BVHData, path: str) -> None`
 To write the content of a **BVHData** object, provide the **BVHData** object, the output path and optionally, the number of decimals for the motion (default = 6).
 ```python
 from bvhTools.bvhIO import writeBvh

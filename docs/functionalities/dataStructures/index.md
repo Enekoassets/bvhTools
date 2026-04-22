@@ -1,14 +1,14 @@
 # 📦 Data structures and useful functions <!-- {docsify-ignore} -->
-In this section you will find how to access the data from a **bvhData** object (i.e. the structure of a bvhData object). This way it provides a map on how to access different parts of the **bvhData** object. For example, how can I get the frame-time or the number of frames of a **bvhData** object?
+In this section you will find how to access the data from a **BVHData** object (i.e. the structure of a **BVHData** object). This way it provides a map on how to access different parts of the **BVHData** object. For example, how can I get the frame-time or the number of frames of a **BVHData** object?
 
-Moreover, there are many useful functions that help to easily get and print useful information about a **bvhData** object, such as the hierarchy or the top part or head of the motion array of the file and the dimensions of the array.
+Moreover, there are many useful functions that help to easily get and print useful information about a **BVHData** object, such as the hierarchy or the top part or head of the motion array of the file and the dimensions of the array.
 
 ## 🗂️ Data structures
-When you load a BVH file, you will create a [bvhData](#the-bvhdata-object) object, which contains a [Skeleton](#the-skeleton-object) object, a [MotionData](#the-motiondata-object) object and skeleton and motion dimensions. The skeleton is composed of [Joint](#the-joint-object) objects.
-### The bvhData object
-The **bvhData** object is a hierarchical object with the following components and their respective data types:
+When you load a BVH file, you will create a [BVHData](#the-bvhdata-object) object, which contains a [Skeleton](#the-skeleton-object) object, a [MotionData](#the-motiondata-object) object and skeleton and motion dimensions. The skeleton is composed of [Joint](#the-joint-object) objects.
+### The BVHData object
+The **BVHData** object is a hierarchical object with the following components and their respective data types:
 ``` 
-bvhData 
+BVHData 
     ├── skeleton (Skeleton)
     |   |
     |   ├── root (Joint)
@@ -26,23 +26,23 @@ bvhData
 All these attributes can be directly accessed, and there are also some helper functions for ease of access to typical attributes.
 
 #### Functions
-##### getHeader()
-Returns the header of the BVH file. It uses the internal **bvhData** structure (skeleton, joints and their attributes like offsets) to write a header based on those.
+##### `getHeader() -> str`
+Returns the header of the BVH file. It uses the internal **BVHData** structure (skeleton, joints and their attributes like offsets) to write a header based on those.
 
-In other words, the **bvhData** object does **NOT** save the original header, it uses the internal structure to create a new one on demand.
+In other words, the **BVHData** object does **NOT** save the original header, it uses the internal structure to create a new one on demand.
 
-The generated header includes the MOTION, Frames and Frame Time lines, and their values are directly taken from the **bvhData** object itself.
+The generated header includes the MOTION, Frames and Frame Time lines, and their values are directly taken from the **BVHData** object itself.
 
-##### getSkeletonDim(dimName)
-Returns one specific dimension of the skeleton in frame 1 (as usually in motion capture scenarios, the actor stands on a t pose, frame 0 can be the most useful frame to calculate the skeleton dimensions).
+##### `getSkeletonDim(dimName: str) -> float`
+Returns one specific dimension of the skeleton at frame 0 (as usually in motion capture scenarios, the actor stands on a t pose, frame 0 can be the most useful frame to calculate the skeleton dimensions).
 
 The options for *dimName* are "height", "width" and "depth".
 
 **Note**: If it would be necessary to calculate the skeleton dimensions based on a different frame, the Forward Kinematics module permits to calculate the world positions of all joints in any given frame.
 
-##### getFKAtFrame(frame)
+##### `getFKAtFrame(frame: int) -> Dict`
 This method is better defined in the Forward Kinematics section. It returns a dictionary containing the world positions of all joints.
-##### getFKAtFrameNormalized(frame)
+##### `getFKAtFrameNormalized(frame: int) -> Dict`
 This method is better defined in the Forward Kinematics section. It returns a dictionary containing the normalized world positions of all joints.
 
 ### The Skeleton object
@@ -65,57 +65,57 @@ This dictionary can also be returned in an abbreviated list form, using the [*ge
 
 #### Functions
 
-##### *getJoint(jointName)*
+##### `getJoint(jointName: str) -> Joint`
 Returns a [Joint](#the-joint-object) object given its name.
 
-##### *getJointIndex(jointName)*
+##### `getJointIndex(jointName: str) -> int`
 Given a joints name, it returns the value in the joint indexes list corresponding to that joint.
 
-##### *getJointIndexesList()*
+##### `getJointIndexesList() -> list[int]`
 Returns the [jointIndexes dictionary](#the-jointindexes-dictionary) in an abbreviated list format. Example:
 ```
 [0, 6, 9, 12, 15, 18, 18, 21, 24, 27, 30, 30, 33, 36, 39, 42, 45, 45, 48, 51, 54, 57, 57, 60, 63, 66, 69]
 ```
 
-##### *getHierarchyIndexesList()*
+##### `getHierarchyIndexesList() -> list[int]`
 Returns the [hierarchyIndexes dictionary](#the-hierarchyindexes-dictionary) in an abbreviated list format. Example:
 
 ```
 [-1, 0, 1, 2, 3, 4, 0, 6, 7, 8, 9, 0, 11, 12, 13, 14, 15, 13, 17, 18, 19, 20, 13, 22, 23, 24, 25]
 ```
 
-##### *printSkeleton()*
+##### `printSkeleton() -> None`
 This method is discussed in more detail [here](#print-skeleton-hierarchy). It basically prints the skeleton hierarchy in the console in a preformatted manner.
 
 ### The MotionData object
 The MotionData attributes showed in the [BVHData](#the-bvhdata-object) hierarchy can be directly accessed. Moreover, there are some helper functions to easily retrieve and modify the frames array. This can also be performed with regular python list slicing.
 
 #### Functions
-##### *addFrame(frameData)*
+##### `addFrame(frameData: list[float])`
 Appends a frame to the end of the frames. The frameData has to have the same dimension as the other frames in order to work properly.
 
-##### *getFrame(frameIndex)*
+##### `getFrame(frameIndex: int) -> list[float]`
 Returns the frame specified by *frameIndex*. It returns a list of float values.
 
-##### *getFrameSlice(startFrame, endFrame)*
+##### `getFrameSlice(startFrame: int, endFrame: int) -> list[list[[float]]`
 Returns a list of frames, from *startFrame* to *endFrame*. It returns a 2-dimensional list of floats.
 
-##### *getValues(valueIndex)*
+##### `getValues(valueIndex: int) -> list[float]`
 Returns a list of values specified by *valueIndex* (i.e. a vertical slice of the motion frames). 
 
-##### *getValuesSlice(startValue, endValue)*
+##### `getValuesSlice(startValue: int, endValue: int) -> list[list[float]]`
 Returns a list of values specified from *startValue* to *endValue* (i.e. a vertical slice of the motion frames). 
 
-##### *getValueAtFrame(valueIndex, frame)*
+##### `getValueAtFrame(valueIndex: int, frame: int) -> float`
 Returns the float value in column *valueIndex* and row *frame*.
 
-##### *getValueByJoint(joint)*
+##### `getValueByJoint(joint: Joint) -> list[list[float]]`
 Returns all the rotation and position values of a joint for all frames. For example, if a bvh has 1000 frames and the root has 6 channels (Xpos, Ypos, Zpos, Xrot, Yrot, Zrot), *getValueByJoint(bvh.skeleton.getJoint("root"))* will return a 6x1000 array of float values.
 
-##### *printHead(headSize = 10, verbose = False)*
+##### `printHead(headSize: int = 10, verbose: bool = False) -> None`
 Useful function that prints a summary of the motion frames information. Explained in more detail [here](#print-head-of-the-motion-data).
 
-##### *getFPS()*
+##### `getFPS() -> float`
 Returns the FPS of a given bvh file, by returning 1 / frameTime.
 
 ### The Joint object
@@ -134,29 +134,29 @@ Joint
 **Note:** motionIndex refers to the position where the joint values start in the motion part of the BVH file. For more information refer to the [jointIndexes dictionary](#the-jointindexes-dictionary) list in the Skeleton object.
 
 #### Functions
-##### *getChannelCount()*
+##### `getChannelCount() -> float`
 Returns the channel count of a specific joint (usually 6 for the root and 3 for any other joint).
 
-##### *getPositionChannelsOrder()*
+##### `getPositionChannelsOrder() -> str`
 Returns a string containing the order of the joints position channels. Possible return outcomes: [XYZ, XZY, YXZ, YZX, ZXY, ZYX]. 
 
 If the joint has no position channels, it will print a warning and return an empty string.
 
-##### *getRotationChannelsOrder()*
+##### `getRotationChannelsOrder() -> str`
 Returns a string containing the order of the joints rotation channels. Possible return outcomes: [XYZ, XZY, YXZ, YZX, ZXY, ZYX]. 
 
 If the joint has no rotation channels, it will print a warning and return an empty string.
 
-##### *getChannelIndex(channelName)*
+##### `getChannelIndex(channelName: str) -> int`
 Given a channel name (e.g. "positionY"), it returns the position of the channel in the channel list. 
 
 If the channel does not exist, it prints a warning and returns -1.
 
-##### *getRotationFromOffset(canonicalRotation)*
-Given a canonical rotation (typically (0, 1, 0)), returns the relative rotation that needs to be performed to arrive to the normalized offset of the joint. In other words, it returns the offset in "rotation form".
+##### `getRotationFromOffset(canonicalRotation: list[float]) -> list[float]`
+Given a canonical rotation (typically (0, 1, 0)), returns the relative rotation that needs to be performed to arrive to the normalized offset of the joint. In other words, it returns the offset of the joint in "rotation form".
 
-## 🧩 Examples of printing bvhData information
-Given a bvh file that is loaded in a **bvhData** object called 'bvh', these are some examples on how to access some attributes:
+## 🧩 Examples of printing BVHData information
+Given a bvh file that is loaded in a **BVHData** object called 'bvh', these are some examples on how to access some attributes:
 
 ```python
 # Printing the name of the root joint
@@ -182,11 +182,13 @@ print(bvh.skeleton.getValuesByJointName("Foot.R"))
 ```
 
 ## ⚙️ Useful functions
-Apart from directly accessing, modifying and retrieving the data from a **bvhData** object, there are some really useful functions to very rapidly get or print information about a bvh file.
+Apart from directly accessing, modifying and retrieving the data from a **BVHData** object, there are some really useful functions to very rapidly get or print information about a bvh file.
 ### Print head of the motion data
-The *printHead(verbose = False, headsize=10*) function prints the top 10 frames of the motion data in a summarized manner, as well as the dimensions of the motion data and frame time.
+##### `printHead(verbose: bool = False, headsize: int = 10) -> None`
+
+This function prints the top 10 frames of the motion data in a summarized manner, as well as the dimensions of the motion data and frame time.
 ```python
-bvhData.motion.printHead()
+bvh.motion.printHead()
 ```
 It also has a *verbose = True* mode to print the entire frames instead of summarizing them. The number of the frames that will be printed can also be changed with the *headSize* option.
 This is an example of what the method can print with *headSize = 3*.
@@ -202,9 +204,11 @@ HEAD
 [-224.714798, 91.882637, -431.638702, 91.906342, 5.833432, 88.884257] ... [-22.289834, 15.967946, -1.200341, 7.010451, 3.451661, -14.264404]
 ```
 ### Print skeleton hierarchy
-The *printSkeleton(verbose = False)* function prints the skeleton hierarchy to the console in a formatted manner, with colors and a hierarchical structure.
+##### `printSkeleton(verbose: bool = False) -> None`
+
+This function prints the skeleton hierarchy to the console in a formatted manner, with colors and a hierarchical structure.
 ```python
-bvhData.skeleton.printSkeleton()
+bvh.skeleton.printSkeleton()
 ```
 It also has a *verbose = True* option, that prints the channels and offset of every joint. The following is an example of what the method prints without the verbose flag:
 ```

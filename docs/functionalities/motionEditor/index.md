@@ -4,7 +4,8 @@ The **bvhMotionEditor** class enables to modify aspects related to the motion in
 On the other hand, the motion editor changes aspects just related to the motion, such as the FPS of an animation.
 
 ## ⏱️ Resampling the FPS of an animation
-The *resampleFPS(bvh, fps)* function changes the FPS of an animation, by resampling the curve of the original BVH motion section. It returns a new **BVHData** object, with the new animation. It essentially does 3 things:
+##### `resampleFPS(bvh: BVHData, fps: int) -> BVHData`
+This function changes the FPS of an animation, by resampling the curve of the original BVH motion section. It returns a new **BVHData** object, with the new animation. It essentially does 3 things:
 - It changes the frameTime value of the BVH header.
 - It calculates the new motion section: it can either upsample or downsample the original motion. It will resample the original motion curve, by using weighted linear interpolation.
 - It changes the numFrames value with the new amount of frames.
