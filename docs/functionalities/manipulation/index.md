@@ -88,3 +88,31 @@ from bvhTools.bvhManipulation import rotateSkeletonLocal
 
 rotatedBvh = rotateSkeletonLocal(bvhData, [0, 90, 0]) # The new motion will be rotated 90 degrees around the vertical Y axis around the root joint position.
 ```
+
+## Mirroring the skeleton
+##### `mirrorSkeleton(bvhData: BVHData, flipAxis: str, jointPairs: list[list[str]]) -> BVHData:`
+
+This function permits to flip the animation in any axis. However, it **does not** change the structure of the original bvh hierarchy. This means, that the skeleton being mirrored has to be symmetric. For example, if your animation file has just one right arm and no left arm, this function **will not** create a left arm and attach the right arm motion to it. It will just flip the right arm, which will stay in the same right side, but flipped. 
+
+However, this does not mean that all the bones in the skeleton need to have a right-left counterpart: the back bones of an animation will just be flipped and a person bending to the left will bend to the right, for instance. If a bone **does have** a left-right counterpart, this function **will exchange** the motion between the two bones: for example, if a person scratches their head with their right hand, the flipped version will scratch the head with the left hand. For this to work, all the left-right pairs need to be provided in the *jointPairs* parameter, as a list containing pairs (lists of 2 strings).
+
+```python
+from bvhTools.bvhManipulation import mirrorSkeleton
+
+# first, prepare the joints that need to be swapped
+jointPairs = [["LeftUpLeg", "RightUpLeg"], ["LeftLeg", "RightLeg"], ["LeftFoot", "RightFoot"], ["LeftToe", "RightToe"], ["LeftShoulder", "RightShoulder"], ["LeftArm", "RightArm"], ["LeftForeArm", "RightForeArm"], ["LeftHand", "RightHand"]]
+
+mirroredBvh = mirrorSkeleton(bvhData, "x", jointPairs) # The new motion will be flipped in the x axis
+```
+
+**Important note: Mirroring BVH animations is not trivial, and it depends on the forward direction of the animation. For this reason, a BVH file might need to be flipped in the X axis, while other might need to be flipped in the Z axis. Moreover, even after flipping, you might need to rotate the flipped skeleton so the forward directions match.You can do so with the [rotateSkeletonLocal](#rotating-the-bvh-in-local-coordinates) or the [rotateSkeletonWorld](#rotating-the-bvh-in-world-coordinates) functions. The following example shows how to do it:**
+
+```python
+from bvhTools.bvhManipulation import mirrorSkeleton, rotateSkeletonLocal
+
+# first, prepare the joints that need to be swapped
+jointPairs = [["LeftUpLeg", "RightUpLeg"], ["LeftLeg", "RightLeg"], ["LeftFoot", "RightFoot"], ["LeftToe", "RightToe"], ["LeftShoulder", "RightShoulder"], ["LeftArm", "RightArm"], ["LeftForeArm", "RightForeArm"], ["LeftHand", "RightHand"]]
+
+mirroredBvh = mirrorSkeleton(bvhData, "z", jointPairs) # The new motion will be flipped in the z axis
+mirroredBvh = rotateSkeletonLocal(mirroredBvh, [0, 180, 0]) # In this example, the new motion needed to be rotated in order to have the same forward direction as the original file
+```
