@@ -1,5 +1,6 @@
 import copy
 from scipy.spatial.transform import Rotation as R
+import numpy as np
 
 def centerSkeletonRoot(bvhData, fkFrame=0):
     bvhDataCopy = copy.deepcopy(bvhData)
@@ -120,4 +121,67 @@ def moveSkeleton(bvhData, offsets):
         frame[rootIndex+1] += offsets[1]
         frame[rootIndex+2] += offsets[2]
 
+    return bvhDataCopy
+
+def mirrorSkeleton(bvhData, flipAxis, jointPairs):
+    if (flipAxis != "X" and flipAxis != "Y" and flipAxis != "Z" and flipAxis != "x" and flipAxis != "y" and flipAxis != "z"):
+        print(f"\033[1;33mWARNING\033[0m: flipAxis needs to be X, Y or Z. Returning original BVH.")
+        return bvhData
+
+    bvhDataCopy = copy.deepcopy(bvhData)
+    if(flipAxis == "X" or flipAxis == "x"):
+        mirror_rot = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    elif(flipAxis == "Y" or flipAxis == "y"):
+        mirror_rot = np.array([[1, 0, 0], [0, -1, 0], [0, 0, 1]])
+    elif(flipAxis == "Z" or flipAxis == "z"):
+        mirror_rot = np.array([[1, 0, 0], [0, 1, 0], [0, 0, -1]])
+
+    for joint in bvhData.skeleton.joints.values():
+        if("EndSite" in joint.name):
+            continue
+        jointIndex = bvhData.skeleton.getJointIndex(joint.name)
+        rotChannelsOrder = joint.getRotationChannelsOrder()
+        for frame in bvhDataCopy.motion.frames:
+            if(joint.getChannelCount() == 3):
+                rot = R.from_euler(rotChannelsOrder, frame[jointIndex:jointIndex+3], degrees=True)
+                newRot = R.as_euler(R.from_matrix(mirror_rot @ rot.as_matrix() @ mirror_rot), rotChannelsOrder, degrees=True)
+                frame[jointIndex:jointIndex+3] = [newRot[0], newRot[1], newRot[2]]
+            else:
+                if(flipAxis == "X" or flipAxis == "x"):
+                    posFlip = joint.getChannelIndex("Xposition")
+                if(flipAxis == "Y" or flipAxis == "y"):
+                    posFlip = joint.getChannelIndex("Yposition")
+                if(flipAxis == "Z" or flipAxis == "z"):
+                    posFlip = joint.getChannelIndex("Zposition")
+
+                if(posFlip == 0 or posFlip == 1 or posFlip == 2):
+                    pos = np.asarray(frame[jointIndex:jointIndex+3]) * np.asarray([-1 if posFlip == 0 else 1, -1 if posFlip == 1 else 1, -1 if posFlip == 2 else 1])
+                    rot = R.from_euler(rotChannelsOrder, frame[jointIndex+3:jointIndex+6], degrees=True)
+                    newRot = R.as_euler(R.from_matrix(mirror_rot @ rot.as_matrix() @ mirror_rot), rotChannelsOrder, degrees=True)
+                    frame[jointIndex:jointIndex+6] = [pos[0], pos[1], pos[2], newRot[0], newRot[1], newRot[2]]
+                else:
+                    pos = np.asarray(frame[jointIndex:jointIndex+3]) * np.asarray([-1 if posFlip == 3 else 1, -1 if posFlip == 4 else 1, -1 if posFlip == 5 else 1])
+                    rot = R.from_euler(rotChannelsOrder, frame[jointIndex+3:jointIndex+6], degrees=True)
+                    newRot = R.as_euler(R.from_matrix(mirror_rot @ rot.as_matrix() @ mirror_rot), rotChannelsOrder, degrees=True)
+                    frame[jointIndex:jointIndex+6] = [newRot[0], newRot[1], newRot[2], pos[0], pos[1], pos[2]]
+    
+    bvhDataCopy.motion.frames = np.asarray(bvhDataCopy.motion.frames)
+    for jointPair in jointPairs:
+        joint1 = jointPair[0]
+        joint2 = jointPair[1]
+        jointIndex1 = bvhData.skeleton.getJointIndex(joint1)
+        jointIndex2 = bvhData.skeleton.getJointIndex(joint2)
+        jointChannelCount1 = bvhData.skeleton.getJoint(joint1).getChannelCount()
+        jointChannelCount2 = bvhData.skeleton.getJoint(joint2).getChannelCount()
+
+        if(jointChannelCount1 != jointChannelCount2):
+            print(f"\033[1;33mWARNING\033[0m: joint pair {joint1}, {joint2} needs to have the same number of channels. Returning original BVH.")
+            return bvhData
+        
+        block1 = copy.deepcopy(bvhDataCopy.motion.frames[:, jointIndex1:jointIndex1+jointChannelCount1])
+        block2 = copy.deepcopy(bvhDataCopy.motion.frames[:, jointIndex2:jointIndex2+jointChannelCount2])
+
+        bvhDataCopy.motion.frames[:, jointIndex1:jointIndex1+jointChannelCount1] = block2
+        bvhDataCopy.motion.frames[:, jointIndex2:jointIndex2+jointChannelCount2] = block1
+    bvhDataCopy.motion.frames = bvhDataCopy.motion.frames.tolist()
     return bvhDataCopy
