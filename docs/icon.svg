@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="192.98709mm"
+   height="192.98709mm"
+   viewBox="0 0 192.98709 192.98709"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="icon_path.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.5"
+     inkscape:cx="262"
+     inkscape:cy="488"
+     inkscape:window-width="2560"
+     inkscape:window-height="1376"
+     inkscape:window-x="0"
+     inkscape:window-y="36"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <rect
+       x="219.48596"
+       y="729.30994"
+       width="362.32153"
+       height="102.95473"
+       id="rect3112" />
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Geruza 0"
+     transform="translate(-8.2020836,-11.1125)">
+    <rect
+       style="fill:#3b3b3b;fill-opacity:1;stroke:none;stroke-width:1.665;stroke-opacity:1"
+       id="rect856"
+       width="192.98709"
+       height="192.98709"
+       x="8.2020836"
+       y="11.1125"
+       ry="18.891249" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="173.03749"
+       y="30.003746"
+       id="text1656"><tspan
+         sodipodi:role="line"
+         id="tspan1654"
+         style="stroke-width:0.264583"
+         x="173.03749"
+         y="30.003746" /></text>
+  </g>
+  <g
+     inkscape:label="Geruza 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-8.2020836,-11.1125)">
+    <path
+       style="fill:none;stroke:#8787de;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       d="m 68.864464,144.37325 -2.025801,-17.05728 -2.025801,-17.05727 3.94963,-34.308296 36.061558,-4.433084 -0.003,-37.828219"
+       id="path2221"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       style="fill:none;stroke:#8787de;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       d="m 140.67832,144.37316 2.0258,-17.05726 2.0258,-17.05726 -3.94963,-34.308269 -35.98055,-4.433081 0.003,-37.909221"
+       id="path2445"
+       sodipodi:nodetypes="cccccc" />
+    <g
+       aria-label="bvhTools"
+       transform="matrix(0.62521536,0,0,0.62521536,-114.58218,-288.21793)"
+       id="text3110"
+       style="font-size:40px;white-space:pre;shape-inside:url(#rect3112);fill:#3b3b3b">
+      <path
+         d="m 219.48633,716.31055 h 10 v 10 h 15 v 5 h 5 v 30 h -5 v 5 h -25 z m 10,20 v 20 h 10 v -20 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#8787de"
+         id="path310" />
+      <path
+         d="m 254.48633,726.31055 h 10 v 25 h 10 v -25 h 10 v 30 h -5 v 5 h -5 v 5 h -10 v -5 h -5 v -5 h -5 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#8787de"
+         id="path312" />
+      <path
+         d="m 289.48633,716.31055 h 10 v 10 h 15 v 5 h 5 v 35 h -10 v -30 h -10 v 30 h -10 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#8787de"
+         id="path314" />
+      <path
+         d="m 324.48633,716.31055 h 30 v 10 h -10 v 40 h -10 v -40 h -10 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#cccccc"
+         id="path316" />
+      <path
+         d="m 364.48633,726.31055 h 20 v 5 h 5 v 30 h -5 v 5 h -20 v -5 h -5 v -30 h 5 z m 5,10 v 20 h 10 v -20 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#cccccc"
+         id="path318" />
+      <path
+         d="m 399.48633,726.31055 h 20 v 5 h 5 v 30 h -5 v 5 h -20 v -5 h -5 v -30 h 5 z m 5,10 v 20 h 10 v -20 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#cccccc"
+         id="path320" />
+      <path
+         d="m 429.48633,716.31055 h 10 v 40 h 10 v 10 h -15 v -5 h -5 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#cccccc"
+         id="path322" />
+      <path
+         d="m 459.48633,726.31055 h 25 v 10 h -20 v 5 h 15 v 5 h 5 v 15 h -5 v 5 h -25 v -10 h 20 v -5 h -15 v -5 h -5 v -15 h 5 z"
+         style="font-family:'Thin sans';-inkscape-font-specification:'Thin sans';fill:#cccccc"
+         id="path324" />
+    </g>
+    <path
+       style="fill:none;stroke:#8787de;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       d="m 104.94924,129.05635 c -0.16436,-34.145524 -0.14921,-61.261409 -0.1465,-95.448281"
+       id="path4034"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Geruza 2"
+     transform="translate(-8.2020836,-11.1125)">
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="path111"
+       cx="105.00197"
+       cy="33.549305"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle481"
+       cx="105.00197"
+       cy="70.402229"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle483"
+       cx="68.975754"
+       cy="75.215286"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle485"
+       cx="141.02766"
+       cy="75.215286"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle487"
+       cx="64.97287"
+       cy="109.5943"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle489"
+       cx="145.03055"
+       cy="109.5943"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle491"
+       cx="68.975754"
+       cy="145.22701"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle493"
+       cx="141.02766"
+       cy="145.22701"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle4030"
+       cx="105.00197"
+       cy="97.904266"
+       r="5.1050229" />
+    <circle
+       style="fill:#cccccc;stroke-width:0.0803894"
+       id="circle4032"
+       cx="105.00197"
+       cy="127.76363"
+       r="5.1050229" />
+  </g>
+</svg>
