@@ -76,4 +76,4 @@ If you find bvhTools useful, please give it a star! :)
 | Metrics: spectral analysis and fast fourier transform | 🐣 Planned |
 | Metrics: foot sliding masks | 🐣 Planned |
 
-Feel free to suggest more functionalities that you think they might be helpful! Code contributions are also welcome!
+Feel free to suggest more functionalities that you think might be helpful! Code contributions are also welcome!
