@@ -2,6 +2,7 @@ from scipy.spatial.transform import Rotation as R
 import numpy as np
 import copy
 import re
+from bvhTools.angleConversion import scipyToSixD
 
 class Joint:
     def __init__(self, name, index, offset, channels, parent=None):
@@ -94,6 +95,10 @@ class Skeleton:
         self.joints = self.buildJointDict(rootJoint)
         self.jointIndexes = self.buildJointIndexDict(rootJoint, [0])
         self.hierarchyIndexes = self.buildHierarchyIndexDict(rootJoint, [0])
+        self.parent = None
+        
+    def setParent(self, parent):
+        self.parent = parent
 
     def buildJointDict(self, joint):
         jointDict = {joint.name: joint}
@@ -167,6 +172,11 @@ class MotionData:
         self.numFrames = len(frames)
         self.frameTime = frameTime
         self.frames = frames
+        self.representationCache = {}
+        self.parent = None
+
+    def setParent(self, parent):
+        self.parent = parent
 
     def addFrame(self, frameData):
         self.frames.append(frameData)
@@ -206,12 +216,69 @@ class MotionData:
     def getFPS(self):
         return 1.0 / self.frameTime
     
+    def getRepresentation(self, representation):
+        representation = representation.lower()
+        if not(representation == "euler" or representation == "quaternion" or representation == "sixd" or representation == "matrix" or representation == "rotvec" or representation == "mrp"):
+            raise ValueError(f"The representation must be a string : [Euler, Quaternion, SixD, Matrix, RotVec, Mrp]")
+        
+        if(self.parent is None):
+            raise PermissionError(f"You can't change the representation of motion without a parent skeleton")
+        
+        skeleton = self.parent.skeleton
+        
+        if(representation not in self.representationCache):
+            newFrames = []
+            for frame in self.frames:
+                newFrame = []
+                for joint in skeleton.joints.values():
+                    if("EndSite" in joint.name):
+                        continue
+                    jointIndex = skeleton.getJointIndex(joint.name)
+                    rotChannelsOrder = joint.getRotationChannelsOrder()
+                    if(joint.getChannelCount() == 3):
+                        rot = R.from_euler(rotChannelsOrder, frame[jointIndex:jointIndex+3], degrees=True)
+                    else:
+                        if(joint.getChannelIndex("Xposition") == 0 or joint.getChannelIndex("Xposition") == 1 or joint.getChannelIndex("Xposition") == 2):
+                            pos = frame[jointIndex:jointIndex+3]
+                            rot = R.from_euler(rotChannelsOrder, frame[jointIndex+3:jointIndex+6], degrees=True)
+                        else:
+                            pos = frame[jointIndex+3:jointIndex+6]
+                            rot = R.from_euler(rotChannelsOrder, frame[jointIndex:jointIndex+3], degrees=True)
+                    
+                    if(representation == "quaternion"):
+                        rot = rot.as_quat()
+                    if(representation == "sixd"):
+                        rot = scipyToSixD(rot)
+                    if(representation == "matrix"):
+                        rot = rot.as_matrix().flatten()
+                    if(representation == "rotvec"):
+                        rot = rot.as_rotvec()
+                    if(representation == "mrp"):
+                        rot = rot.as_mrp()
+                    
+                    if(joint.getChannelCount() == 3):
+                        newFrame.extend(rot)
+                    elif(joint.getChannelIndex("Xposition") == 0 or joint.getChannelIndex("Xposition") == 1 or joint.getChannelIndex("Xposition") == 2):
+                        newFrame.extend(pos)
+                        newFrame.extend(rot)
+                    else:
+                        newFrame.extend(rot)
+                        newFrame.extend(pos)
+
+                newFrames.append(newFrame)
+                    
+            self.representationCache[representation] = newFrames
+
+        return self.representationCache[representation]
+    
 class BVHData:
     def __init__(self, skeleton, motion):
         self.skeleton = skeleton
         self.motion = motion
         self.skeletonDims = self.calculateSkeletonDims()
         self.motionDims = None
+        self.motion.setParent(self)
+        self.skeleton.setParent(self)
         
     def getJointLocalTransformAtFrame(self, jointName, frame, rotationMode = "Euler"):
         joint = self.skeleton.getJoint(jointName)
