@@ -13,15 +13,16 @@ BVHData
     |   |
     |   ├── root (Joint)
     |   ├── joints (Dict(Joint))
-    |   ├── jointIndexes (int[])
-    |   └── hierarchyIndexes (int[])
+    |   ├── jointIndexes (list[int])
+    |   └── hierarchyIndexes (list[int])
     ├── motion (MotionData)
     |   |
     |   ├── numFrames (int)
     |   ├── frameTime (float)
-    |   └── frames (float[][])
-    ├── skeletonDims (float[])
-    └── motionDims (float[])
+    |   ├── frames (list[list[float]])
+    |   └── representationCache (Dict(list[list[float]]))
+    ├── skeletonDims (list[float])
+    └── motionDims (list[float])
 ```
 All these attributes can be directly accessed, and there are also some helper functions for ease of access to typical attributes.
 
@@ -88,7 +89,20 @@ Returns the [hierarchyIndexes dictionary](#the-hierarchyindexes-dictionary) in a
 This method is discussed in more detail [here](#print-skeleton-hierarchy). It basically prints the skeleton hierarchy in the console in a preformatted manner.
 
 ### The MotionData object
-The MotionData attributes showed in the [BVHData](#the-bvhdata-object) hierarchy can be directly accessed. Moreover, there are some helper functions to easily retrieve and modify the frames array. This can also be performed with regular python list slicing.
+The MotionData attributes showed in the [BVHData](#the-bvhdata-object) hierarchy can be directly accessed. Moreover, there are some helper functions to easily retrieve and modify the frames array. This can also be performed with regular python list slicing. It also contains a dictionary called representationCache, explained below.
+
+#### The representation cache
+The MotionData object saves the original motion using Euler angles, loaded from the BVH files, but it also permits to convert the motion to other angle representations. These new representations are not computed by default, only if asked explicitly, using the `getRepresentation(representation: str)` function, explained below.
+
+This cache can contain different representations at the same time, like matrices, 6-dimensional rotations or quaternions. All of these different representations will be saved in the representation cache the first time they are computed, for faster retrieval. The different representations do NOT change the position channels, only the rotation channels, and convert the data into flat vectors, the same way as the original Euler representation.
+
+For example, if the frames of a BVH contain 22 joints, each one having 3 rotation channels, and the root having 3 position + 3 rotation channels (69 channels total):
+
+- A quaternion representation will have: 3 position + 4 x 22 rotation channels (91 total)
+- A 6 dimensional representation will have 3 position + 6 x 22 rotation channels (135 total)
+- A matric representation will have: 3 position + 9 x 22 rotation channels (201 total)
+
+And so on.
 
 #### Functions
 ##### `addFrame(frameData: list[float])`
@@ -112,6 +126,17 @@ Returns the float value in column *valueIndex* and row *frame*.
 ##### `getValueByJoint(joint: Joint) -> list[list[float]]`
 Returns all the rotation and position values of a joint for all frames. For example, if a bvh has 1000 frames and the root has 6 channels (Xpos, Ypos, Zpos, Xrot, Yrot, Zrot), *getValueByJoint(bvh.skeleton.getJoint("root"))* will return a 6x1000 array of float values.
 
+##### `getRepresentation(representation: str) -> list[list[float]]`
+This function returns the motion array using other angle representations. First, it fills the motion cache with the selected representation, if it has not already been computed; otherwise, it directly returns the precomputed data.
+
+Options for the representation variable:
+- `euler` (returns original motion)
+- `quaternion` (unit quaternions)
+- `sixd` (six dimensional representation by [Zhou et al.](https://zhouyisjtu.github.io/project_rotation/rotation.html))
+- `matrix` (flattened rotation matrices)
+- `rotvec` (rotation vectors)
+- `mrp` (modified Rodrigues parameters)
+
 ##### `printHead(headSize: int = 10, verbose: bool = False) -> None`
 Useful function that prints a summary of the motion frames information. Explained in more detail [here](#print-head-of-the-motion-data).
 
@@ -125,9 +150,9 @@ Joint
     ├── name (string)
     ├── index (int)
     ├── motionIndex (int)
-    ├── offset (float[])
-    ├── channels (string[])
-    ├── children (Joint[])
+    ├── offset (list[float])
+    ├── channels (list[string])
+    ├── children (list[Joint])
     └── parent (Joint)
 ```
 
