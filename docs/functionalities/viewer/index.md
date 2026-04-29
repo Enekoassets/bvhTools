@@ -13,6 +13,29 @@ showBvhAnimation(bvhData)
 showBvhAnimation([bvhData0, bvhData1, bvhData2])
 ```
 
+### 🧅 Onion skin visualization
+Onion skin visualization is a useful way of representing an animation in a single image. The viewer implements a function to create this kind of visualizations, and provides a way to render screen captures of them, just by pressing the "c" button, for scientific purposes among others.
+![onion](../../media/onion_visualization.png)
+
+##### `showOnionSkinAnimation(bvhData: BVHData | list[BVHData]) -> None`
+```python
+from bvhTools.bvhVisualizer import showOnionSkinAnimation
+# showing one animation file
+showBvhAnimation(bvhData)
+# showing various animation files (NOT RECOMMENDED IF THEY ARE NOT VERY SHORT)
+showBvhAnimation([bvhData0, bvhData1, bvhData2])
+```
+
+**Important note:** The onion skin visualization has to render a lot of capsules every frame, depending on the length of the provided animation and the structure of the BVH tree. For this reason, I suggest not to visualize very long animations. If you NEED to visualize a long animation (this depends on the hardware, but I have made a stress test with my laptop and FPS started to decay at 200 frames) one option is to [resample](../motionEditor/index.md#️-resampling-the-fps-of-an-animation) the original animation to represent a longer time with less frames.
+```python
+from bvhTools.bvhVisualizer import showOnionSkinAnimation
+from bvhTools.motionEditor import resampleFPS
+# original animation: 30 fps, 2000 frames
+bvh = resampleFPS(bvh, 3) # resampled animation: 30 fps, 200 frames
+showBvhAnimation(bvh)
+```
+
+
 ## <img src="/bvhTools/media/mpl.png" width="40" style="vertical-align: middle;" /> Matplotlib visualizer (Deprecated)
 ⚠️ *Note: This visualizer is deprecated, I suggest to use the [raylib visualizer](#raylib-visualizer) for simpicity, better performance, and overall experience. Above everything, the raylib visualizer is capable to show many animations at the same time, with no FPS drawback.*
 
