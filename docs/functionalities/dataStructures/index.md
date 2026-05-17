@@ -85,7 +85,7 @@ Returns the [hierarchyIndexes dictionary](#the-hierarchyindexes-dictionary) in a
 [-1, 0, 1, 2, 3, 4, 0, 6, 7, 8, 9, 0, 11, 12, 13, 14, 15, 13, 17, 18, 19, 20, 13, 22, 23, 24, 25]
 ```
 
-##### `printSkeleton() -> None`
+##### `printSkeleton(verbose: bool = False) -> None`
 This method is discussed in more detail [here](#print-skeleton-hierarchy). It basically prints the skeleton hierarchy in the console in a preformatted manner.
 
 ### The MotionData object
