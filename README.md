@@ -75,5 +75,14 @@ If you find bvhTools useful, please give it a star! :)
 | Edit rest pose | 🐣 Planned |
 | Metrics: spectral analysis and fast fourier transform | 🐣 Planned |
 | Metrics: foot sliding masks | 🐣 Planned |
+| **Machine learning pipeline integration** | 🧑‍💻 Active |
+| - ML pipeline: automatic dataset loading | 🧑‍💻 Active |
+| - ML pipeline: data normalization | 🧑‍💻 Active |
+| - ML pipeline: attaching labels | 🧑‍💻 Active |
+| - ML pipeline: attaching other data modalities | 🐣 Planned |
+| - ML pipeline: windowing and lazy views | 🧑‍💻 Active |
+| - ML pipeline: data splits | 🧑‍💻 Active |
+| - ML pipeline: pytorch integration | 🧑‍💻 Active |
+| - ML pipeline: materializing datasets | 🧑‍💻 Active |
 
 Feel free to suggest more functionalities that you think might be helpful! Code contributions are also welcome!
