@@ -89,7 +89,7 @@ def rotate_bvh(args):
 
 def view_bvh(args):
     bvhData = bvhIO.readBvh(args.bvhFile)
-    bvhVisualizer.showBvhAnimation(bvhData, showPoints=args.noPoints, showLines=args.noLines, showLabels=args.noLabels)
+    bvhVisualizer.showBvhAnimation(bvhData)
 
 def slice_bvh(args):
     bvhData = bvhIO.readBvh(args.bvhFile)
