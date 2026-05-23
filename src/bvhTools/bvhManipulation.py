@@ -1,8 +1,9 @@
 import copy
 from scipy.spatial.transform import Rotation as R
 import numpy as np
+from bvhTools.bvhDataTypes import BVHData
 
-def centerSkeletonRoot(bvhData, fkFrame=0):
+def centerSkeletonRoot(bvhData: BVHData, fkFrame: int = 0) -> BVHData:
     bvhDataCopy = copy.deepcopy(bvhData)
     frame = bvhDataCopy.motion.getFrame(fkFrame)
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
@@ -14,7 +15,7 @@ def centerSkeletonRoot(bvhData, fkFrame=0):
 
     return bvhDataCopy
 
-def centerSkeletonFeet(bvhData, leftFootName = "LeftFoot", rightFootName = "RightFoot", fkFrame=0):
+def centerSkeletonFeet(bvhData: BVHData, leftFootName: str = "LeftFoot", rightFootName: str = "RightFoot", fkFrame: int = 0) -> BVHData:
     bvhDataCopy = copy.deepcopy(bvhData)
     if(leftFootName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Left foot name ({leftFootName}) not found in skeleton")
@@ -32,7 +33,7 @@ def centerSkeletonFeet(bvhData, leftFootName = "LeftFoot", rightFootName = "Righ
 
     return bvhDataCopy
 
-def centerSkeletonXZ(bvhData, fkFrame=0):
+def centerSkeletonXZ(bvhData: BVHData, fkFrame: int = 0) -> BVHData:
     bvhDataCopy = copy.deepcopy(bvhData)
     frame = bvhDataCopy.motion.getFrame(fkFrame)
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
@@ -43,7 +44,7 @@ def centerSkeletonXZ(bvhData, fkFrame=0):
 
     return bvhDataCopy
 
-def centerSkeletonAroundJoint(bvhData, jointName, fkFrame=0):
+def centerSkeletonAroundJoint(bvhData: BVHData, jointName: str, fkFrame: int = 0) -> BVHData:
     bvhDataCopy = copy.deepcopy(bvhData)
     if(jointName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Selected joint ({jointName}) not found in skeleton")
@@ -60,7 +61,7 @@ def centerSkeletonAroundJoint(bvhData, jointName, fkFrame=0):
 
     return bvhDataCopy
 
-def standSkeletonOnFloor(bvhData, leftFootName = "LeftFoot", rightFootName = "RightFoot", fkFrame=0):
+def standSkeletonOnFloor(bvhData: BVHData, leftFootName: str = "LeftFoot", rightFootName: str = "RightFoot", fkFrame: int = 0) -> BVHData:
     bvhDataCopy = copy.deepcopy(bvhData)
     if(leftFootName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Left foot name ({leftFootName}) not found in skeleton")
@@ -76,7 +77,7 @@ def standSkeletonOnFloor(bvhData, leftFootName = "LeftFoot", rightFootName = "Ri
 
     return bvhDataCopy
 
-def rotateSkeletonLocal(bvhData, angle, fkFrame=0):
+def rotateSkeletonLocal(bvhData: BVHData, angle: list[float], fkFrame: int = 0) -> BVHData:
     if(len(angle) != 3):
         raise Exception("angle must be a list of length 3")
     bvhDataCopy = copy.deepcopy(bvhData)
@@ -95,7 +96,7 @@ def rotateSkeletonLocal(bvhData, angle, fkFrame=0):
         frame[rootIndex+3:rootIndex+6] = newRotation.as_euler(rootChannelOrder, degrees=True)
     return bvhDataCopy
 
-def rotateSkeletonWorld(bvhData, angle):
+def rotateSkeletonWorld(bvhData: BVHData, angle: list[float]) -> BVHData:
     if(len(angle) != 3):
         raise Exception("angle must be a list of length 3")
     bvhDataCopy = copy.deepcopy(bvhData)
@@ -111,7 +112,7 @@ def rotateSkeletonWorld(bvhData, angle):
         frame[rootIndex+3:rootIndex+6] = newRotation.as_euler(rootChannelOrder, degrees=True)
     return bvhDataCopy
 
-def moveSkeleton(bvhData, offsets):
+def moveSkeleton(bvhData: BVHData, offsets: list[float]) -> BVHData:
     if(len(offsets) != 3):
         raise Exception("offsets must be a list of length 3")
     bvhDataCopy = copy.deepcopy(bvhData)
@@ -123,7 +124,7 @@ def moveSkeleton(bvhData, offsets):
 
     return bvhDataCopy
 
-def mirrorSkeleton(bvhData, flipAxis, jointPairs):
+def mirrorSkeleton(bvhData: BVHData, flipAxis: str, jointPairs: list[list[str]]) -> BVHData:
     if (flipAxis != "X" and flipAxis != "Y" and flipAxis != "Z" and flipAxis != "x" and flipAxis != "y" and flipAxis != "z"):
         print(f"\033[1;33mWARNING\033[0m: flipAxis needs to be X, Y or Z. Returning original BVH.")
         return bvhData

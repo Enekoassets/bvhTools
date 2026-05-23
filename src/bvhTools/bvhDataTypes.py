@@ -14,22 +14,22 @@ class Joint:
         self.children = []
         self.parent = parent
 
-    def setOffset(self, offset):
+    def _setOffset(self, offset):
         self.offset = offset
 
-    def setChannels(self, channels):
+    def _setChannels(self, channels):
         self.channels = channels
 
-    def setParent(self, parent):
+    def _setParent(self, parent):
         self.parent = parent
 
-    def addChild(self, child):
+    def _addChild(self, child):
         self.children.append(child)
 
-    def getChannelCount(self):
+    def getChannelCount(self) -> int:
         return len(self.channels)
     
-    def getPositionChannelsOrder(self):
+    def getPositionChannelsOrder(self) -> str:
         if("position" not in self.channels[0] and len(self.channels) <= 3):
             print(f"\033[1;33mWARNING\033[0m: joint {self.name} has no position channels")
             return ""
@@ -50,7 +50,7 @@ class Joint:
             if(positionChannels[1] == "Yposition"):
                 return "ZYX"
 
-    def getRotationChannelsOrder(self):
+    def getRotationChannelsOrder(self) -> str:
         if("rotation" not in self.channels[0] and len(self.channels) <= 3):
             print(f"\033[1;33mWARNING\033[0m: joint {self.name} has no rotation channels")
             return ""
@@ -71,13 +71,13 @@ class Joint:
             if(rotationChannels[1] == "Yrotation"):
                 return "ZYX"
             
-    def getChannelIndex(self, channelName):
+    def getChannelIndex(self, channelName: str) -> int:
         if(channelName not in self.channels):
             print(f"\033[1;33mWARNING\033[0m: joint {self.name} does not have channel {channelName}")
             return -1
         return self.channels.index(channelName)
     
-    def getRotationFromOffset(self, canonicalRotation):
+    def getRotationFromOffset(self, canonicalRotation: list[float]) -> list[float]:
         offset = np.array(self.offset)
         offsetNormalized = offset / np.linalg.norm(offset)
         axis = np.cross(canonicalRotation, offsetNormalized)
@@ -92,21 +92,21 @@ class Joint:
 class Skeleton:
     def __init__(self, rootJoint):
         self.root = rootJoint
-        self.joints = self.buildJointDict(rootJoint)
-        self.jointIndexes = self.buildJointIndexDict(rootJoint, [0])
-        self.hierarchyIndexes = self.buildHierarchyIndexDict(rootJoint, [0])
+        self.joints = self._buildJointDict(rootJoint)
+        self.jointIndexes = self._buildJointIndexDict(rootJoint, [0])
+        self.hierarchyIndexes = self._buildHierarchyIndexDict(rootJoint, [0])
         self.parent = None
         
-    def setParent(self, parent):
+    def _setParent(self, parent):
         self.parent = parent
 
-    def buildJointDict(self, joint):
+    def _buildJointDict(self, joint):
         jointDict = {joint.name: joint}
         for child in joint.children:
-            jointDict.update(self.buildJointDict(child))
+            jointDict.update(self._buildJointDict(child))
         return jointDict
 
-    def buildJointIndexDict(self, joint, currentChannelIndex=None, jointIndex = None):
+    def _buildJointIndexDict(self, joint, currentChannelIndex=None, jointIndex = None):
         if currentChannelIndex is None:
             currentChannelIndex = [0]
         if jointIndex is None:
@@ -118,34 +118,34 @@ class Skeleton:
         currentChannelIndex[0] += joint.getChannelCount()
         jointIndex[0] += 1
         for child in joint.children:
-            jointIndexDict.update(self.buildJointIndexDict(child, currentChannelIndex, jointIndex))
+            jointIndexDict.update(self._buildJointIndexDict(child, currentChannelIndex, jointIndex))
         return jointIndexDict
 
-    def buildHierarchyIndexDict(self, joint, currentChannelIndex=[0]):
+    def _buildHierarchyIndexDict(self, joint, currentChannelIndex=[0]):
         if(joint.parent != None):
             jointHierarchyIndexDict = {joint.name: joint.parent.index}
         else:
             jointHierarchyIndexDict = {joint.name: -1}
         for child in joint.children:
-            jointHierarchyIndexDict.update(self.buildHierarchyIndexDict(child, currentChannelIndex))
+            jointHierarchyIndexDict.update(self._buildHierarchyIndexDict(child, currentChannelIndex))
         return jointHierarchyIndexDict
 
-    def getJoint(self, jointName):
+    def getJoint(self, jointName: str) -> Joint:
         return self.joints[jointName]
 
-    def getJointIndex(self, jointName):
+    def getJointIndex(self, jointName: str) -> int:
         return self.jointIndexes[jointName]
 
-    def getJointIndexesList(self):
+    def getJointIndexesList(self) -> list[int]:
         return list(self.jointIndexes.values())
     
-    def getJointHierarchyIndex(self, jointName):
+    def getHierarchyIndex(self, jointName: str) -> int:
         return self.hierarchyIndexes[jointName]
 
-    def getHierarchyIndexesList(self):
+    def getHierarchyIndexesList(self) -> list[int]:
         return list(self.hierarchyIndexes.values())
 
-    def printJoint(self, node, prefix='', verbose = False):
+    def _printJoint(self, node, prefix='', verbose = False):
         if node.parent == None:
             if not verbose:
                 print(f"\033[1;32m{node.name} {node.index}\033[0m")
@@ -160,10 +160,10 @@ class Skeleton:
                 print(f"\033[1;32m{prefix + connector + child.name} {child.index}\033[0m")
             else:
                 print(f"\033[1;32m{prefix + connector + child.name} {child.index}\033[0m: \033[1;34mChannels\033[0m: \033[36m{child.channels}\033[0m, \033[1;33mOffset\033[0m: \033[33m{child.offset}\033[0m")
-            self.printJoint(child, child_prefix, verbose=verbose)
+            self._printJoint(child, child_prefix, verbose=verbose)
 
-    def printSkeleton(self, verbose = False):
-        self.printJoint(self.root, verbose=verbose)
+    def printSkeleton(self, verbose:bool = False) -> None:
+        self._printJoint(self.root, verbose=verbose)
 
 class MotionData:
     def __init__(self, numFrames, frameTime, frames):
@@ -175,32 +175,32 @@ class MotionData:
         self.representationCache = {}
         self.parent = None
 
-    def setParent(self, parent):
+    def _setParent(self, parent):
         self.parent = parent
 
-    def addFrame(self, frameData):
+    def addFrame(self, frameData: list[float]) -> None:
         self.frames.append(frameData)
 
-    def getFrame(self, frameIndex):
+    def getFrame(self, frameIndex: int) -> list[float]:
         return self.frames[frameIndex]
     
-    def getFrameSlice(self, startFrame, endFrame):
+    def getFrameSlice(self, startFrame: int, endFrame: int) -> list[list[float]]:
         return self.frames[startFrame:endFrame]
 
-    def getValues(self, valueIndex):
+    def getValues(self, valueIndex: int) -> list[float]:
         return [x[valueIndex] for x in self.frames]
     
-    def getValuesSlice(self, valueIndex, startFrame, endFrame):
+    def getValuesSlice(self, valueIndex: int, startFrame: int, endFrame: int) -> list[list[float]]:
         return [x[valueIndex] for x in self.frames[startFrame:endFrame]]
 
-    def getValueAtFrame(self, valueIndex, frame):
+    def getValueAtFrame(self, valueIndex: int, frame: int) -> float:
         return self.frames[frame][valueIndex]
     
-    def getValuesByJoint(self, joint):
+    def getValuesByJoint(self, joint: Joint) -> list[list[float]]:
         jointIndex = joint.motionIndex
         return [x[jointIndex:jointIndex + joint.getChannelCount()] for x in self.frames]
 
-    def printHead(self, headSize = 10, verbose = False):
+    def printHead(self, headSize: int = 10, verbose: bool = False) -> None:
         print(f"\033[1;32mMOTION DATA\033[0m")
         print(f"\033[1;32mNumber of frames:\033[0m {self.numFrames}")
         print(f"\033[1;32mNumber of channels:\033[0m {len(self.frames[0])}")
@@ -213,10 +213,10 @@ class MotionData:
             else:
                 print(f"{self.frames[i]}")
 
-    def getFPS(self):
+    def getFPS(self) -> float:
         return 1.0 / self.frameTime
     
-    def getRepresentation(self, representation):
+    def getRepresentation(self, representation: str) -> list[list[float]]:
         representation = representation.lower()
         if not(representation == "euler" or representation == "quaternion" or representation == "sixd" or representation == "matrix" or representation == "rotvec" or representation == "mrp"):
             raise ValueError(f"The representation must be a string : [Euler, Quaternion, SixD, Matrix, RotVec, Mrp]")
@@ -275,12 +275,12 @@ class BVHData:
     def __init__(self, skeleton, motion):
         self.skeleton = skeleton
         self.motion = motion
-        self.skeletonDims = self.calculateSkeletonDims()
+        self.skeletonDims = self._calculateSkeletonDims()
         self.motionDims = None
-        self.motion.setParent(self)
-        self.skeleton.setParent(self)
+        self.motion._setParent(self)
+        self.skeleton._setParent(self)
         
-    def getJointLocalTransformAtFrame(self, jointName, frame, rotationMode = "Euler"):
+    def _getJointLocalTransformAtFrame(self, jointName, frame, rotationMode = "Euler"):
         joint = self.skeleton.getJoint(jointName)
         jointIndex = self.skeleton.getJointIndex(jointName)
         r = None
@@ -314,7 +314,7 @@ class BVHData:
             if(rotationMode == "Matrix"):
                 return r.as_matrix(), [Xpos, Ypos, Zpos]
 
-    def calculateSkeletonDims(self):
+    def _calculateSkeletonDims(self):
         minX, minY, minZ = float('inf'), float('inf'), float('inf')
         maxX, maxY, maxZ = float('-inf'), float('-inf'), float('-inf')
 
@@ -339,7 +339,7 @@ class BVHData:
 
         return [height, width, depth]
 
-    def getSkeletonDim(self, dimName):
+    def getSkeletonDim(self, dimName: str) -> float:
         if(dimName == "width"):
             return self.skeletonDims[0]
         if(dimName == "height"):
@@ -347,10 +347,10 @@ class BVHData:
         if(dimName == "depth"):
             return self.skeletonDims[2]
 
-    def getSkeletonDims(self):
+    def getSkeletonDims(self) -> list[float]:
         return self.skeletonDims
     
-    def calculateMotionDims(self):
+    def _calculateMotionDims(self):
         minX, minY, minZ = float('inf'), float('inf'), float('inf')
         maxX, maxY, maxZ = float('-inf'), float('-inf'), float('-inf')
 
@@ -370,13 +370,13 @@ class BVHData:
 
         return [minX, maxX, minY, maxY, minZ, maxZ]
 
-    def getMotionDims(self):
+    def _getMotionDims(self):
         if(self.motionDims is None):
-            self.motionDims = self.calculateMotionDims()
+            self.motionDims = self._calculateMotionDims()
         return self.motionDims
     
-    def getChildFKAtFrame(self, joint, frame, parentTransform, fkFrame):
-        localRot, localPos = self.getJointLocalTransformAtFrame(joint.name, frame, "Matrix")
+    def _getChildFKAtFrame(self, joint, frame, parentTransform, fkFrame):
+        localRot, localPos = self._getJointLocalTransformAtFrame(joint.name, frame, "Matrix")
         jointGlobalRot = np.matmul(parentTransform[0], localRot)
         rotatedOffset = np.matmul(parentTransform[0], joint.offset)
         if(any(ch in joint.channels for ch in ["Xposition", "Yposition", "Zposition"]) and joint == self.skeleton.root):
@@ -385,24 +385,24 @@ class BVHData:
             jointGlobalPos = np.add(rotatedOffset, parentTransform[1])
         fkFrame.update({joint.name: (jointGlobalRot, jointGlobalPos)})
         for child in joint.children:
-            self.getChildFKAtFrame(child, frame, (jointGlobalRot, jointGlobalPos), fkFrame)
+            self._getChildFKAtFrame(child, frame, (jointGlobalRot, jointGlobalPos), fkFrame)
 
-    def getFKAtFrame(self, frame):
+    def getFKAtFrame(self, frame: int) -> dict:
         rootJoint = self.skeleton.root
-        rootLocalRot, rootLocalPos = self.getJointLocalTransformAtFrame(rootJoint.name, frame, "Matrix")
+        rootLocalRot, rootLocalPos = self._getJointLocalTransformAtFrame(rootJoint.name, frame, "Matrix")
         fkFrame = {rootJoint.name: (rootLocalRot, rootLocalPos)}
         for child in rootJoint.children:
-            self.getChildFKAtFrame(child, frame, (rootLocalRot, rootLocalPos), fkFrame)
+            self._getChildFKAtFrame(child, frame, (rootLocalRot, rootLocalPos), fkFrame)
         return fkFrame
     
-    def getFKAtFrameNormalized(self, frame, skeletonDim = "height"):
+    def getFKAtFrameNormalized(self, frame: int, skeletonDim: str = "height") -> dict:
         fkFrame = self.getFKAtFrame(frame)
         normalizer = self.getSkeletonDim(skeletonDim)
         for jointName, (rot, pos) in fkFrame.items():
             fkFrame[jointName] = (rot, pos / normalizer)
         return fkFrame
     
-    def writeJoint(self, joint, indent = 0):
+    def _writeJoint(self, joint, indent = 0):
         lines = []
         tab = '\t' * indent
 
@@ -425,20 +425,20 @@ class BVHData:
 
         if(len(joint.children) > 0):
             for child in joint.children:
-                lines.extend(self.writeJoint(child, indent + 1))
+                lines.extend(self._writeJoint(child, indent + 1))
 
         lines.append(f"{tab}}}")
         return lines
 
-    def getHeader(self):
+    def getHeader(self) -> str:
         header = ["HIERARCHY"]
-        header.extend(self.writeJoint(self.skeleton.root, 0))
+        header.extend(self._writeJoint(self.skeleton.root, 0))
         header.append("MOTION")
         header.append(f"Frames: {self.motion.numFrames}")
         header.append(f"Frame Time: {self.motion.frameTime}")
         return header
     
-    def rewriteHeaderOffsets(self):
+    def _rewriteHeaderOffsets(self):
         jointName = ""
         for lineIndex, line in enumerate(self.header):
             if("ROOT" in line or "JOINT" in line): 
@@ -451,13 +451,13 @@ class BVHData:
                 line = re.sub(r'([-+]?\d*\.\d{6})\s+([-+]?\d*\.\d{6})\s+([-+]?\d*\.\d{6})$', ' '.join(newValuesFormatted), line)
                 self.header[lineIndex] = line
 
-    def getRestPoseJoint(self, joint, canonicalRotation, poseDict):
+    def _getRestPoseJoint(self, joint, canonicalRotation, poseDict):
         poseDict.update({joint.name: joint.getRotationFromOffset(canonicalRotation)})
         for child in joint.children:
             if("EndSite" not in child.name):
-                self.getRestPoseJoint(child, canonicalRotation, poseDict)
+                self._getRestPoseJoint(child, canonicalRotation, poseDict)
 
-    def getRestPose(self, canonicalAxis = "Y"):
+    def _getRestPose(self, canonicalAxis = "Y"):
         if(canonicalAxis == "X"):
             canonicalRotation = np.array([1, 0, 0])
         elif(canonicalAxis == "Y"):
@@ -468,17 +468,17 @@ class BVHData:
             print("ERROR: Invalid canonical axis. The canonical axis has to be either X, Y or Z. Default: Y.")
         root = self.skeleton.root
         poseDict = dict()
-        self.getRestPoseJoint(root, canonicalRotation, poseDict)
+        self._getRestPoseJoint(root, canonicalRotation, poseDict)
         return poseDict
     
-    def applyOffsetToChildren(self, joint, rNew):
+    def _applyOffsetToChildren(self, joint, rNew):
         for child in joint.children:
             length = np.linalg.norm(child.offset)
             canonical = np.array([0, 1, 0])
             child.offset = rNew.apply(canonical * length)
-            self.applyOffsetToChildren(child, rNew)
+            self._applyOffsetToChildren(child, rNew)
 
-    def applyRotationToItselfAndChildren(self, joint, oldPose, newPose, rNew):
+    def _applyRotationToItselfAndChildren(self, joint, oldPose, newPose, rNew):
         for frame in self.motion.frames:
             rotationChannels = [0, 1, 2] if("rotation" in joint.channels[0] or "rotation" in joint.channels[1] or "rotation" in joint.channels[2]) else [3, 4, 5]
             oldRotation = R.from_euler(joint.getRotationChannelsOrder(), [frame[self.skeleton.getJointIndex(joint.name) + rotationChannels[0]],
@@ -499,10 +499,10 @@ class BVHData:
         # for child in joint.children:
         #     if(not "_EndSite" in child.name):
         #         rNew = newPose[child.name]
-        #         self.applyRotationToItselfAndChildren(child, oldPose, newPose, rNew)
+        #         self._applyRotationToItselfAndChildren(child, oldPose, newPose, rNew)
 
-    def setRestPose(self, poseDict):
-        oldPose = copy.deepcopy(self.getRestPose())
+    def _setRestPose(self, poseDict):
+        oldPose = copy.deepcopy(self._getRestPose())
         newPose = {}
         for poseName, pose in poseDict.items():
             newPose[poseName] = R.from_euler('XYZ', poseDict[poseName], degrees=True)
@@ -510,8 +510,8 @@ class BVHData:
         for joint in self.skeleton.joints.values():
             if(joint.name in poseDict.keys()):
                 rNew = newPose[joint.name]
-                self.applyOffsetToChildren(joint, rNew)
-                # newPose = self.getRestPose()
-                self.applyRotationToItselfAndChildren(joint, oldPose, newPose, rNew)
+                self._applyOffsetToChildren(joint, rNew)
+                # newPose = self._getRestPose()
+                self._applyRotationToItselfAndChildren(joint, oldPose, newPose, rNew)
 
-        self.rewriteHeaderOffsets()
+        self._rewriteHeaderOffsets()

@@ -20,7 +20,7 @@ class BVHDataset:
         return len(self.files)
 
     @classmethod
-    def fromFolder(cls, paths, recursive = False, pattern = ""):
+    def fromFolder(cls, paths: str | list[str], recursive: bool = False, pattern: str = "") -> "BVHDataset":
         if not (isinstance(paths, str) or (isinstance(paths, list) and all(isinstance(path, str) for path in paths))):
             raise TypeError(f"You must provide the folder path(s). Expected type for paths: str | List[str]. Received type: {type(paths).__name__}")
         
@@ -49,7 +49,7 @@ class BVHDataset:
         return cls(objects, filenames)
 
     @classmethod
-    def fromObjects(cls, objects):
+    def fromObjects(cls, objects: BVHData | list[BVHData]) -> "BVHDataset":
         if not (isinstance(objects, BVHData) or (isinstance(objects, list) and all(isinstance(obj, BVHData) for obj in objects))):
             raise TypeError(f"You must provide the BVHData object(s). Expected type for objects: BVHData | List[BVHData]. Received type: {type(objects).__name__}")
         
@@ -59,7 +59,7 @@ class BVHDataset:
         return cls(objects)
 
     @classmethod
-    def fromFilelist(cls, filelists):
+    def fromFilelist(cls, filelists: str | list[str]) -> "BVHDataset":
         if not (isinstance(filelists, str) or (isinstance(filelists, list) and all(isinstance(filelist, str) for filelist in filelists))):
             raise TypeError(f"You must provide the paths of the filelist(s). Expected type for filelists: str | List[str]. Received type: {type(filelists).__name__}")
 
@@ -75,7 +75,7 @@ class BVHDataset:
 
         return cls(objects, filenames)        
 
-    def defineSplits(self, path):
+    def defineSplits(self, path: str) -> None:
         if(self.filenames is None):
             raise PermissionError("You can't define splits in a dataset loaded from objects, since file names are not available. Load the dataset from folder or from a filelist.")
         
@@ -122,7 +122,7 @@ class BVHDataset:
                 elif(fileInSplit == 0):
                     raise ValueError(f"File {filename} is not specified in any splits.")
 
-    def attachLabels(self, path):
+    def attachLabels(self, path: str) -> None:
         if(self.filenames is None):
             raise PermissionError("You can't attach labels to a dataset loaded from objects, since they can't be linked. Load the dataset from folder or from a filelist.")
         
@@ -187,14 +187,16 @@ class BVHDataset:
         self.labels = labels
 
     def attachAudio(self):
+        raise NotImplementedError("This functionality is not implemented yet.")
         if(self.filenames is None):
             raise PermissionError("You can't attach audio to a dataset loaded from objects, since they can't be linked. Load the dataset from folder or from a filelist.")
-
+    
     def attachText(self):
+        raise NotImplementedError("This functionality is not implemented yet.")
         if(self.filenames is None):
             raise PermissionError("You can't attach text to a dataset loaded from objects, since they can't be linked. Load the dataset from folder or from a filelist.")
 
-    def view(self, windowLength, stride, representation = "euler"):
+    def view(self, windowLength: int, stride: int, representation: str = "euler") -> "BVHDatasetView":
         return BVHDatasetView(self, windowLength, stride, representation)
 
 class BVHDatasetView:
@@ -279,14 +281,14 @@ class BVHDatasetView:
 
         return precomputedIndexes, precomputedSplitIndexes
 
-    def setSplit(self, split):
+    def setSplit(self, split: str) -> None:
         if len(self.precomputedSplitIndexes) == 0:
             raise ValueError(f"This BVHDatasetView object does not have any split defined.")
         if not split in self.precomputedSplitIndexes.keys() and not split == "all":
             raise ValueError(f"Split '{split}' does not exist in this BVHDatasetView object. Available splits: {list(self.precomputedSplitIndexes.keys())}")
         self.activeSplit = split
 
-    def makeSplit(self, split):
+    def makeSplit(self, split: str) -> "BVHDatasetView":
         if len(self.precomputedSplitIndexes) == 0:
             raise ValueError(f"This BVHDatasetView object does not have any split defined.")
         if not split in self.precomputedSplitIndexes.keys():
@@ -305,7 +307,7 @@ class BVHDatasetView:
 
         return newView
 
-    def setRepresentation(self, representation):
+    def setRepresentation(self, representation: str) -> None:
         representation = representation.lower()
         if not(representation == "euler" or representation == "quaternion" or representation == "sixd" or representation == "matrix" or representation == "rotvec" or representation == "mrp"):
             raise ValueError(f"The representation must be a string : [Euler, Quaternion, SixD, Matrix, RotVec, Mrp]")
@@ -316,7 +318,7 @@ class BVHDatasetView:
         if(representation != "euler"):
             [bvh.motion.getRepresentation(representation) for bvh in self.baseDataset.files] # Fill the representation cache
     
-    def normalize(self, mode):
+    def normalize(self, mode: str) -> None:
         self.normalizationMode = mode
         frames = []
         for file in self.baseDataset.files:
@@ -346,11 +348,11 @@ class BVHDatasetView:
             self.normalizationStatistics = {"median": median,
                                             "iqr": iqr}
 
-    def denormalize(self):
+    def denormalize(self) -> None:
         self.normalizationMode = ""
         self.normalizationStatistics = {}
 
-    def setNormalizationStatistics(self, mode, normalizationStatistics):
+    def setNormalizationStatistics(self, mode: str, normalizationStatistics: dict[str, list[float]]) -> None:
         if not(mode == "zscore" or mode == "minmax" or mode == "maxabs" or mode == "robust"):
             raise ValueError(f"The normalization mode must be a string : [zscore, minmax, maxabs, robust]")
         if mode == "zscore" and (not normalizationStatistics["mean"] or normalizationStatistics["std"]):
@@ -365,16 +367,16 @@ class BVHDatasetView:
         self.normalizationMode = mode
         self.normalizationStatistics = normalizationStatistics
 
-    def getNormalizationStatistics(self):
+    def getNormalizationStatistics(self) -> tuple[str, dict[str, list[float]]]:
         return self.normalizationMode, self.normalizationStatistics
     
-    def __len__(self):
+    def __len__(self) -> int:
         if(self.activeSplit == "all"):
             return len(self.precomputedIndexes)
         else:
             return len(self.precomputedSplitIndexes[self.activeSplit])
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> dict:
         if(self.activeSplit == "all"):
             fileIndex, startFrame, _ = self.precomputedIndexes[index]
         else:
@@ -413,7 +415,7 @@ class BVHDatasetView:
                 }
             }
     
-    def materialize(self):
+    def materialize(self) -> "BVHDatasetViewMaterialized":
         return BVHDatasetViewMaterialized(self)
 
 class BVHDatasetViewMaterialized:
@@ -426,23 +428,23 @@ class BVHDatasetViewMaterialized:
         self.representation = view.representation
         self.dataView = self._createDataView(view)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.dataView)
     
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> np.array:
         return self.dataView[index]
 
     @property
-    def shape(self):
+    def shape(self) -> tuple[int, ...]:
         return self.dataView.shape
 
     def _createDataView(self, view):
         return np.asarray([x for x in view])
 
-    def writeDataViewToFile(self, path):
+    def writeDataViewToFile(self, path: str) -> None:
         np.save(path, self.dataView)
 
-    def normalize(self):
+    def normalize(self) -> None:
         if(self.normalizationMode == ""):
             raise AttributeError("The normalization mode has not been set for this BVHDatasetViewMaterialized object. You can't normalize the data.")
         self.isNormalized = True
@@ -455,7 +457,7 @@ class BVHDatasetViewMaterialized:
         elif(self.normalizationMode == "robust"):
             self.dataView = (self.dataView -self.normalizationStatistics["median"]) / self.normalizationStatistics["iqr"]
 
-    def denormalize(self):
+    def denormalize(self) -> None:
         if(not self.isNormalized):
             raise AttributeError("This data is not normalized. You can't denormalize twice.")
         if self.normalizationMode == "":
@@ -471,7 +473,7 @@ class BVHDatasetViewMaterialized:
             elif(self.normalizationMode == "robust"):
                 item = (item * self.normalizationStatistics["iqr"]) + self.normalizationStatistics["median"]
 
-    def setNormalizationStatistics(self, mode, normalizationStatistics):
+    def setNormalizationStatistics(self, mode: str, normalizationStatistics: dict[str, list[float]]) -> None:
         if self.isNormalized:
             raise ValueError(f"The data is currently normalized and you are trying to change normalization statistics. You would not be able to denormalize this data. Please, denormalize first.")
         if not(mode == "zscore" or mode == "minmax" or mode == "maxabs" or mode == "robust"):
@@ -488,5 +490,5 @@ class BVHDatasetViewMaterialized:
         self.normalizationMode = mode
         self.normalizationStatistics = normalizationStatistics
 
-    def getNormalizationStatistics(self):
+    def getNormalizationStatistics(self) -> tuple[str, dict[str, list[float]]]:
         return self.normalizationMode, self.normalizationStatistics

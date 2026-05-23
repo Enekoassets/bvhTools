@@ -1,6 +1,6 @@
 import argparse as ap
 import sys
-from bvhTools import bvhIO, bvhManipulation, bvhSlicer, bvhVisualizerMpl
+from bvhTools import bvhIO, bvhManipulation, bvhSlicer, bvhVisualizer
 
 def main():
     parser = ap.ArgumentParser(description="bvhTools CLI interface")
@@ -89,7 +89,7 @@ def rotate_bvh(args):
 
 def view_bvh(args):
     bvhData = bvhIO.readBvh(args.bvhFile)
-    bvhVisualizerMpl.showBvhAnimation(bvhData, showPoints=args.noPoints, showLines=args.noLines, showLabels=args.noLabels)
+    bvhVisualizer.showBvhAnimation(bvhData, showPoints=args.noPoints, showLines=args.noLines, showLabels=args.noLabels)
 
 def slice_bvh(args):
     bvhData = bvhIO.readBvh(args.bvhFile)

@@ -2,8 +2,9 @@ import copy
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial.transform import Slerp
 import math
+from bvhTools.bvhDataTypes import BVHData
 
-def resampleFPS(bvh, fps):
+def resampleFPS(bvh: BVHData, fps: int) -> BVHData:
     bvhCopy = copy.deepcopy(bvh)
     currentFps = 1.0/bvhCopy.motion.frameTime
     newFrames = []

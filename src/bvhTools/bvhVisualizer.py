@@ -4,17 +4,17 @@ from bvhTools.bvhDataTypes import BVHData
 import math
 import time
 
-def changeCameraMode(mode):
+def _changeCameraMode(mode):
     if(mode=="Free"): return "Still"
     if(mode=="Still"): return "Follow"
     if(mode=="Follow"): return "Free"
 
-def changeCurrentBvh(currentBvh, maxBvh):
+def _changeCurrentBvh(currentBvh, maxBvh):
     currentBvh += 1
     if(currentBvh > maxBvh): currentBvh = 0
     return currentBvh
 
-def precomputeLabels(bvh):
+def _precomputeLabels(bvh):
     labels = []
     for joint in bvh.skeleton.joints:
         jointName = joint if not "EndSite" in joint else ""
@@ -27,7 +27,7 @@ def precomputeLabels(bvh):
         labels.append(label)
     return labels
 
-def showBvhAnimation(bvhData):
+def showBvhAnimation(bvhData: BVHData) -> None:
     if(not isinstance(bvhData, BVHData) and not (isinstance(bvhData, list) and all(isinstance(b, BVHData) for b in bvhData))):
         print(f"\033[1;33mWARNING\033[0m: You must provide either a single BVHData object or a list of BVHData objects.")
         return
@@ -85,7 +85,7 @@ def showBvhAnimation(bvhData):
     MAX_FRAME = max(bvh.motion.numFrames for bvh in bvhList)
     RADIUSES = [rl.ffi.new('float *', 0.1) for bvh in bvhList]
     SHOW_LABELS = [rl.ffi.new('bool *', False) for bvh in bvhList]
-    LABELS = [precomputeLabels(bvh) for bvh in bvhList]
+    LABELS = [_precomputeLabels(bvh) for bvh in bvhList]
     
     rl.set_target_fps(int(bvhList[0].motion.getFPS()))
 
@@ -142,7 +142,7 @@ def showBvhAnimation(bvhData):
 
         rl.end_mode_3d()
         if(rl.is_key_pressed(rl.KEY_ENTER)):
-            CURRENT_BVH = changeCurrentBvh(CURRENT_BVH, MAX_BVH)
+            CURRENT_BVH = _changeCurrentBvh(CURRENT_BVH, MAX_BVH)
 
         if(rl.is_key_pressed(rl.KEY_H)):
             SHOW_UI = not SHOW_UI
@@ -156,19 +156,19 @@ def showBvhAnimation(bvhData):
             rl.gui_panel(rl.Rectangle(10, 10, 200, 190), "Camera Controls")
             if(CAMERA_MODE == "Free"):
                 if(rl.gui_button(rl.Rectangle(20, 40, 180, 20), "Camera: Free [TAB]") or rl.is_key_pressed(rl.KEY_TAB)):
-                    CAMERA_MODE = changeCameraMode(CAMERA_MODE)
+                    CAMERA_MODE = _changeCameraMode(CAMERA_MODE)
                 rl.gui_label(rl.Rectangle(20, 70, 180, 20), "Control with mouse + WASD")
             elif(CAMERA_MODE == "Follow"):
                 if(rl.gui_button(rl.Rectangle(20, 40, 180, 20), "Camera: Follow [TAB]") or rl.is_key_pressed(rl.KEY_TAB)):
-                    CAMERA_MODE = changeCameraMode(CAMERA_MODE)
+                    CAMERA_MODE = _changeCameraMode(CAMERA_MODE)
                 if(rl.gui_button(rl.Rectangle(20, 70, 180, 20), f"Current BVH: {CURRENT_BVH} [ENTER]")):
-                    CURRENT_BVH = changeCurrentBvh(CURRENT_BVH, MAX_BVH)
+                    CURRENT_BVH = _changeCurrentBvh(CURRENT_BVH, MAX_BVH)
                 rl.gui_label(rl.Rectangle(20, 100, 180, 20), "A, D: rotate the camera")
                 rl.gui_label(rl.Rectangle(20, 130, 180, 20), "W, S: go up and down")
                 rl.gui_label(rl.Rectangle(20, 160, 180, 20), "Mouse Wheel: zoom")
             elif(CAMERA_MODE == "Still"):
                 if(rl.gui_button(rl.Rectangle(20, 40, 180, 20), "Camera: Still [TAB]") or rl.is_key_pressed(rl.KEY_TAB)):
-                    CAMERA_MODE = changeCameraMode(CAMERA_MODE)
+                    CAMERA_MODE = _changeCameraMode(CAMERA_MODE)
             # --- MISC CONTROLS UI --- 
             rl.gui_panel(rl.Rectangle(10, 230, 200, 400), f"Character {CURRENT_BVH} Controls")
             rl.gui_color_picker(rl.Rectangle(20, 260, 150, 150), "Color", COLORS[CURRENT_BVH])
@@ -216,7 +216,7 @@ def showBvhAnimation(bvhData):
 
     rl.close_window()
 
-def showOnionSkinAnimation(bvhData):
+def showOnionSkinAnimation(bvhData: BVHData) -> None:
     if(not isinstance(bvhData, BVHData) and not (isinstance(bvhData, list) and all(isinstance(b, BVHData) for b in bvhData))):
         print(f"\033[1;33mWARNING\033[0m: You must provide either a single BVHData object or a list of BVHData objects.")
         return
@@ -327,7 +327,7 @@ def showOnionSkinAnimation(bvhData):
 
         rl.end_mode_3d()
         if(rl.is_key_pressed(rl.KEY_ENTER)):
-            CURRENT_BVH = changeCurrentBvh(CURRENT_BVH, MAX_BVH)
+            CURRENT_BVH = _changeCurrentBvh(CURRENT_BVH, MAX_BVH)
 
         if(rl.is_key_pressed(rl.KEY_H)):
             SHOW_UI = not SHOW_UI
@@ -341,19 +341,19 @@ def showOnionSkinAnimation(bvhData):
             rl.gui_panel(rl.Rectangle(10, 10, 200, 190), "Camera Controls")
             if(CAMERA_MODE == "Free"):
                 if(rl.gui_button(rl.Rectangle(20, 40, 180, 20), "Camera: Free [TAB]") or rl.is_key_pressed(rl.KEY_TAB)):
-                    CAMERA_MODE = changeCameraMode(CAMERA_MODE)
+                    CAMERA_MODE = _changeCameraMode(CAMERA_MODE)
                 rl.gui_label(rl.Rectangle(20, 70, 180, 20), "Control with mouse + WASD")
             elif(CAMERA_MODE == "Follow"):
                 if(rl.gui_button(rl.Rectangle(20, 40, 180, 20), "Camera: Follow [TAB]") or rl.is_key_pressed(rl.KEY_TAB)):
-                    CAMERA_MODE = changeCameraMode(CAMERA_MODE)
+                    CAMERA_MODE = _changeCameraMode(CAMERA_MODE)
                 if(rl.gui_button(rl.Rectangle(20, 70, 180, 20), f"Current BVH: {CURRENT_BVH} [ENTER]")):
-                    CURRENT_BVH = changeCurrentBvh(CURRENT_BVH, MAX_BVH)
+                    CURRENT_BVH = _changeCurrentBvh(CURRENT_BVH, MAX_BVH)
                 rl.gui_label(rl.Rectangle(20, 100, 180, 20), "A, D: rotate the camera")
                 rl.gui_label(rl.Rectangle(20, 130, 180, 20), "W, S: go up and down")
                 rl.gui_label(rl.Rectangle(20, 160, 180, 20), "Mouse Wheel: zoom")
             elif(CAMERA_MODE == "Still"):
                 if(rl.gui_button(rl.Rectangle(20, 40, 180, 20), "Camera: Still [TAB]") or rl.is_key_pressed(rl.KEY_TAB)):
-                    CAMERA_MODE = changeCameraMode(CAMERA_MODE)
+                    CAMERA_MODE = _changeCameraMode(CAMERA_MODE)
             # --- MISC CONTROLS UI --- 
             rl.gui_panel(rl.Rectangle(10, 230, 200, 400), f"Character {CURRENT_BVH} Controls")
             rl.gui_color_picker(rl.Rectangle(20, 260, 150, 150), "Color", COLORS[CURRENT_BVH])

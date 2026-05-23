@@ -1,7 +1,7 @@
 import copy
 from bvhTools.bvhDataTypes import BVHData, MotionData
 
-def getBvhSlice(bvhData, fromFrame, toFrame):
+def getBvhSlice(bvhData: BVHData, fromFrame: int, toFrame: int) -> BVHData:
     if(fromFrame > toFrame):
         print(f"\033[1;33mWARNING\033[0m: fromFrame ({fromFrame}) must be less than toFrame ({toFrame}). Returning original bvh.")
         return bvhData
@@ -13,7 +13,7 @@ def getBvhSlice(bvhData, fromFrame, toFrame):
     slicedBvh = BVHData(bvhData.skeleton, MotionData(toFrame - fromFrame, bvhData.motion.frameTime, bvhData.motion.getFrameSlice(fromFrame, toFrame)))
     return slicedBvh
 
-def getBvhSlices(bvhData, fromFrames, toFrames):
+def getBvhSlices(bvhData: BVHData, fromFrames: list[int], toFrames: list[int]) -> list[BVHData]:
     if(len(fromFrames) != len(toFrames)):
         print(f"\033[1;33mWARNING\033[0m: fromFrames ({len(fromFrames)}) and toFrames ({len(toFrames)}) must be the same length. Returning original bvh.")
         return bvhData
@@ -30,7 +30,7 @@ def getBvhSlices(bvhData, fromFrames, toFrames):
         bvhsToReturn.append(getBvhSlice(bvhData, fromFrame, toFrame))
     return bvhsToReturn
 
-def appendBvhSlices(baseBvh, bvhsToAppend):
+def appendBvhSlices(baseBvh: BVHData, bvhsToAppend: list[BVHData]) -> BVHData:
     if(len(bvhsToAppend) == 0):
         print(f"\033[1;33mWARNING\033[0m: You must provide at least one BVH to append. Returning original bvh.")
         return baseBvh
@@ -41,7 +41,7 @@ def appendBvhSlices(baseBvh, bvhsToAppend):
         bvhData.motion.numFrames += bvh.motion.numFrames
     return bvhData
         
-def groupBvhSlices(bvhsToGroup):
+def groupBvhSlices(bvhsToGroup: list[BVHData]) -> BVHData:
     if(len(bvhsToGroup) <= 1):
         print(f"\033[1;33mWARNING\033[0m: You must provide at least two BVHs to append. Returning original bvh.")
         return bvhsToGroup[0]
