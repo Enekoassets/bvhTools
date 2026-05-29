@@ -303,6 +303,7 @@ class BVHDatasetView:
         newView.representation = self.representation
         newView.normalizationMode = self.normalizationMode
         newView.normalizationStatistics = self.normalizationStatistics
+        newView.temporalLabels = self.temporalLabels
         newView.activeSplit = split
 
         return newView
@@ -332,21 +333,21 @@ class BVHDatasetView:
         if(mode == "zscore"):
             std = np.std(frames, axis=0)
             mean = np.mean(frames, axis=0)
-            self.normalizationStatistics = {"std": std,
-                                            "mean": mean}
+            self.normalizationStatistics = {"std": std.tolist(),
+                                            "mean": mean.tolist()}
         elif(mode == "minmax"):
             minVal = np.min(frames, axis=0)
             maxVal = np.max(frames, axis=0)
-            self.normalizationStatistics = {"min": minVal,
-                                            "max": maxVal}
+            self.normalizationStatistics = {"min": minVal.tolist(),
+                                            "max": maxVal.tolist()}
         elif(mode == "maxabs"):
             maxabs = np.max(np.abs(frames), axis=0)
-            self.normalizationStatistics = {"maxabs": maxabs}
+            self.normalizationStatistics = {"maxabs": maxabs.tolist()}
         elif(mode == "robust"):
             median = np.median(frames, axis=0)
             iqr = IQR(frames, axis = 0)
-            self.normalizationStatistics = {"median": median,
-                                            "iqr": iqr}
+            self.normalizationStatistics = {"median": median.tolist(),
+                                            "iqr": iqr.tolist()}
 
     def denormalize(self) -> None:
         self.normalizationMode = ""
@@ -355,13 +356,13 @@ class BVHDatasetView:
     def setNormalizationStatistics(self, mode: str, normalizationStatistics: dict[str, list[float]]) -> None:
         if not(mode == "zscore" or mode == "minmax" or mode == "maxabs" or mode == "robust"):
             raise ValueError(f"The normalization mode must be a string : [zscore, minmax, maxabs, robust]")
-        if mode == "zscore" and (not normalizationStatistics["mean"] or normalizationStatistics["std"]):
+        if mode == "zscore" and not(normalizationStatistics["mean"] and normalizationStatistics["std"]):
             raise ValueError(f"Zscore normalization needs to have: [mean, std]")
-        if mode == "minmax" and (not normalizationStatistics["mean"] or normalizationStatistics["std"]):
+        if mode == "minmax" and not(normalizationStatistics["mean"] and normalizationStatistics["std"]):
             raise ValueError(f"Minmax normalization needs to have: [mean, std]")
-        if mode == "maxabs" and (not normalizationStatistics["maxabs"]):
+        if mode == "maxabs" and not(normalizationStatistics["maxabs"]):
             raise ValueError(f"Maxabs normalization needs to have: [maxabs]")
-        if mode == "robust" and (not normalizationStatistics["median"] or normalizationStatistics["iqr"]):
+        if mode == "robust" and not(normalizationStatistics["median"] and normalizationStatistics["iqr"]):
             raise ValueError(f"Robust normalization needs to have: [median, iqr]")
         
         self.normalizationMode = mode
@@ -388,13 +389,13 @@ class BVHDatasetView:
 
         if(self.normalizationMode!=""):
             if(self.normalizationMode=="zscore"):
-                item = (item - self.normalizationStatistics["mean"]) / self.normalizationStatistics["std"]
+                item = (item - np.array(self.normalizationStatistics["mean"])) / np.array(self.normalizationStatistics["std"])
             elif(self.normalizationMode == "minmax"):
-                item = (item - self.normalizationStatistics["min"]) / (self.normalizationStatistics["max"] - self.normalizationStatistics["min"])
+                item = (item - np.array(self.normalizationStatistics["min"])) / (np.array(self.normalizationStatistics["max"]) - np.array(self.normalizationStatistics["min"]))
             elif(self.normalizationMode == "maxabs"):
-                item = item / self.normalizationStatistics["maxabs"]
+                item = item / np.array(self.normalizationStatistics["maxabs"])
             elif(self.normalizationMode == "robust"):
-                item = (item - self.normalizationStatistics["median"]) / self.normalizationStatistics["iqr"]
+                item = (item - np.array(self.normalizationStatistics["median"])) / np.array(self.normalizationStatistics["iqr"])
         
         sequenceLabel = None
         temporalLabel = None
@@ -439,7 +440,7 @@ class BVHDatasetViewMaterialized:
         return self.dataView.shape
 
     def _createDataView(self, view):
-        return np.asarray([x for x in view])
+        return [x for x in view]
 
     def writeDataViewToFile(self, path: str) -> None:
         np.save(path, self.dataView)
