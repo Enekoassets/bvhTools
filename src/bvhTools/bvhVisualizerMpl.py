@@ -4,12 +4,14 @@ from matplotlib.widgets import Button, TextBox
 from matplotlib import get_backend
 from bvhTools import bvhMetrics
 import numpy as np
+from bvhTools.bvhDataTypes import BVHData
 
-def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers = True, 
-                    showLabels = False, showFootContacts = False, footContactMethod = "distance",
-                    footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, timeDiff = -1,
-                    heightThreshold = 0.1, referenceFrame = 0, showFootSlides = False, showSpeeds = False, normalizeSpeeds = False, speedVectorSize = 1,
-                    pointColor = "#4287f5", pointMarker = "o", lineColor = "#666666", lineWidth = 2):
+def showBvhAnimation(bvhData: BVHData, showPoints: bool = True, showLines: bool = True, showQuivers: bool = True, 
+                    showLabels: bool = False, showFootContacts: bool = False, footContactMethod: str = "distance",
+                    footNames: list[str] = ["LeftFoot", "RightFoot"], speedThreshold: float = 0.1, timeDiff: float = -1,
+                    heightThreshold: float = 0.1, referenceFrame: int = 0, showFootSlides: bool = False, showSpeeds: bool = False,
+                    normalizeSpeeds: bool = False, speedVectorSize: int = 1, pointColor: str = "#4287f5", pointMarker: str = "o",
+                    lineColor: str = "#666666", lineWidth: float = 2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     
@@ -30,7 +32,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
     except Exception as e:
         print(f"[Info] Could not maximize window: {e}")
 
-    motionDims = bvhData.getMotionDims()
+    motionDims = bvhData._getMotionDims()
     maxDim = np.max(np.abs(motionDims))
     quiverSize = 0.05 * maxDim
     numFrames = bvhData.motion.numFrames
@@ -67,7 +69,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
     if(showFootSlides):
         footContacts = bvhMetrics.getFootSlide(bvhData, footNames=footNames, speedThreshold=speedThreshold, heightThreshold=heightThreshold, timeDiff=timeDiff, referenceFrame=referenceFrame)
 
-    def draw3dCircle(ax, center, radius=0.03, color='red', n_points=64):
+    def _draw3dCircle(ax, center, radius=0.03, color='red', n_points=64):
         theta = np.linspace(0, 2 * np.pi, n_points)
         cx, cy, cz = center
         x = cx + radius * np.cos(theta)
@@ -75,7 +77,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
         z = cz + radius * np.sin(theta)
         ax.plot(-x, z, y, color=color, linewidth=2)
 
-    def update(_):            
+    def _update(_):            
         for coll in ax.collections[:]:
             coll.remove()
         for line in ax.lines[:]:
@@ -102,7 +104,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
                         contactColor = "#72e19e"
                     else:
                         contactColor = "#e17272"
-                    draw3dCircle(ax, fkFrame[footName][1], color=contactColor, radius=5)
+                    _draw3dCircle(ax, fkFrame[footName][1], color=contactColor, radius=5)
 
         if(showLabels):
             for index, point in enumerate(points):
@@ -119,13 +121,13 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
             currentFrame[0] = (currentFrame[0] + 1) % numFrames
             label.set_text(f"Frame: {currentFrame[0]}")
 
-    def togglePause(event):
+    def _togglePause(event):
         isPaused[0] = not isPaused[0]
         btnPlayPause.label.set_text("Play" if isPaused[0] else "Pause")
         textbox.set_val(str(currentFrame[0]))
         label.set_text(f"Frame: {currentFrame[0]}")
 
-    def frameBack(event):
+    def _frameBack(event):
         isPaused[0] = True
         btnPlayPause.label.set_text("Play" if isPaused[0] else "Pause")
         currentFrame[0] -= 1
@@ -134,7 +136,7 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
         textbox.set_val(str(currentFrame[0]))
         label.set_text(f"Frame: {currentFrame[0]}")
 
-    def frameForward(event):
+    def _frameForward(event):
         isPaused[0] = True
         btnPlayPause.label.set_text("Play" if isPaused[0] else "Pause")
         currentFrame[0] += 1
@@ -143,28 +145,28 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
         textbox.set_val(str(currentFrame[0]))
         label.set_text(f"Frame: {currentFrame[0]}")
 
-    def faster(event):
+    def _faster(event):
         global anim
         newInterval = anim.event_source.interval * 0.5
         anim.event_source.stop()
-        anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=newInterval, repeat=True)
+        anim = animation.FuncAnimation(fig, _update, frames=numFrames, interval=newInterval, repeat=True)
         plt.draw()
 
-    def slower(event):
+    def _slower(event):
         global anim
         newInterval = anim.event_source.interval * 2
         anim.event_source.stop()
-        anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=newInterval, repeat=True)
+        anim = animation.FuncAnimation(fig, _update, frames=numFrames, interval=newInterval, repeat=True)
         plt.draw()
 
-    def goToFrame(text):
+    def _goToFrame(text):
         if(int(text) < numFrames):
             currentFrame[0] = int(text)
         else:
             currentFrame[0] = numFrames - 1
         label.set_text(f"Frame: {currentFrame[0]}")
 
-    def decorateUIElem(ax):
+    def _decorateUIElem(ax):
         for spine in ax.spines.values():
             spine.set_visible(False)
             spine.set_visible(False)
@@ -172,43 +174,43 @@ def showBvhAnimation(bvhData, showPoints = True, showLines = True, showQuivers =
             spine.set_visible(False)
 
     global anim
-    anim = animation.FuncAnimation(fig, update, frames=numFrames, interval=frameTime * 1000, repeat = True)
+    anim = animation.FuncAnimation(fig, _update, frames=numFrames, interval=frameTime * 1000, repeat = True)
 
     axBtnPlayPause = plt.axes([0.45, 0.05, 0.1, 0.05])
     btnPlayPause = Button(axBtnPlayPause, "Pause")
     btnPlayPause.label.set_fontsize(12)
-    btnPlayPause.on_clicked(togglePause)
-    decorateUIElem(axBtnPlayPause)
+    btnPlayPause.on_clicked(_togglePause)
+    _decorateUIElem(axBtnPlayPause)
     
     axBtnBack = plt.axes([0.34, 0.05, 0.1, 0.05])
     btnBack = Button(axBtnBack, "Back")
     btnBack.label.set_fontsize(12)
-    btnBack.on_clicked(frameBack)
-    decorateUIElem(axBtnBack)
+    btnBack.on_clicked(_frameBack)
+    _decorateUIElem(axBtnBack)
 
     axBtnForward = plt.axes([0.56, 0.05, 0.1, 0.05])
     btnForward = Button(axBtnForward, "Forward")
     btnForward.label.set_fontsize(12)
-    btnForward.on_clicked(frameForward)
-    decorateUIElem(axBtnForward)
+    btnForward.on_clicked(_frameForward)
+    _decorateUIElem(axBtnForward)
 
     axBtnFaster = plt.axes([0.395, 0.9, 0.1, 0.05])
     btnFaster = Button(axBtnFaster, "Faster")
     btnFaster.label.set_fontsize(12)
-    btnFaster.on_clicked(faster)
-    decorateUIElem(axBtnFaster)
+    btnFaster.on_clicked(_faster)
+    _decorateUIElem(axBtnFaster)
 
     axBtnSlower = plt.axes([0.505, 0.9, 0.1, 0.05])
     btnSlower = Button(axBtnSlower, "Slower")
     btnSlower.label.set_fontsize(12)
-    btnSlower.on_clicked(slower)
-    decorateUIElem(axBtnSlower)
+    btnSlower.on_clicked(_slower)
+    _decorateUIElem(axBtnSlower)
     
     ax_textbox = plt.axes([0.8, 0.9, 0.1, 0.05])  # [x, y, width, height]
     textbox = TextBox(ax_textbox, "Go to frame: ")
     textbox.label.set_fontsize(12)
-    textbox.on_submit(goToFrame)
-    decorateUIElem(ax_textbox)
+    textbox.on_submit(_goToFrame)
+    _decorateUIElem(ax_textbox)
 
     label = fig.text(0.475, 0.85, "Frame: 0", fontsize=12)
     totalFramesLabel = fig.text(0.1, 0.9, f"Total frames: {numFrames}", fontsize=12)

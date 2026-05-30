@@ -13,7 +13,8 @@ dependencies = [
     "numpy>=1.26.4",
     "matplotlib>=3.9.0",
     "pillow>=10.1.0",
-    "raylib>=5.5.0.4"
+    "raylib>=5.5.0.4",
+    "pyyaml>=6.0.3",
 ]
 description = "Easy to use package to work with BVH (BioVision Hierarchy) files."
 readme = "README.md"

@@ -1,12 +1,13 @@
 import copy
 import numpy as np
+from bvhTools.bvhDataTypes import BVHData
 
-def addChildrenToList(joint, jointsToDelete):
+def _addChildrenToList(joint, jointsToDelete):
     jointsToDelete.append(joint.name)
     for child in joint.children: 
-        addChildrenToList(child, jointsToDelete)
+        _addChildrenToList(child, jointsToDelete)
 
-def removeLimb(bvhData, jointName):
+def removeLimb(bvhData: BVHData, jointName: str) -> BVHData:
     bvhDataCopy = copy.deepcopy(bvhData)
     if(jointName == bvhDataCopy.skeleton.root.name):
         print(f"\033[1;33mWARNING\033[0m: you are trying to remove the root joint. You can't do this as this would return an empty BVH. Returning bvh unchanged.")
@@ -17,7 +18,7 @@ def removeLimb(bvhData, jointName):
     jointsToDelete = []
     jointsToDelete.append(jointName)
     for child in topJoint.children:
-        addChildrenToList(child, jointsToDelete)
+        _addChildrenToList(child, jointsToDelete)
 
     motionColumnsToDelete = []
     # create the list with motion column numbers to delete
@@ -41,11 +42,11 @@ def removeLimb(bvhData, jointName):
 
     # REFRESH the indexes and motionIndexes for all joints and their respective dictionaries
     newSkeleton = bvhDataCopy.skeleton
-    newSkeleton.jointIndexes = newSkeleton.buildJointIndexDict(newSkeleton.root, [0])
-    newSkeleton.hierarchyIndexes = newSkeleton.buildHierarchyIndexDict(newSkeleton.root, [0])
+    newSkeleton.jointIndexes = newSkeleton._buildJointIndexDict(newSkeleton.root, [0])
+    newSkeleton.hierarchyIndexes = newSkeleton._buildHierarchyIndexDict(newSkeleton.root, [0])
     return bvhDataCopy
     
-def scaleSkeleton(bvhData, scaleFactor):
+def scaleSkeleton(bvhData: BVHData, scaleFactor: float) -> BVHData:
     bvhDataCopy = copy.deepcopy(bvhData)
     if(scaleFactor<=0.0):
         print(f"\033[1;33mWARNING\033[0m: The scale factor has to be greater than 0. Returning bvh unchanged.")

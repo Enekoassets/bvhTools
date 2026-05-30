@@ -1,7 +1,8 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 import copy
-def getSpeeds(bvh, timeDiff = -1, type = "vector"):
+from bvhTools.bvhDataTypes import BVHData
+def getSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> np.array:
     if bvh.motion.numFrames < 2:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 2 frames to calculate speeds. Returning empty array.")
         return np.empty((0,0))
@@ -26,7 +27,7 @@ def getSpeeds(bvh, timeDiff = -1, type = "vector"):
     print(f"\033[1;33mWARNING\033[0m: The speed output type {type} is not valid. Available options: [vector, magnitude]. Returning vector.")
     return np.asarray(allSpeeds)
 
-def getAccelerations(bvh, timeDiff = -1, type = "vector"):
+def getAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> np.array:
     if bvh.motion.numFrames < 3:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 3 frames to calculate accelerations. Returning empty array.")
         return np.empty((0,0))
@@ -54,7 +55,7 @@ def getAccelerations(bvh, timeDiff = -1, type = "vector"):
     print(f"\033[1;33mWARNING\033[0m: The acceleration output type {type} is not valid. Available options: [vector, magnitude]. Returning vector.")
     return np.asarray(allAccelerations)
 
-def getJerks(bvh, timeDiff = -1, type = "vector"):
+def getJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> np.array:
     if bvh.motion.numFrames < 4:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 4 frames to calculate jerks. Returning empty array.")
         return np.empty((0,0))
@@ -83,7 +84,7 @@ def getJerks(bvh, timeDiff = -1, type = "vector"):
 
     return np.asarray(allJerks) 
 
-def getAvgSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
+def getAvgSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> np.array:
     if bvh.motion.numFrames < 2:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 2 frames to calculate speeds. Returning empty array.")
         return np.empty(0)
@@ -99,7 +100,7 @@ def getAvgSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
     print(f"\033[1;33mWARNING\033[0m: The speed output type {type} is not valid. Available options: [vector, magnitude]. Returning mean vector.")
     return np.mean(allSpeeds, axis = axis)
 
-def getAvgAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
+def getAvgAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> np.array:
     if bvh.motion.numFrames < 3:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 3 frames to calculate accelerations. Returning empty array.")
         return np.empty(0)
@@ -115,7 +116,7 @@ def getAvgAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
     print(f"\033[1;33mWARNING\033[0m: The acceleration output type {type} is not valid. Available options: [vector, magnitude]. Returning mean vector.")
     return np.mean(allAccelerations, axis = axis)
 
-def getAvgJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
+def getAvgJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> np.array:
     if bvh.motion.numFrames < 4:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 4 frames to calculate jerks. Returning empty array.")
         return np.empty(0)
@@ -131,7 +132,7 @@ def getAvgJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
     print(f"\033[1;33mWARNING\033[0m: The jerk output type {type} is not valid. Available options: [vector, magnitude]. Returning mean vector.")
     return np.mean(allJerks, axis = axis)
 
-def getAngularSpeeds(bvh, timeDiff = -1, type = "vector"):
+def getAngularSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> np.array:
     if bvh.motion.numFrames < 2:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 2 frames to calculate angular speeds. Returning empty array.")
         return np.empty((0,0,0))
@@ -167,7 +168,7 @@ def getAngularSpeeds(bvh, timeDiff = -1, type = "vector"):
     print(f"\033[1;33mWARNING\033[0m: The angular speed output type {type} is not valid. Available options: [vector, magnitude]. Returning vector.")
     return np.asarray(allSpeeds)
 
-def getAngularAccelerations(bvh, timeDiff = -1, type = "vector"):
+def getAngularAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> np.array:
     if bvh.motion.numFrames < 3:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 3 frames to calculate angular accelerations. Returning empty array.")
         return np.empty((0,0,0))
@@ -188,7 +189,7 @@ def getAngularAccelerations(bvh, timeDiff = -1, type = "vector"):
     print(f"\033[1;33mWARNING\033[0m: The angular acceleration output type {type} is not valid. Available options: [vector, magnitude]. Returning vector.")
     return np.asarray(allAccelerations)
 
-def getAngularJerks(bvh, timeDiff = -1, type = "vector"):
+def getAngularJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector") -> np.array:
     if bvh.motion.numFrames < 4:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 4 frames to calculate angular jerks. Returning empty array.")
         return np.empty((0,0,0))
@@ -209,7 +210,7 @@ def getAngularJerks(bvh, timeDiff = -1, type = "vector"):
     print(f"\033[1;33mWARNING\033[0m: The angular jerk output type {type} is not valid. Available options: [vector, magnitude]. Returning vector.")
     return np.asarray(allJerks)
 
-def getAvgAngularSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
+def getAvgAngularSpeeds(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> np.array:
     if bvh.motion.numFrames < 2:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 2 frames to calculate angular speeds. Returning empty array.")
         return np.empty(0)
@@ -219,7 +220,7 @@ def getAvgAngularSpeeds(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
     allSpeeds = getAngularSpeeds(bvh, timeDiff, type)
     return np.mean(allSpeeds, axis = axis)
 
-def getAvgAngularAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
+def getAvgAngularAccelerations(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> np.array:
     if bvh.motion.numFrames < 3:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 3 frames to calculate angular accelerations. Returning empty array.")
         return np.empty(0)
@@ -229,7 +230,7 @@ def getAvgAngularAccelerations(bvh, timeDiff = -1, type = "vector", mode = "perJ
     allAccelerations = getAngularAccelerations(bvh, timeDiff, type)
     return np.mean(allAccelerations, axis = axis)
 
-def getAvgAngularJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
+def getAvgAngularJerks(bvh: BVHData, timeDiff: float = -1, type: str = "vector", mode: str = "perJoint") -> np.array:
     if bvh.motion.numFrames < 4:
         print(f"\033[1;33mWARNING\033[0m: A Bvh must have at least 4 frames to calculate angular jerks. Returning empty array.")
         return np.empty(0)
@@ -239,7 +240,7 @@ def getAvgAngularJerks(bvh, timeDiff = -1, type = "vector", mode = "perJoint"):
     allJerks = getAngularJerks(bvh, timeDiff, type)
     return np.mean(allJerks, axis = axis)
 
-def getFootContactsSpeedMethod(bvh, footNames = ["LeftFoot", "RightFoot"], threshold = 0.1, timeDiff = -1):
+def getFootContactsSpeedMethod(bvh: BVHData, footNames: list[str] = ["LeftFoot", "RightFoot"], threshold: float = 0.1, timeDiff: float = -1) -> np.array:
     speedsPerFrame = getSpeeds(bvh, timeDiff)
     # duplicate first speed to match number of frames
     speedsPerFrame = np.insert(speedsPerFrame, 0, [speedsPerFrame[0]], axis = 0)
@@ -247,7 +248,7 @@ def getFootContactsSpeedMethod(bvh, footNames = ["LeftFoot", "RightFoot"], thres
     footIndexes = [jointNames.index(footName) for footName in footNames]
     return np.array([(speedsPerFrame[:, footIndex] < threshold).tolist() for footIndex in footIndexes])
 
-def getFootContactsHeightMethod(bvh, footNames = ["LeftFoot", "RightFoot"], threshold = 0.1, referenceFrame = 0):
+def getFootContactsHeightMethod(bvh: BVHData, footNames: list[str] = ["LeftFoot", "RightFoot"], threshold: float = 0.1, referenceFrame: int = 0) -> np.array:
     footContacts = []
     
     floorHeight = sum(bvh.getFKAtFrame(referenceFrame)[footName][1][1] for footName in footNames) / len(footNames)
@@ -261,12 +262,12 @@ def getFootContactsHeightMethod(bvh, footNames = ["LeftFoot", "RightFoot"], thre
 
     return np.array(footContacts).T
 
-def getFootSlide(bvh, footNames = ["LeftFoot", "RightFoot"], speedThreshold = 0.1, heightThreshold = 0.1, timeDiff = -1, referenceFrame = 0):
+def getFootSlide(bvh: BVHData, footNames: list[str] = ["LeftFoot", "RightFoot"], speedThreshold: float = 0.1, heightThreshold: float = 0.1, timeDiff: float = -1, referenceFrame: int = 0) -> np.array:
     speedFC = getFootContactsSpeedMethod(bvh, footNames, speedThreshold, timeDiff)
     heightFC = getFootContactsHeightMethod(bvh, footNames, heightThreshold, referenceFrame)
     return np.logical_and(np.logical_not(speedFC), heightFC)
 
-def getAvgPose(bvh):
+def getAvgPose(bvh: BVHData) -> BVHData:
     bvhCopy = copy.deepcopy(bvh)
     avgPose = []
     for jointName in bvh.skeleton.joints:
