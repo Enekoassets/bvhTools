@@ -76,13 +76,13 @@ If you find bvhTools useful, please give it a star! :)
 | Metrics: spectral analysis and fast fourier transform | 🐣 Planned |
 | Metrics: foot sliding masks | 🐣 Planned |
 | **Machine learning pipeline integration** | 🧑‍💻 Active |
-| - ML pipeline: automatic dataset loading | 🧑‍💻 Active |
-| - ML pipeline: data normalization | 🧑‍💻 Active |
-| - ML pipeline: attaching labels | 🧑‍💻 Active |
+| - ML pipeline: automatic dataset loading | 🟢 Completed |
+| - ML pipeline: data normalization | 🟢 Completed |
+| - ML pipeline: attaching labels | 🟢 Completed |
 | - ML pipeline: attaching other data modalities | 🐣 Planned |
-| - ML pipeline: windowing and lazy views | 🧑‍💻 Active |
-| - ML pipeline: data splits | 🧑‍💻 Active |
-| - ML pipeline: pytorch integration | 🧑‍💻 Active |
-| - ML pipeline: materializing datasets | 🧑‍💻 Active |
+| - ML pipeline: windowing and lazy views | 🟢 Completed |
+| - ML pipeline: data splits | 🟢 Completed |
+| - ML pipeline: pytorch integration | 🟢 Completed |
+| - ML pipeline: materializing datasets | 🟢 Completed |
 
 Feel free to suggest more functionalities that you think might be helpful! Code contributions are also welcome!
