@@ -1,4 +1,6 @@
 # 🧑‍🔬 Simple Examples <!-- {docsify-ignore} -->
+**Note: You can find a jupyter notebook with simple examples in the tutorials folder of the master branch.**
+
 Here you can find some simple examples of typical BVH edition pipelines that may appear.
 
 ## Example 1 (read -> rotate and move skeleton -> write)

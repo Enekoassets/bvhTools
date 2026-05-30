@@ -1,5 +1,6 @@
 - [📖 Reading and ✏️ writing BVH files](./functionalities/readWrite/index.md)
 - [📦 Data structures and useful functions](./functionalities/dataStructures/index.md)
+- [🤖 Machine Learning Integration](./functionalities/ml/index.md)
 - [🤚 BVH manipulation](./functionalities/manipulation/index.md)
 - [🏃 Forward kinematics](./functionalities/forwardKinematics/index.md)
 - [🤸 Motion editor](./functionalities/motionEditor/index.md)
