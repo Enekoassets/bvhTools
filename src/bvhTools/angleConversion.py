@@ -2,6 +2,19 @@ from scipy.spatial.transform import Rotation as R
 import numpy as np
 
 def scipyToSixD(scipyRotations: R) -> np.array:
+    """Convert SciPy Rotation object(s) to the 6D representation 
+
+    Parameters
+    ----------
+        scipyRotations : Rotation
+            A SciPy Rotation, containing one or more rotations.
+
+    Returns
+    -------
+        np.array
+            A 6 element array for a single rotation or an (N, 6)
+            array for a batch of N rotation.
+    """
     matrix = scipyRotations.as_matrix()
     if(matrix.shape == (3, 3)):
         return matrix[:, :2].flatten(order = 'F')
@@ -12,6 +25,18 @@ def scipyToSixD(scipyRotations: R) -> np.array:
         return matrix
 
 def sixDToScipy(sixDRotations: list[float] | np.ndarray) -> R:
+    """Convert 6D rotation list(s) to SciPy Rotation object(s) 
+
+    Parameters
+    ----------
+        sixDRotations : array-like
+            A 6-element vector or a (N, 6) array.
+
+    Returns
+    -------
+        Rotation
+            A SciPy rotation object containing one or more rotations.
+    """
     sixDRotations = np.array(sixDRotations)
     if(sixDRotations.ndim == 1 and sixDRotations.shape[0] == 6):
         a1 = sixDRotations[0:3]

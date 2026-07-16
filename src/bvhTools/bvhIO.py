@@ -75,6 +75,19 @@ def _readJoint(header, currentIndex, jointIndex, parent=None):
     return jointObject, currentIndex, jointIndex
 
 def readBvh(bvhPath: str) -> BVHData:
+    """Read a BVH file given a path. This method creates a BVHData object, the base class for a BVH. 
+
+    Parameters
+    ----------
+        bvhPath : str
+            The path of the bvh file.
+
+    Returns
+    -------
+        BVHData
+            The base class that represents a BVH file inside bvhTools. It contains
+            all the attributes of a BVH: hierarchy, motion, attributes.
+    """
     header = []
     motion = []
     numFrames = 0
@@ -103,6 +116,17 @@ def readBvh(bvhPath: str) -> BVHData:
     return bvhData
 
 def writeBvh(bvhData: BVHData, bvhPath: str, decimals: int = 6) -> None:
+    """Write a BVH file given a BVHData object and an output path. 
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            The object that is going to be written to the file.
+        bvhPath : str
+            The output path for the new file.
+        decimals : int = 6
+            Number of decimals for the motion data.
+    """
     with open(bvhPath, "w") as f:
         for line in bvhData.getHeader():
             f.write(line)
@@ -114,6 +138,18 @@ def writeBvh(bvhData: BVHData, bvhPath: str, decimals: int = 6) -> None:
             f.write("\n")
 
 def writeBvhToCsv(bvhData: BVHData, csvPath: str, decimals: int = 6) -> None:
+    """Write a CSV file given a BVHData object and an output path. 
+    This method directly writes out the position and Euler rotation channels.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            The object that is going to be written to the file.
+        csvPath : str
+            The output path for the new file.
+        decimals : int = 6
+            Number of decimals for the motion data.
+    """
     with open(csvPath, "w") as f:
         for joint in bvhData.skeleton.joints:
             jointObject = bvhData.skeleton.getJoint(joint)
@@ -125,6 +161,19 @@ def writeBvhToCsv(bvhData: BVHData, csvPath: str, decimals: int = 6) -> None:
             f.write(",".join([f"{x:.{decimals}f}" for x in frame]) + "\n")
 
 def writePositionsToCsv(bvhData: BVHData, csvPath: str, decimals: int = 6) -> None:
+    """Write the joint positions to a CSV file given a BVHData object
+    and an output path. This method computes forwartd kinematics and
+    writes out position values for each joint.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            The object that is going to be written to the file.
+        csvPath : str
+            The output path for the new file.
+        decimals : int = 6
+            Number of decimals for the motion data.
+    """
     with open(csvPath, "w") as f:
         fkFrame = bvhData.getFKAtFrame(0)
         f.write(",".join([str(x)+ "_x," + str(x)+"_y,"+ str(x)+"_z" for x in fkFrame.keys()]) + "\n")
