@@ -5,10 +5,10 @@
 
 <p align="center">
   <a href="https://pypi.org/project/bvhTools/">
-    <img src="https://img.shields.io/pypi/v/bvhTools?color=blue&label=PyPI"/>
+    <img src="https://img.shields.io/pypi/v/bvhTools?color=red&label=PyPI"/>
   </a>
   <a href="https://pypi.org/project/bvhTools/">
-    <img src="https://img.shields.io/pypi/dm/bvhTools?color=blue&label=Downloads"/>
+    <img src="https://img.shields.io/pypi/dm/bvhTools?color=yellow&label=Downloads"/>
   </a>
   <a href="https://github.com/enekoassets/bvhTools/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/enekoassets/bvhTools?color=green"/>
