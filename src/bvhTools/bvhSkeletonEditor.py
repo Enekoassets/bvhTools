@@ -8,6 +8,22 @@ def _addChildrenToList(joint, jointsToDelete):
         _addChildrenToList(child, jointsToDelete)
 
 def removeLimb(bvhData: BVHData, jointName: str) -> BVHData:
+    """Removes a specific limb from a BVH file. It removes the selected
+    bone and all its children, and modifies the motion section by
+    removing the angle values of the newly removed bones. It returns a
+    new BVHData object without the limb.
+    
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be modified.
+        jointName: str
+            The selected bone to remove. All its children will also be removed.
+    Returns
+    -------
+        BVHData
+            The new animation with the modified skeleton, without the selected limb.
+    """
     bvhDataCopy = copy.deepcopy(bvhData)
     if(jointName == bvhDataCopy.skeleton.root.name):
         print(f"\033[1;33mWARNING\033[0m: you are trying to remove the root joint. You can't do this as this would return an empty BVH. Returning bvh unchanged.")
@@ -47,6 +63,22 @@ def removeLimb(bvhData: BVHData, jointName: str) -> BVHData:
     return bvhDataCopy
     
 def scaleSkeleton(bvhData: BVHData, scaleFactor: float) -> BVHData:
+    """Scales the skeleton of a BVH file, by scaling all the bones in
+    the skeleton. It updates the OFFSET values of the BVH by scaling
+    all the offsets in the skeleton by the selected factor. It does
+    not modify the motion section.
+    
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be scaled.
+        scaleFactor: float
+            The scaling factor, multiplied to all bones. Can be any number, but it should not be 0 or less.
+    Returns
+    -------
+        BVHData
+            The new animation with the scaled skeleton.
+    """
     bvhDataCopy = copy.deepcopy(bvhData)
     if(scaleFactor<=0.0):
         print(f"\033[1;33mWARNING\033[0m: The scale factor has to be greater than 0. Returning bvh unchanged.")

@@ -4,6 +4,21 @@ import numpy as np
 from bvhTools.bvhDataTypes import BVHData
 
 def centerSkeletonRoot(bvhData: BVHData, fkFrame: int = 0) -> BVHData:
+    """Center a skeleton by putting its root in (0, 0, 0) at the specified frame.
+    The entire animation is shifted in world space.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be centered.
+        fkFrame : int
+            Frame in which the root will be on (0, 0, 0).
+
+    Returns
+    -------
+        BVHData
+            The new centered BVHData object.
+    """
     bvhDataCopy = copy.deepcopy(bvhData)
     frame = bvhDataCopy.motion.getFrame(fkFrame)
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
@@ -16,6 +31,27 @@ def centerSkeletonRoot(bvhData: BVHData, fkFrame: int = 0) -> BVHData:
     return bvhDataCopy
 
 def centerSkeletonFeet(bvhData: BVHData, leftFootName: str = "LeftFoot", rightFootName: str = "RightFoot", fkFrame: int = 0) -> BVHData:
+    """Center a skeleton by putting its feet in (0, 0, 0) at the specified frame.
+    The entire animation is shifted in world space. This method uses the left
+    and right feet to calculate the average length of both legs in a specific
+    frame so the skeleton is centered using that average point. 
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be centered.
+        leftFootName : str
+            Name of the left foot joint. Used to calculate the standing point.
+        rightFootName: str
+            Name of the right foot joint. Used to calculate the standing point.
+        fkFrame : int
+            Frame in which the skeleton will stand on (0, 0, 0).
+
+    Returns
+    -------
+        BVHData
+            The new centered BVHData object.
+    """
     bvhDataCopy = copy.deepcopy(bvhData)
     if(leftFootName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Left foot name ({leftFootName}) not found in skeleton")
@@ -34,6 +70,20 @@ def centerSkeletonFeet(bvhData: BVHData, leftFootName: str = "LeftFoot", rightFo
     return bvhDataCopy
 
 def centerSkeletonXZ(bvhData: BVHData, fkFrame: int = 0) -> BVHData:
+    """Center a skeleton in the XZ plane by zeroing its X and Z components at the specified frame.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be centered.
+        fkFrame : int
+            Frame in which the skeleton will be centered horizontally.
+
+    Returns
+    -------
+        BVHData
+            The new centered BVHData object.
+    """
     bvhDataCopy = copy.deepcopy(bvhData)
     frame = bvhDataCopy.motion.getFrame(fkFrame)
     rootIndex = bvhDataCopy.skeleton.getJointIndex(bvhDataCopy.skeleton.root.name)
@@ -45,6 +95,23 @@ def centerSkeletonXZ(bvhData: BVHData, fkFrame: int = 0) -> BVHData:
     return bvhDataCopy
 
 def centerSkeletonAroundJoint(bvhData: BVHData, jointName: str, fkFrame: int = 0) -> BVHData:
+    """Center a skeleton around a joint by locating that specified joint
+    in (0, 0, 0) at the specified frame. The entire skeleton is shifted.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be centered.
+        jointName : str
+            Name of the joint that will be located in (0, 0, 0) in the specified frame.
+        fkFrame : int
+            Frame in which the skeleton will be centered horizontally.
+
+    Returns
+    -------
+        BVHData
+            The new centered BVHData object.
+    """
     bvhDataCopy = copy.deepcopy(bvhData)
     if(jointName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Selected joint ({jointName}) not found in skeleton")
@@ -62,6 +129,28 @@ def centerSkeletonAroundJoint(bvhData: BVHData, jointName: str, fkFrame: int = 0
     return bvhDataCopy
 
 def standSkeletonOnFloor(bvhData: BVHData, leftFootName: str = "LeftFoot", rightFootName: str = "RightFoot", fkFrame: int = 0) -> BVHData:
+    """Change the Y component of an animation so it stands at ground level at
+    the specified frame. The entire animation is shifted in world space. This
+    method uses the left and right feet to calculate the average length of 
+    both legs in a specific frame so the height is calculated using that 
+    average point. 
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be modified.
+        leftFootName : str
+            Name of the left foot joint. Used to calculate the standing point.
+        rightFootName: str
+            Name of the right foot joint. Used to calculate the standing point.
+        fkFrame : int
+            Frame in which the skeleton will stand on the floor.
+
+    Returns
+    -------
+        BVHData
+            The new BVHData object that stands at height = 0.
+    """
     bvhDataCopy = copy.deepcopy(bvhData)
     if(leftFootName not in bvhDataCopy.skeleton.joints):
         raise Exception(f"Left foot name ({leftFootName}) not found in skeleton")
@@ -78,6 +167,25 @@ def standSkeletonOnFloor(bvhData: BVHData, leftFootName: str = "LeftFoot", right
     return bvhDataCopy
 
 def rotateSkeletonLocal(bvhData: BVHData, angle: list[float], fkFrame: int = 0) -> BVHData:
+    """Rotate a skeleton locally, around its own root joint. The
+    method calculates the root position in a specific frame, and
+    rotates the skeleton around that point. The entire animation
+    is rotated.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be rotated.
+        angle : list[float]
+            Euler angles to rotate the skeleton. Format: [X, Y, Z].
+        fkFrame : int
+            Frame that will be used to calculate the root position.
+
+    Returns
+    -------
+        BVHData
+            The new rotated BVHData object.
+    """
     if(len(angle) != 3):
         raise Exception("angle must be a list of length 3")
     bvhDataCopy = copy.deepcopy(bvhData)
@@ -97,6 +205,21 @@ def rotateSkeletonLocal(bvhData: BVHData, angle: list[float], fkFrame: int = 0) 
     return bvhDataCopy
 
 def rotateSkeletonWorld(bvhData: BVHData, angle: list[float]) -> BVHData:
+    """Rotate a skeleton globally, around the world origin.
+    The entire animation is rotated.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be rotated.
+        angle : list[float]
+            Euler angles to rotate the skeleton. Format: [X, Y, Z].
+
+    Returns
+    -------
+        BVHData
+            The new rotated BVHData object.
+    """
     if(len(angle) != 3):
         raise Exception("angle must be a list of length 3")
     bvhDataCopy = copy.deepcopy(bvhData)
@@ -113,6 +236,21 @@ def rotateSkeletonWorld(bvhData: BVHData, angle: list[float]) -> BVHData:
     return bvhDataCopy
 
 def moveSkeleton(bvhData: BVHData, offsets: list[float]) -> BVHData:
+    """Move a skeleton, by adding an offset to the root joint.
+    The entire animation is shifted.
+
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be moved.
+        offsets : list[float]
+            Position offset to be added. Format: [X, Y, Z].
+
+    Returns
+    -------
+        BVHData
+            The new moved BVHData object.
+    """
     if(len(offsets) != 3):
         raise Exception("offsets must be a list of length 3")
     bvhDataCopy = copy.deepcopy(bvhData)
@@ -125,6 +263,25 @@ def moveSkeleton(bvhData: BVHData, offsets: list[float]) -> BVHData:
     return bvhDataCopy
 
 def mirrorSkeleton(bvhData: BVHData, flipAxis: str, jointPairs: list[list[str]]) -> BVHData:
+    """Mirrors a skeleton, by flipping it on the selected axis
+    and by switching the angles on the selected limb pairs.
+    This method needs the skeleton to be symmetric on the selected 
+    axis. The entire animation is mirrored.
+    
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be mirrored.
+        flipAxis : str
+            Axis for the mirroring. Options: [X, Y, Z].
+        jointPairs: list[list[str]]
+            The joint pairs to be exchanged. Example: [["leftArm", "rightArm"], ["leftLeg", "rightLeg"] ... ]
+
+    Returns
+    -------
+        BVHData
+            The new moved BVHData object.
+        """
     if (flipAxis != "X" and flipAxis != "Y" and flipAxis != "Z" and flipAxis != "x" and flipAxis != "y" and flipAxis != "z"):
         print(f"\033[1;33mWARNING\033[0m: flipAxis needs to be X, Y or Z. Returning original BVH.")
         return bvhData

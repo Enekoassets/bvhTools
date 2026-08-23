@@ -27,7 +27,18 @@ def _precomputeLabels(bvh):
         labels.append(label)
     return labels
 
-def showBvhAnimation(bvhData: BVHData) -> None:
+def showBvhAnimation(bvhData: BVHData | list[BVHData]) -> None:
+    """Takes one or more BVHData objects as input and shows them
+    in a 3D space, using Raylib. The viewer itself has many options
+    to customize the animation, such as colors or skeleton sizes.
+    The provided animations are internally modified to stand on the
+    floor, taking frame 0 as reference.
+    
+    Parameters
+    ----------
+        bvhData : BVHData | list[BVHData]
+            BVH file(s) that will be shown as a 3D animation.
+    """
     if(not isinstance(bvhData, BVHData) and not (isinstance(bvhData, list) and all(isinstance(b, BVHData) for b in bvhData))):
         print(f"\033[1;33mWARNING\033[0m: You must provide either a single BVHData object or a list of BVHData objects.")
         return
@@ -217,6 +228,17 @@ def showBvhAnimation(bvhData: BVHData) -> None:
     rl.close_window()
 
 def showOnionSkinAnimation(bvhData: BVHData) -> None:
+    """Takes one or more BVHData objects as input and shows them
+    in a 3D space, using Raylib. This viewer shows a onion skin
+    animation, by overlaying many frames and using transparency.
+    The provided animations are internally modified to stand on the
+    floor, taking frame 0 as reference.
+    
+    Parameters
+    ----------
+        bvhData : BVHData | list[BVHData]
+            BVH file(s) that will be shown as a 3D animation.
+    """
     if(not isinstance(bvhData, BVHData) and not (isinstance(bvhData, list) and all(isinstance(b, BVHData) for b in bvhData))):
         print(f"\033[1;33mWARNING\033[0m: You must provide either a single BVHData object or a list of BVHData objects.")
         return

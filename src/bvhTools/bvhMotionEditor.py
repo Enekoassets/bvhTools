@@ -5,6 +5,24 @@ import math
 from bvhTools.bvhDataTypes import BVHData
 
 def resampleFPS(bvh: BVHData, fps: int) -> BVHData:
+    """Resamples the fps (frames per second) of an animation.
+    The method returns a new BVHData object containing the
+    resampled animation. The resampling is done using a simple
+    weighted average, by resampling the original animation
+    curves. The method can upsample and downsample any BVH.
+    
+    Parameters
+    ----------
+        bvhData : BVHData
+            Input BVH to be resampled.
+        fps: int
+            The target fps for the resampled animation. (Not to confuse with the frame time)
+    Returns
+    -------
+        BVHData
+            The resampled animation. It is a BVHData object containing the same animation with a different
+            sampling rate, and a different number of frames.
+    """
     bvhCopy = copy.deepcopy(bvh)
     currentFps = 1.0/bvhCopy.motion.frameTime
     newFrames = []

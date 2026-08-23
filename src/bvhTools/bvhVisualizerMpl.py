@@ -7,11 +7,59 @@ import numpy as np
 from bvhTools.bvhDataTypes import BVHData
 
 def showBvhAnimation(bvhData: BVHData, showPoints: bool = True, showLines: bool = True, showQuivers: bool = True, 
-                    showLabels: bool = False, showFootContacts: bool = False, footContactMethod: str = "distance",
+                    showLabels: bool = False, showFootContacts: bool = False, footContactMethod: str = "height",
                     footNames: list[str] = ["LeftFoot", "RightFoot"], speedThreshold: float = 0.1, timeDiff: float = -1,
                     heightThreshold: float = 0.1, referenceFrame: int = 0, showFootSlides: bool = False, showSpeeds: bool = False,
-                    normalizeSpeeds: bool = False, speedVectorSize: int = 1, pointColor: str = "#4287f5", pointMarker: str = "o",
-                    lineColor: str = "#666666", lineWidth: float = 2):
+                    normalizeSpeeds: bool = False, speedVectorSize: float = 1.0, pointColor: str = "#4287f5", pointMarker: str = "o",
+                    lineColor: str = "#666666", lineWidth: float = 2.0):
+    """DEPRECATED: see bvhVisualizer.showBvhAnimation.
+    Takes one BVHData object as input and shows them in a 3D space,
+    using matplotlib. The output animation can be modified by
+    using the provided parameters.
+    
+    Parameters
+    ----------
+        bvhData : BVHData | list[BVHData]
+            BVH file(s) that will be shown as a 3D animation.
+        showPoints : bool = True
+            Decides to show the joints as 3D points.
+        showLines : bool = True
+            Decides to show the limbs as 3D lines.
+        showQuivers : bool = True
+            Decides to show quivers in the world origin.
+        showLabels : bool = False
+            Decides to show the joint names as 3D labels.
+        showFootContacts : bool = False
+            Decides to show foot contacts as red/green circles.
+        footContactMethod : str = "height"
+            The foot contact calculation method. Options = ["height", "speed", "both"]. Only used if showFootContacts = True.
+        footNames : list[str] = ["LeftFoot", "RightFoot"]
+            The foot joint names for the foot contacts. Only used if showFootContacts = True.
+        speedThreshold : float = 0.1
+            Speed threshold to calculate foot contacts. Only used if showFootContacts = True and footContactMethod = "speed" or "both"
+        timeDiff : float = -1
+            Frame time to calculate speeds. Uses frame time from the file if -1.
+        heightThreshold : float = 0.1
+            Height threshold to calculate foot contacts. Only used if showFootContacts = True and footContactMethod = "height" or "both"
+        referenceFrame : int = 0
+            Floor reference frame used to calculate the foot heights.
+        showFootSlides : bool = False
+            Decides to show the foot slides as red/green circles.
+        showSpeeds : bool = False
+            Decides to show joint speeds as 3D arrows.
+        normalizeSpeeds : bool = False
+            Decides to normalize the speed arrows using the speed median. Recommended value: true.
+        speedVectorSize : float = 1.0
+            Multiplier to change the speed vector size.
+        pointColor : str = "#4287f5"
+            Color of the joint 3D points.
+        pointMarker : str = "o"
+            Markers of the joint 3D points.
+        lineColor : str = "#666666"
+            Color of the 3D lines.
+        lineWidth : float = 2.0
+            Width of the 3D lines.
+    """
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     
